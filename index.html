@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>KCM 파티 아케이드 — 멀티플레이 & 루미큐브 · 고스톱</title>
+<title>KCM 파티 아케이드 — 멀티플레이 & 윷놀이 · 루미큐브 · 고스톱</title>
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <style>
   :root {
@@ -213,13 +213,126 @@
     background: #172554;
     border: 1px solid #3b82f6;
   }
+  .timer-pill.unlimited {
+    background: #052e16;
+    border-color: #22c55e;
+    color: #86efac;
+  }
   .timer-pill.urgent {
     background: #450a0a;
     border-color: var(--danger);
     color: #fca5a5;
   }
 
-  /* 루미큐브 전용 스타일 */
+  /* 윷놀이 전용 스타일 */
+  .yut-layout {
+    display: grid;
+    grid-template-columns: minmax(300px, 440px) 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+  @media (max-width: 820px) {
+    .yut-layout { grid-template-columns: 1fr; }
+  }
+  .yut-board-wrap {
+    background: radial-gradient(circle at center, #fef3c7 0%, #fde68a 100%);
+    border: 3px solid #92400e;
+    border-radius: 16px;
+    padding: 10px;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.45);
+  }
+  .yut-board-wrap svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .yut-node-circle {
+    cursor: pointer;
+    transition: transform 0.12s ease;
+  }
+  .yut-side-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .yut-sticks-box {
+    background: #0b1120;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px;
+  }
+  .yut-sticks-row {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    align-items: center;
+    margin: 10px 0;
+  }
+  .yut-stick {
+    width: 30px;
+    height: 104px;
+    border-radius: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    font-weight: 900;
+    font-size: 0.85rem;
+    box-shadow: 0 5px 12px rgba(0,0,0,0.45);
+    transition: transform 0.2s ease;
+  }
+  .yut-stick.flat {
+    background: linear-gradient(180deg, #fef3c7 0%, #fde68a 100%);
+    border: 2px solid #b45309;
+    color: #92400e;
+  }
+  .yut-stick.round {
+    background: linear-gradient(180deg, #92400e 0%, #78350f 100%);
+    border: 2px solid #451a03;
+    color: #fef3c7;
+  }
+  .yut-stick.backdo {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.45);
+  }
+  .yut-roll-chip {
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: #1e293b;
+    border: 1.5px solid #475569;
+    font-size: 0.86rem;
+    font-weight: 700;
+  }
+  .yut-roll-chip.active {
+    background: #0c4a6e;
+    border-color: #38bdf8;
+    color: #ffffff;
+    box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.35);
+  }
+  .yut-player-card {
+    background: #0b1120;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 10px 12px;
+  }
+  .yut-player-card.active-turn {
+    border-color: #facc15;
+    box-shadow: 0 0 0 1px #facc15;
+  }
+  .yut-piece-btn {
+    padding: 5px 10px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .yut-piece-btn.selected {
+    outline: 2px solid #facc15;
+    box-shadow: 0 0 10px rgba(250, 204, 21, 0.45);
+  }
+
+  /* 루미큐브 전용 스타일 + 드래그 앤 드롭 하이라이트 */
   .rummi-table-board {
     background: radial-gradient(circle at center, #0f3d2e 0%, #072219 100%);
     border: 2px solid #10b981;
@@ -227,13 +340,39 @@
     padding: 14px;
     margin-bottom: 12px;
     box-shadow: inset 0 0 24px rgba(0, 0, 0, 0.45);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .rummi-table-board.drag-over {
+    border-color: #38bdf8;
+    box-shadow: inset 0 0 28px rgba(56, 189, 248, 0.3), 0 0 0 3px rgba(56, 189, 248, 0.35);
   }
   .rummi-sets-wrap {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-    min-height: 74px;
+    min-height: 78px;
     align-items: center;
+  }
+  .rummi-new-dropzone {
+    min-width: 150px;
+    height: 68px;
+    border: 2px dashed rgba(110, 231, 183, 0.45);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 14px;
+    color: #a7f3d0;
+    font-size: 0.8rem;
+    font-weight: 600;
+    background: rgba(6, 78, 59, 0.35);
+    transition: all 0.15s ease;
+  }
+  .rummi-new-dropzone.drag-over {
+    border-color: #38bdf8;
+    background: rgba(14, 165, 233, 0.25);
+    color: #ffffff;
+    transform: scale(1.03);
   }
   .rummi-set-group {
     display: inline-flex;
@@ -243,11 +382,22 @@
     border-radius: 12px;
     background: rgba(15, 23, 42, 0.65);
     border: 1.5px solid rgba(110, 231, 183, 0.45);
+    transition: transform 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
   }
   .rummi-set-group.appendable {
     cursor: pointer;
     border-color: #facc15;
     box-shadow: 0 0 0 2px rgba(250, 204, 21, 0.25);
+  }
+  .rummi-set-group.drag-over {
+    border-color: #facc15;
+    background: rgba(113, 63, 18, 0.65);
+    box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.55);
+    transform: scale(1.04);
+  }
+  .rummi-set-group.invalid-set {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.45);
   }
   .rummi-tile {
     width: 44px;
@@ -262,32 +412,21 @@
     justify-content: center;
     font-weight: 900;
     user-select: none;
-    cursor: pointer;
-    transition: transform 0.1s ease, box-shadow 0.1s ease;
+    cursor: grab;
+    transition: transform 0.1s ease, box-shadow 0.1s ease, opacity 0.1s ease;
     position: relative;
   }
-  .rummi-tile:hover {
-    transform: translateY(-4px);
-  }
+  .rummi-tile:active { cursor: grabbing; }
+  .rummi-tile.dragging { opacity: 0.45; transform: scale(0.94); }
+  .rummi-tile:hover { transform: translateY(-4px); }
   .rummi-tile.selected {
     transform: translateY(-8px);
     border-color: #38bdf8;
     box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.65), 0 8px 14px rgba(0, 0, 0, 0.45);
   }
-  .rummi-tile.table-tile {
-    width: 40px;
-    height: 54px;
-  }
-  .rummi-tile .num {
-    font-size: 1.18rem;
-    line-height: 1;
-  }
-  .rummi-tile .suit-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    margin-top: 5px;
-  }
+  .rummi-tile.table-tile { width: 40px; height: 54px; }
+  .rummi-tile .num { font-size: 1.18rem; line-height: 1; }
+  .rummi-tile .suit-dot { width: 7px; height: 7px; border-radius: 50%; margin-top: 5px; }
   .rummi-red .num { color: #dc2626; }
   .rummi-red .suit-dot { background: #dc2626; }
   .rummi-blue .num { color: #2563eb; }
@@ -304,12 +443,18 @@
     border: 2px solid #475569;
     border-radius: 14px;
     padding: 12px;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .rummi-rack.drag-over {
+    border-color: #38bdf8;
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.35);
   }
   .rummi-hand-row {
     display: flex;
     flex-wrap: wrap;
     gap: 7px;
     margin-top: 8px;
+    min-height: 64px;
   }
 
   .liar-arena {
@@ -744,7 +889,7 @@
   <header class="topbar">
     <div class="brand">
       <h1>🎮 KCM 파티 아케이드</h1>
-      <p>각자 닉네임·캐릭터 선택 · 루미큐브 · 상대패 공개 SVG 고스톱 · 12가지 미니게임</p>
+      <p>실시간 멀티동기화 · 윷놀이 · 루미큐브 · 캐치마인드 · SVG 고스톱</p>
     </div>
     <div class="conn-badge">
       <span id="connDot" class="dot"></span>
@@ -849,39 +994,42 @@
     { id: 'fire', icon: '🔥', label: '불꽃' }
   ];
 
+  // 0은 시간 제한 없음(무제한)
   const GAME_CONFIG = {
     defaultMoney: 10000,
     turnSeconds: {
-      wordchain: 15,
-      hunmin: 18,
-      catchmind: 45,
-      cardflip: 35,
-      emojiquiz: 15,
-      liar: 25,
-      chosung: 15,
-      rummikub: 60,
-      wordassoc: 18,
-      proverb: 18,
-      island: 40,
-      gostop: 25
+      yutnori: 35,
+      rummikub: 75,
+      wordchain: 20,
+      hunmin: 25,
+      catchmind: 0,
+      cardflip: 45,
+      emojiquiz: 25,
+      liar: 35,
+      chosung: 25,
+      wordassoc: 25,
+      proverb: 25,
+      island: 0,
+      gostop: 30
     },
-    cardFlipSeconds: { 4: 35, 8: 65, 16: 120 },
+    cardFlipSeconds: { 4: 45, 8: 80, 16: 150 },
     marketPrices: { wood: 250, fish: 400, coconut: 350 }
   };
 
   const MODES = [
-    { id: 'rummikub', name: '루미큐브', desc: '4색 숫자·조커 조합 · 첫 등록 30점 · 테이블 재배치' },
-    { id: 'wordchain', name: '끝말잇기', desc: '턴제·타임어택 · 3콤보 보너스' },
-    { id: 'hunmin', name: '훈민정음', desc: '초성 2글자 랜덤 · 타임어택' },
-    { id: 'catchmind', name: '캐치마인드', desc: '컬러 팔레트 · 선 연결 · 랜덤 제시어' },
-    { id: 'cardflip', name: '같은 그림찾기', desc: '4×4 / 8×8 / 16×16 턴제·타임어택' },
-    { id: 'emojiquiz', name: '이모지 맞추기', desc: '24종+ 이모지 랜덤 퀴즈' },
-    { id: 'liar', name: '라이어 게임', desc: '둥근 의자 턴제 발언 · 랜덤 주제' },
-    { id: 'chosung', name: '초성 퀴즈 배틀', desc: '40종+ 초성 랜덤 퀴즈' },
-    { id: 'wordassoc', name: '단어 연상 퀴즈', desc: '18종+ 연상 단서 랜덤 퀴즈' },
-    { id: 'proverb', name: '속담 완성 퀴즈', desc: '16종+ 속담 랜덤 완성 퀴즈' },
-    { id: 'island', name: '무인도 생존', desc: '낚시/나무/코코넛 스테이지 · 판매·고스톱' },
-    { id: 'gostop', name: '고스톱 배틀', desc: '상대패 공개 · 더미뒤집기 · SVG 화투' }
+    { id: 'yutnori', name: '윷놀이', desc: '업기·잡기·지름길 SVG 윷판 · 35초' },
+    { id: 'rummikub', name: '루미큐브', desc: '드래그&드롭 · 첫 등록 30점 · 75초' },
+    { id: 'wordchain', name: '끝말잇기', desc: '턴제 20초 · 3콤보 보너스' },
+    { id: 'hunmin', name: '훈민정음', desc: '초성 2글자 랜덤 · 25초' },
+    { id: 'catchmind', name: '캐치마인드', desc: '시간 무제한 · 정답 맞출 때까지 실시간' },
+    { id: 'cardflip', name: '같은 그림찾기', desc: '4×4 / 8×8 / 16×16 턴제' },
+    { id: 'emojiquiz', name: '이모지 맞추기', desc: '24종+ 이모지 랜덤 퀴즈 · 25초' },
+    { id: 'liar', name: '라이어 게임', desc: '둥근 의자 턴제 발언 · 35초' },
+    { id: 'chosung', name: '초성 퀴즈 배틀', desc: '40종+ 초성 랜덤 퀴즈 · 25초' },
+    { id: 'wordassoc', name: '단어 연상 퀴즈', desc: '18종+ 연상 단서 퀴즈 · 25초' },
+    { id: 'proverb', name: '속담 완성 퀴즈', desc: '16종+ 속담 완성 퀴즈 · 25초' },
+    { id: 'island', name: '무인도 생존', desc: '시간 무제한 · 채집·판매·고스톱' },
+    { id: 'gostop', name: '고스톱 배틀', desc: '상대패 공개 · SVG 화투 · 30초' }
   ];
 
   function pickRandomIndex(length, excludeIdx = -1) {
@@ -1120,21 +1268,31 @@
   ];
 
   const state = {
+    // 로컬 클라이언트 고유 정보 (SYNC_STATE 시 절대 덮어쓰지 않음)
     myId: 'u_' + Math.random().toString(36).slice(2, 8),
     myName: '플레이어1',
     myChar: '🐱',
     roomCode: '',
     isHost: true,
     soloIsland: false,
-    mode: 'rummikub',
+
+    // 방 공용 동기화 상태
+    mode: 'yutnori',
     players: [],
     scores: {},
     sharedMoney: GAME_CONFIG.defaultMoney,
     turnIndex: 0,
-    timeLeft: 60,
+    timeLeft: 35,
     round: 1,
     activeGame: false,
     logs: [],
+    yutnori: {
+      pieces: {},
+      pendingRolls: [],
+      canThrow: true,
+      lastSticks: [false, true, true, true],
+      lastRollLabel: '윷을 던져주세요!'
+    },
     rummikub: {
       pool: [],
       tableSets: [],
@@ -1177,6 +1335,8 @@
   let tickTimer = null;
   let hoveredHandMonth = null;
   let selectedRummiTileIds = new Set();
+  let selectedYutRollIdx = 0;
+  let selectedYutPieceIdx = 0;
 
   const miniLocal = {
     fish: { bite: false, reel: 0, caughtCount: 0, msg: '찌를 던지고 입질(!)이 오면 위로 드래그하거나 당기세요!' },
@@ -1270,14 +1430,15 @@
 
   function isMyTurn() {
     const cur = getCurrentTurnPlayer();
-    return cur && cur.id === state.myId;
+    return Boolean(cur && cur.id === state.myId);
   }
 
   function getTurnSecondsForCurrentState() {
     if (state.mode === 'cardflip') {
-      return GAME_CONFIG.cardFlipSeconds[state.cardflip.size] || 35;
+      return GAME_CONFIG.cardFlipSeconds[state.cardflip.size] || 45;
     }
-    return GAME_CONFIG.turnSeconds[state.mode] || 20;
+    const sec = GAME_CONFIG.turnSeconds[state.mode];
+    return typeof sec === 'number' ? sec : 25;
   }
 
   function broadcast(payload) {
@@ -1287,9 +1448,398 @@
     });
   }
 
+  function getSharedRoomState() {
+    const { myId, myName, myChar, roomCode, isHost, soloIsland, ...shared } = state;
+    return shared;
+  }
+
   function syncStateToPeers() {
     if (!state.isHost) return;
-    broadcast({ type: 'SYNC_STATE', state });
+    broadcast({ type: 'SYNC_STATE', state: getSharedRoomState() });
+  }
+
+  /* ================= 윷놀이 엔진 ================= */
+  const YUT_NODES = [
+    { id: 0, x: 430, y: 430, corner: true, label: '출발' },
+    { id: 1, x: 430, y: 354 },
+    { id: 2, x: 430, y: 278 },
+    { id: 3, x: 430, y: 202 },
+    { id: 4, x: 430, y: 126 },
+    { id: 5, x: 430, y: 50, corner: true, label: '모' },
+    { id: 6, x: 354, y: 50 },
+    { id: 7, x: 278, y: 50 },
+    { id: 8, x: 202, y: 50 },
+    { id: 9, x: 126, y: 50 },
+    { id: 10, x: 50, y: 50, corner: true, label: '모' },
+    { id: 11, x: 50, y: 126 },
+    { id: 12, x: 50, y: 202 },
+    { id: 13, x: 50, y: 278 },
+    { id: 14, x: 50, y: 354 },
+    { id: 15, x: 50, y: 430, corner: true, label: '모' },
+    { id: 16, x: 126, y: 430 },
+    { id: 17, x: 202, y: 430 },
+    { id: 18, x: 278, y: 430 },
+    { id: 19, x: 354, y: 430 },
+    { id: 20, x: 366, y: 114 },
+    { id: 21, x: 303, y: 177 },
+    { id: 22, x: 240, y: 240, corner: true, label: '방' },
+    { id: 23, x: 177, y: 303 },
+    { id: 24, x: 114, y: 366 },
+    { id: 25, x: 114, y: 114 },
+    { id: 26, x: 177, y: 177 },
+    { id: 27, x: 303, y: 303 },
+    { id: 28, x: 366, y: 366 }
+  ];
+
+  const YUT_PLAYER_COLORS = ['#ef4444', '#3b82f6', '#22c55e', '#a855f7', '#f59e0b', '#ec4899'];
+
+  function initYutnoriRound() {
+    const pieces = {};
+    state.players.forEach(p => {
+      pieces[p.id] = [-1, -1, -1];
+    });
+    state.yutnori = {
+      pieces,
+      pendingRolls: [],
+      canThrow: true,
+      lastSticks: [false, true, true, true],
+      lastRollLabel: '윷을 던져주세요!'
+    };
+    selectedYutRollIdx = 0;
+    selectedYutPieceIdx = 0;
+  }
+
+  function rollFourYutSticks() {
+    // 인덱스 0번 막대를 빽도 표시 막대로 사용
+    const r = Math.random();
+    let flatCount = 1;
+    let backDo = false;
+    if (r < 0.06) {
+      flatCount = 1;
+      backDo = true;
+    } else if (r < 0.28) {
+      flatCount = 1;
+    } else if (r < 0.62) {
+      flatCount = 2;
+    } else if (r < 0.86) {
+      flatCount = 3;
+    } else if (r < 0.94) {
+      flatCount = 4;
+    } else {
+      flatCount = 0;
+    }
+
+    const sticks = [false, false, false, false];
+    if (backDo) {
+      sticks[0] = true;
+    } else {
+      const idxs = [0, 1, 2, 3].sort(() => Math.random() - 0.5);
+      for (let i = 0; i < flatCount; i++) sticks[idxs[i]] = true;
+    }
+
+    if (backDo) return { steps: -1, name: '빽도 (-1)', bonus: false, sticks };
+    if (flatCount === 1) return { steps: 1, name: '도 (+1)', bonus: false, sticks };
+    if (flatCount === 2) return { steps: 2, name: '개 (+2)', bonus: false, sticks };
+    if (flatCount === 3) return { steps: 3, name: '걸 (+3)', bonus: false, sticks };
+    if (flatCount === 4) return { steps: 4, name: '윷 (+4 · 한번 더!)', bonus: true, sticks };
+    return { steps: 5, name: '모 (+5 · 한번 더!)', bonus: true, sticks };
+  }
+
+  function computeYutDestination(startPos, steps) {
+    if (startPos === 99) return 99;
+    if (steps === -1) {
+      if (startPos === -1) return -1;
+      const backMap = {
+        0: 19, 1: 0, 2: 1, 3: 2, 4: 3, 5: 4,
+        6: 5, 7: 6, 8: 7, 9: 8, 10: 9,
+        11: 10, 12: 11, 13: 12, 14: 13, 15: 14,
+        16: 15, 17: 16, 18: 17, 19: 18,
+        20: 5, 21: 20, 22: 21, 23: 22, 24: 23,
+        25: 10, 26: 25, 27: 22, 28: 27
+      };
+      return backMap[startPos] ?? 0;
+    }
+
+    let cur = startPos === -1 ? 0 : startPos;
+    const fromBench = startPos === -1;
+    let prev = -1;
+
+    for (let s = 0; s < steps; s++) {
+      let next = cur;
+      if (s === 0 && !fromBench) {
+        if (cur === 5) next = 20;
+        else if (cur === 10) next = 25;
+        else if (cur === 22) next = 27;
+        else if (cur === 19 || cur === 28) next = 0;
+        else if (cur === 0) return 99;
+        else if (cur === 24) next = 15;
+        else next = cur + 1;
+      } else {
+        if (cur === 19 || cur === 28) next = 0;
+        else if (cur === 0 && !fromBench) return 99;
+        else if (cur === 0 && fromBench && s > 0) return 99;
+        else if (cur === 24) next = 15;
+        else if (cur === 22) next = prev === 26 ? 27 : 23;
+        else next = cur + 1;
+      }
+      prev = cur;
+      cur = next;
+    }
+    return cur;
+  }
+
+  function handleYutThrow(playerId) {
+    const cur = getCurrentTurnPlayer();
+    if (!cur || cur.id !== playerId) return;
+    const yn = state.yutnori;
+    if (!yn.canThrow) {
+      addLog(`⚠️ ${getPlayerName(playerId)}: 먼저 나온 윷 패로 말을 이동하세요!`);
+      return;
+    }
+
+    const res = rollFourYutSticks();
+    yn.lastSticks = res.sticks;
+    yn.lastRollLabel = res.name;
+    yn.pendingRolls.push({ steps: res.steps, name: res.name });
+    yn.canThrow = res.bonus;
+
+    addLog(`🪵 ${getPlayerName(playerId)} 윷 던지기 결과: <strong>${res.name}</strong>`);
+
+    // 빽도가 나왔는데 판 위에 말이 하나도 없고 더 던질 기회도 없으면 자동 무효 처리
+    const myPieces = yn.pieces[playerId] || [-1, -1, -1];
+    const hasBoardPiece = myPieces.some(pos => pos >= 0 && pos < 99);
+    if (!yn.canThrow && yn.pendingRolls.length === 1 && yn.pendingRolls[0].steps === -1 && !hasBoardPiece) {
+      yn.pendingRolls = [];
+      addLog(`💨 판 위에 이동할 말이 없어 빽도가 무효 처리되고 턴이 넘어갑니다.`);
+      advanceTurn();
+      return;
+    }
+
+    selectedYutRollIdx = 0;
+    const movableIdx = myPieces.findIndex(pos => pos < 99 && !(res.steps === -1 && pos === -1));
+    if (movableIdx !== -1) selectedYutPieceIdx = movableIdx;
+
+    syncStateToPeers();
+    renderAll();
+  }
+
+  function handleYutMove(playerId, rollIdx, pieceIdx) {
+    const cur = getCurrentTurnPlayer();
+    if (!cur || cur.id !== playerId) return;
+    const yn = state.yutnori;
+    if (!yn.pendingRolls.length) return;
+    const rIdx = Math.max(0, Math.min(rollIdx, yn.pendingRolls.length - 1));
+    const chosenRoll = yn.pendingRolls[rIdx];
+    const myPieces = yn.pieces[playerId] || [-1, -1, -1];
+    const startPos = myPieces[pieceIdx];
+
+    if (typeof startPos !== 'number' || startPos === 99) {
+      addLog(`❌ 이미 완주한 말은 선택할 수 없습니다.`);
+      return;
+    }
+    if (chosenRoll.steps === -1 && startPos === -1) {
+      addLog(`❌ 대기석에 있는 말은 빽도로 이동할 수 없습니다. 판 위의 말을 선택하세요.`);
+      return;
+    }
+
+    const dest = computeYutDestination(startPos, chosenRoll.steps);
+    yn.pendingRolls.splice(rIdx, 1);
+
+    // 업힌 말(같은 칸에 있던 내 말) 함께 이동
+    const stackedIndices = [];
+    if (startPos >= 0 && startPos < 99) {
+      myPieces.forEach((p, idx) => {
+        if (p === startPos) stackedIndices.push(idx);
+      });
+    } else {
+      stackedIndices.push(pieceIdx);
+    }
+
+    stackedIndices.forEach(idx => {
+      myPieces[idx] = dest;
+    });
+
+    if (dest === 99) {
+      const gained = stackedIndices.length * 10;
+      state.scores[playerId] = (state.scores[playerId] || 0) + gained;
+      addLog(`🎊 ${getPlayerName(playerId)} 말 ${stackedIndices.length}개 완주! (+${gained}점)`);
+    } else {
+      const destName = YUT_NODES.find(n => n.id === dest)?.label || `${dest}번 칸`;
+      const stackTxt = stackedIndices.length > 1 ? ` (업은 말 ${stackedIndices.length}개 동시 이동!)` : '';
+      addLog(`🏃 ${getPlayerName(playerId)} [${chosenRoll.name}] → ${destName} 이동${stackTxt}`);
+
+      // 잡기 판정
+      let caughtCount = 0;
+      state.players.forEach(other => {
+        if (other.id === playerId) return;
+        const otherPieces = yn.pieces[other.id] || [];
+        otherPieces.forEach((oPos, oIdx) => {
+          if (oPos === dest) {
+            otherPieces[oIdx] = -1;
+            caughtCount += 1;
+          }
+        });
+      });
+
+      if (caughtCount > 0) {
+        yn.canThrow = true;
+        addLog(`💥 ${getPlayerName(playerId)} 상대 말 ${caughtCount}개 잡기 성공! 윷을 한 번 더 던집니다!`);
+      }
+    }
+
+    // 전원 완주(3말 골인) 승리 체크
+    if (myPieces.every(p => p === 99)) {
+      state.scores[playerId] = (state.scores[playerId] || 0) + 35;
+      addLog(`🏆🎉 ${getPlayerName(playerId)} 윷놀이 최종 승리! (+35점 보너스) 새 판을 시작합니다.`);
+      initYutnoriRound();
+      advanceTurn();
+      return;
+    }
+
+    selectedYutRollIdx = 0;
+    if (!yn.canThrow && yn.pendingRolls.length === 0) {
+      advanceTurn();
+    } else {
+      syncStateToPeers();
+      renderAll();
+    }
+  }
+
+  function handleIncomingData(fromId, raw) {
+    let msg;
+    try {
+      msg = typeof raw === 'string' ? JSON.parse(raw) : raw;
+    } catch { return; }
+
+    if (msg.type === 'TIMER_TICK') {
+      state.timeLeft = msg.timeLeft;
+      updateTimerPillUI();
+      return;
+    }
+
+    if (msg.type === 'SYNC_STATE') {
+      const keepMini = state.island.miniStage;
+      const prevStrokesLen = state.catchmind.strokes.length;
+
+      const localIdentity = {
+        myId: state.myId,
+        myName: state.myName,
+        myChar: state.myChar,
+        roomCode: state.roomCode,
+        isHost: state.isHost,
+        soloIsland: state.soloIsland
+      };
+
+      Object.assign(state, msg.state, localIdentity);
+      if (keepMini) state.island.miniStage = keepMini;
+
+      renderAll();
+      if (state.mode === 'catchmind' && state.catchmind.strokes.length !== prevStrokesLen) {
+        redrawCatchmindCanvas();
+      }
+      return;
+    }
+
+    if (msg.type === 'CHAT') {
+      addLog(`[${msg.sender}] ${msg.text}`);
+      if (state.isHost && state.activeGame) {
+        evaluateChatAnswer(msg.senderId, msg.sender, msg.text);
+      }
+      return;
+    }
+
+    if (msg.type === 'DRAW_STROKE') {
+      state.catchmind.strokes.push(msg.stroke);
+      if (state.mode === 'catchmind') appendStrokeToCanvas(msg.stroke);
+      if (state.isHost) broadcast(msg);
+      return;
+    }
+
+    if (msg.type === 'DRAW_SEGMENT_LIVE') {
+      if (state.mode === 'catchmind') {
+        const canvas = $('catchCanvas');
+        if (canvas && msg.a && msg.b) {
+          drawSegment(canvas.getContext('2d'), msg.a, msg.b, msg.color, msg.width);
+        }
+      }
+      if (state.isHost) broadcast(msg);
+      return;
+    }
+
+    if (msg.type === 'CLEAR_CANVAS') {
+      state.catchmind.strokes = [];
+      if (state.mode === 'catchmind') redrawCatchmindCanvas();
+      if (state.isHost) broadcast(msg);
+      return;
+    }
+
+    if (!state.isHost) return;
+
+    if (msg.type === 'HELLO') {
+      ensurePlayer(msg.playerId, msg.playerName, false, msg.char || '🐱');
+      addLog(`👋 ${msg.char || '🐱'} <strong>${msg.playerName}</strong> 님이 입장했습니다.`);
+      syncStateToPeers();
+      renderAll();
+    } else if (msg.type === 'UPDATE_PROFILE') {
+      ensurePlayer(msg.playerId, msg.playerName, false, msg.char || '🐱');
+      addLog(`✨ ${msg.char || '🐱'} <strong>${msg.playerName}</strong> 프로필 반영`);
+      syncStateToPeers();
+      renderAll();
+    } else if (msg.type === 'ACTION_YUT_THROW') {
+      handleYutThrow(msg.playerId);
+    } else if (msg.type === 'ACTION_YUT_MOVE') {
+      handleYutMove(msg.playerId, msg.rollIdx, msg.pieceIdx);
+    } else if (msg.type === 'ACTION_RUMMI_MELD') {
+      handleRummiMeldNew(msg.playerId, msg.tileIds);
+    } else if (msg.type === 'ACTION_RUMMI_APPEND') {
+      handleRummiAppendToSet(msg.playerId, msg.setIdx, msg.tileIds);
+    } else if (msg.type === 'ACTION_RUMMI_TAKE') {
+      handleRummiTakeFromTable(msg.playerId, msg.setIdx, msg.tileId);
+    } else if (msg.type === 'ACTION_RUMMI_MOVE_TABLE') {
+      handleRummiMoveTableTile(msg.playerId, msg.fromSetIdx, msg.tileId, msg.toSetIdx);
+    } else if (msg.type === 'ACTION_RUMMI_SPLIT_NEW') {
+      handleRummiSplitToNewSet(msg.playerId, msg.fromSetIdx, msg.tileId);
+    } else if (msg.type === 'ACTION_RUMMI_RESET') {
+      handleRummiResetTurn(msg.playerId);
+    } else if (msg.type === 'ACTION_RUMMI_END') {
+      handleRummiEndTurn(msg.playerId, msg.drawTile);
+    } else if (msg.type === 'ACTION_WORDCHAIN') {
+      handleWordchainSubmit(msg.playerId, msg.word);
+    } else if (msg.type === 'ACTION_HUNMIN') {
+      handleHunminSubmit(msg.playerId, msg.word);
+    } else if (msg.type === 'ACTION_CARDFLIP') {
+      handleCardFlip(msg.playerId, msg.index);
+    } else if (msg.type === 'ACTION_CARDFLIP_SIZE') {
+      handleCardFlipSizeChange(msg.playerId, msg.size);
+    } else if (msg.type === 'ACTION_LIAR_HINT') {
+      state.liar.hints[msg.playerId] = msg.hint;
+      addLog(`🕵️ ${getPlayerName(msg.playerId)} 힌트: "${msg.hint}"`);
+      advanceTurn();
+    } else if (msg.type === 'ACTION_LIAR_VOTE') {
+      state.liar.votes[msg.playerId] = msg.targetId;
+      addLog(`🗳️ ${getPlayerName(msg.playerId)} 투표 완료`);
+      if (Object.keys(state.liar.votes).length >= state.players.length) {
+        resolveLiarVote();
+      } else {
+        syncStateToPeers();
+        renderAll();
+      }
+    } else if (msg.type === 'ACTION_ISLAND_GATHER') {
+      applyIslandGather(msg.playerId, msg.resource, msg.amount, msg.label);
+    } else if (msg.type === 'ACTION_ISLAND_SELL') {
+      applyIslandSell(msg.playerId);
+    } else if (msg.type === 'ACTION_GOSTOP_PLAY') {
+      handleGostopPlay(msg.playerId, msg.cardId);
+    } else if (msg.type === 'ACTION_GOSTOP_SHAKE') {
+      handleGostopShake(msg.playerId);
+    } else if (msg.type === 'ACTION_GOSTOP_GO_STOP') {
+      handleGostopGoStop(msg.playerId, msg.choice);
+    } else if (msg.type === 'ACTION_CATCHMIND_PASS') {
+      if (state.mode === 'catchmind') {
+        addLog(`⏭️ 출제자가 제시어 [${state.catchmind.prompt.word}]를 패스했습니다.`);
+        advanceTurn();
+      }
+    }
   }
 
   /* ================= 루미큐브 엔진 ================= */
@@ -1324,13 +1874,10 @@
       return { valid: false, points: 0, reason: '최소 3장 이상이어야 합니다.' };
     }
     const nonJokers = tiles.filter(t => !t.isJoker);
-    const jokerCount = tiles.length - nonJokers.length;
-
     if (nonJokers.length === 0) {
       return { valid: false, points: 0, reason: '조커만으로는 등록할 수 없습니다.' };
     }
 
-    // 1. 그룹 검사 (같은 숫자, 다른 색, 최대 4장)
     if (tiles.length <= 4) {
       const targetNum = nonJokers[0].num;
       const sameNum = nonJokers.every(t => t.num === targetNum);
@@ -1340,17 +1887,14 @@
       }
     }
 
-    // 2. 런 검사 (같은 색, 연속 숫자, 최대 13장)
     const targetColor = nonJokers[0].color;
     if (nonJokers.every(t => t.color === targetColor) && tiles.length <= 13) {
       const nums = nonJokers.map(t => t.num).sort((a, b) => a - b);
-      // 중복 숫자 불가
       if (new Set(nums).size === nums.length) {
         const minNum = nums[0];
         const maxNum = nums[nums.length - 1];
         const span = maxNum - minNum + 1;
         if (span <= tiles.length) {
-          // 빈 칸을 조커로 메우고 남은 조커는 앞/뒤에 배치 가능 (1~13 범위 내)
           let start = minNum;
           let end = maxNum;
           let remJokers = tiles.length - span;
@@ -1371,10 +1915,7 @@
   function arrangeRummiSetDisplay(tiles) {
     const evalRes = evaluateRummiSet(tiles);
     if (!evalRes.valid) return tiles;
-    if (evalRes.type === 'group') {
-      return sortRummiTiles(tiles);
-    }
-    // 런일 경우 숫자 순서대로 조커 위치 정렬
+    if (evalRes.type === 'group') return sortRummiTiles(tiles);
     const nonJokers = [...tiles.filter(t => !t.isJoker)].sort((a, b) => a.num - b.num);
     const jokers = [...tiles.filter(t => t.isJoker)];
     const ordered = [];
@@ -1417,21 +1958,21 @@
 
   function handleRummiMeldNew(playerId, tileIds) {
     const cur = getCurrentTurnPlayer();
-    if (!cur || cur.id !== playerId) return;
+    if (!cur || cur.id !== playerId) return false;
     const hand = state.rummikub.hands[playerId] || [];
     const picked = hand.filter(t => tileIds.includes(t.id));
     if (picked.length < 3) {
       addLog(`❌ ${getPlayerName(playerId)}: 최소 3장 이상 선택해 등록하세요.`);
-      return;
+      return false;
     }
     const check = evaluateRummiSet(picked);
     if (!check.valid) {
       addLog(`❌ ${getPlayerName(playerId)}: ${check.reason}`);
-      return;
+      return false;
     }
     if (!state.rummikub.initialMelded[playerId] && check.points < 30) {
       addLog(`❌ ${getPlayerName(playerId)}: 첫 등록은 합계 30점 이상이어야 합니다! (현재 ${check.points}점)`);
-      return;
+      return false;
     }
 
     state.rummikub.hands[playerId] = hand.filter(t => !tileIds.includes(t.id));
@@ -1444,26 +1985,27 @@
     checkRummikubWinner(playerId);
     syncStateToPeers();
     renderAll();
+    return true;
   }
 
   function handleRummiAppendToSet(playerId, setIdx, tileIds) {
     const cur = getCurrentTurnPlayer();
-    if (!cur || cur.id !== playerId) return;
+    if (!cur || cur.id !== playerId) return false;
     if (!state.rummikub.initialMelded[playerId]) {
       addLog(`❌ ${getPlayerName(playerId)}: 먼저 30점 이상 첫 등록을 완료해야 기존 세트에 붙일 수 있습니다!`);
-      return;
+      return false;
     }
     const targetSet = state.rummikub.tableSets[setIdx];
-    if (!targetSet) return;
+    if (!targetSet) return false;
     const hand = state.rummikub.hands[playerId] || [];
     const picked = hand.filter(t => tileIds.includes(t.id));
-    if (!picked.length) return;
+    if (!picked.length) return false;
 
     const merged = [...targetSet, ...picked];
     const check = evaluateRummiSet(merged);
     if (!check.valid) {
       addLog(`❌ ${getPlayerName(playerId)}: 해당 세트에 이어 붙일 수 없는 조합입니다.`);
-      return;
+      return false;
     }
 
     state.rummikub.hands[playerId] = hand.filter(t => !tileIds.includes(t.id));
@@ -1475,6 +2017,7 @@
     checkRummikubWinner(playerId);
     syncStateToPeers();
     renderAll();
+    return true;
   }
 
   function handleRummiTakeFromTable(playerId, setIdx, tileId) {
@@ -1489,12 +2032,49 @@
     const idx = set.findIndex(t => t.id === tileId);
     if (idx === -1) return;
     const [taken] = set.splice(idx, 1);
-    if (set.length === 0) {
-      state.rummikub.tableSets.splice(setIdx, 1);
-    }
+    if (set.length === 0) state.rummikub.tableSets.splice(setIdx, 1);
     state.rummikub.hands[playerId].push(taken);
     state.rummikub.hands[playerId] = sortRummiTiles(state.rummikub.hands[playerId]);
-    addLog(`🔄 ${getPlayerName(playerId)} 테이블에서 타일을 가져와 재배치 중...`);
+    addLog(`🔄 ${getPlayerName(playerId)} 테이블에서 타일을 거치대로 가져와 재배치 중...`);
+    syncStateToPeers();
+    renderAll();
+  }
+
+  function handleRummiMoveTableTile(playerId, fromSetIdx, tileId, toSetIdx) {
+    const cur = getCurrentTurnPlayer();
+    if (!cur || cur.id !== playerId) return;
+    if (!state.rummikub.initialMelded[playerId]) {
+      addLog(`❌ ${getPlayerName(playerId)}: 첫 등록(30점) 완료 후 테이블 타일 이동이 가능합니다.`);
+      return;
+    }
+    if (fromSetIdx === toSetIdx) return;
+    const fromSet = state.rummikub.tableSets[fromSetIdx];
+    const toSet = state.rummikub.tableSets[toSetIdx];
+    if (!fromSet || !toSet) return;
+    const idx = fromSet.findIndex(t => t.id === tileId);
+    if (idx === -1) return;
+    const [moved] = fromSet.splice(idx, 1);
+    toSet.push(moved);
+    if (evaluateRummiSet(toSet).valid) {
+      state.rummikub.tableSets[toSetIdx] = arrangeRummiSetDisplay(toSet);
+    }
+    if (fromSet.length === 0) state.rummikub.tableSets.splice(fromSetIdx, 1);
+    addLog(`🔀 ${getPlayerName(playerId)} 테이블 타일을 다른 세트로 이동했습니다.`);
+    syncStateToPeers();
+    renderAll();
+  }
+
+  function handleRummiSplitToNewSet(playerId, fromSetIdx, tileId) {
+    const cur = getCurrentTurnPlayer();
+    if (!cur || cur.id !== playerId) return;
+    if (!state.rummikub.initialMelded[playerId]) return;
+    const fromSet = state.rummikub.tableSets[fromSetIdx];
+    if (!fromSet || fromSet.length <= 1) return;
+    const idx = fromSet.findIndex(t => t.id === tileId);
+    if (idx === -1) return;
+    const [moved] = fromSet.splice(idx, 1);
+    state.rummikub.tableSets.push([moved]);
+    addLog(`✨ ${getPlayerName(playerId)} 테이블 타일을 분리해 새 세트를 시작했습니다.`);
     syncStateToPeers();
     renderAll();
   }
@@ -1517,7 +2097,6 @@
     const cur = getCurrentTurnPlayer();
     if (!cur || cur.id !== playerId) return;
 
-    // 테이블의 모든 세트가 유효한지 검증
     const invalidSetIdx = state.rummikub.tableSets.findIndex(s => !evaluateRummiSet(s).valid);
     if (invalidSetIdx !== -1) {
       addLog(`⚠️ 테이블 #${invalidSetIdx + 1} 세트가 완성되지 않았습니다! 마저 조합하거나 [턴 원상복구]를 누르세요.`);
@@ -1564,7 +2143,7 @@
   }
 
   function findBotRummiMeld(hand, require30) {
-    // 1. 같은 숫자 그룹 탐색
+    const jokers = hand.filter(t => t.isJoker);
     const byNum = {};
     hand.forEach(t => {
       if (!t.isJoker) {
@@ -1573,13 +2152,14 @@
       }
     });
     for (const numStr of Object.keys(byNum)) {
-      const grp = byNum[numStr];
+      const grp = [...byNum[numStr]];
+      if (grp.length === 2 && jokers.length > 0) grp.push(jokers[0]);
       if (grp.length >= 3) {
         const pts = Number(numStr) * grp.length;
         if (!require30 || pts >= 30) return grp.map(t => t.id);
       }
     }
-    // 2. 같은 색 연속 숫자 런 탐색
+
     const byColor = { red: [], blue: [], yellow: [], black: [] };
     hand.forEach(t => { if (!t.isJoker && byColor[t.color]) byColor[t.color].push(t); });
     for (const col of Object.keys(byColor)) {
@@ -1601,104 +2181,21 @@
     return null;
   }
 
-  function handleIncomingData(fromId, raw) {
-    let msg;
-    try {
-      msg = typeof raw === 'string' ? JSON.parse(raw) : raw;
-    } catch { return; }
-
-    if (msg.type === 'SYNC_STATE') {
-      const keepMini = state.island.miniStage;
-      const prevStrokesLen = state.catchmind.strokes.length;
-      const savedMyName = state.myName;
-      const savedMyChar = state.myChar;
-      Object.assign(state, msg.state);
-      state.myName = savedMyName;
-      state.myChar = savedMyChar;
-      if (keepMini) state.island.miniStage = keepMini;
-      renderAll();
-      if (state.mode === 'catchmind' && state.catchmind.strokes.length !== prevStrokesLen) {
-        redrawCatchmindCanvas();
+  function findBotRummiAppend(hand, tableSets) {
+    for (let sIdx = 0; sIdx < tableSets.length; sIdx++) {
+      const tSet = tableSets[sIdx];
+      for (const tile of hand) {
+        if (evaluateRummiSet([...tSet, tile]).valid) return { setIdx: sIdx, tileIds: [tile.id] };
       }
-      return;
-    }
-
-    if (msg.type === 'CHAT') {
-      addLog(`[${msg.sender}] ${msg.text}`);
-      if (state.isHost && state.activeGame) {
-        evaluateChatAnswer(msg.senderId, msg.sender, msg.text);
+      for (let i = 0; i < hand.length; i++) {
+        for (let j = i + 1; j < hand.length; j++) {
+          if (evaluateRummiSet([...tSet, hand[i], hand[j]]).valid) {
+            return { setIdx: sIdx, tileIds: [hand[i].id, hand[j].id] };
+          }
+        }
       }
-      return;
     }
-
-    if (msg.type === 'DRAW_STROKE') {
-      state.catchmind.strokes.push(msg.stroke);
-      if (state.mode === 'catchmind') appendStrokeToCanvas(msg.stroke);
-      if (state.isHost) broadcast(msg);
-      return;
-    }
-
-    if (msg.type === 'CLEAR_CANVAS') {
-      state.catchmind.strokes = [];
-      if (state.mode === 'catchmind') redrawCatchmindCanvas();
-      if (state.isHost) broadcast(msg);
-      return;
-    }
-
-    if (!state.isHost) return;
-
-    if (msg.type === 'HELLO') {
-      ensurePlayer(msg.playerId, msg.playerName, false, msg.char || '🐱');
-      addLog(`👋 ${msg.char || '🐱'} <strong>${msg.playerName}</strong> 님이 입장했습니다.`);
-      syncStateToPeers();
-      renderAll();
-    } else if (msg.type === 'UPDATE_PROFILE') {
-      ensurePlayer(msg.playerId, msg.playerName, false, msg.char || '🐱');
-      addLog(`✨ ${msg.char || '🐱'} <strong>${msg.playerName}</strong> 프로필 반영`);
-      syncStateToPeers();
-      renderAll();
-    } else if (msg.type === 'ACTION_RUMMI_MELD') {
-      handleRummiMeldNew(msg.playerId, msg.tileIds);
-    } else if (msg.type === 'ACTION_RUMMI_APPEND') {
-      handleRummiAppendToSet(msg.playerId, msg.setIdx, msg.tileIds);
-    } else if (msg.type === 'ACTION_RUMMI_TAKE') {
-      handleRummiTakeFromTable(msg.playerId, msg.setIdx, msg.tileId);
-    } else if (msg.type === 'ACTION_RUMMI_RESET') {
-      handleRummiResetTurn(msg.playerId);
-    } else if (msg.type === 'ACTION_RUMMI_END') {
-      handleRummiEndTurn(msg.playerId, msg.drawTile);
-    } else if (msg.type === 'ACTION_WORDCHAIN') {
-      handleWordchainSubmit(msg.playerId, msg.word);
-    } else if (msg.type === 'ACTION_HUNMIN') {
-      handleHunminSubmit(msg.playerId, msg.word);
-    } else if (msg.type === 'ACTION_CARDFLIP') {
-      handleCardFlip(msg.playerId, msg.index);
-    } else if (msg.type === 'ACTION_CARDFLIP_SIZE') {
-      handleCardFlipSizeChange(msg.playerId, msg.size);
-    } else if (msg.type === 'ACTION_LIAR_HINT') {
-      state.liar.hints[msg.playerId] = msg.hint;
-      addLog(`🕵️ ${getPlayerName(msg.playerId)} 힌트: "${msg.hint}"`);
-      advanceTurn();
-    } else if (msg.type === 'ACTION_LIAR_VOTE') {
-      state.liar.votes[msg.playerId] = msg.targetId;
-      addLog(`🗳️ ${getPlayerName(msg.playerId)} 투표 완료`);
-      if (Object.keys(state.liar.votes).length >= state.players.length) {
-        resolveLiarVote();
-      } else {
-        syncStateToPeers();
-        renderAll();
-      }
-    } else if (msg.type === 'ACTION_ISLAND_GATHER') {
-      applyIslandGather(msg.playerId, msg.resource, msg.amount, msg.label);
-    } else if (msg.type === 'ACTION_ISLAND_SELL') {
-      applyIslandSell(msg.playerId);
-    } else if (msg.type === 'ACTION_GOSTOP_PLAY') {
-      handleGostopPlay(msg.playerId, msg.cardId);
-    } else if (msg.type === 'ACTION_GOSTOP_SHAKE') {
-      handleGostopShake(msg.playerId);
-    } else if (msg.type === 'ACTION_GOSTOP_GO_STOP') {
-      handleGostopGoStop(msg.playerId, msg.choice);
-    }
+    return null;
   }
 
   function setupPeerAsHost(code) {
@@ -1723,8 +2220,12 @@
       conn.on('data', (d) => handleIncomingData(conn.peer, d));
       conn.on('close', () => conns.delete(conn.peer));
       conn.on('open', () => {
-        conn.send(JSON.stringify({ type: 'SYNC_STATE', state }));
+        conn.send(JSON.stringify({ type: 'SYNC_STATE', state: getSharedRoomState() }));
       });
+    });
+
+    peer.on('disconnected', () => {
+      try { peer.reconnect(); } catch {}
     });
 
     peer.on('error', (err) => {
@@ -1746,7 +2247,7 @@
     peer = new Peer();
 
     peer.on('open', () => {
-      const conn = peer.connect('KCM_' + code);
+      const conn = peer.connect('KCM_' + code, { reliable: true });
       conns.set(conn.peer, conn);
       conn.on('open', () => {
         setConnStatus('ok', `참여 중 · ${code}`);
@@ -1759,6 +2260,10 @@
       });
       conn.on('data', (d) => handleIncomingData(conn.peer, d));
       conn.on('close', () => setConnStatus('err', '연결 종료됨'));
+    });
+
+    peer.on('disconnected', () => {
+      try { peer.reconnect(); } catch {}
     });
 
     peer.on('error', () => {
@@ -1801,7 +2306,9 @@
   }
 
   function initModeState(mode) {
-    if (mode === 'rummikub') {
+    if (mode === 'yutnori') {
+      initYutnoriRound();
+    } else if (mode === 'rummikub') {
       initRummikubRound();
     } else if (mode === 'wordchain') {
       const starters = ['사과','바다','코끼리','하늘','기차','별빛','고양이','우주','도서관','바람','여행','음악'];
@@ -1843,7 +2350,12 @@
     state.turnIndex = (state.turnIndex + 1) % Math.max(1, state.players.length);
     state.timeLeft = getTurnSecondsForCurrentState();
 
-    if (state.mode === 'rummikub') {
+    if (state.mode === 'yutnori') {
+      state.yutnori.pendingRolls = [];
+      state.yutnori.canThrow = true;
+      state.yutnori.lastRollLabel = '윷을 던져주세요!';
+      selectedYutRollIdx = 0;
+    } else if (state.mode === 'rummikub') {
       captureRummiTurnSnapshot();
     } else if (state.mode === 'catchmind') {
       const drawer = getCurrentTurnPlayer();
@@ -1872,7 +2384,7 @@
 
     const cur = getCurrentTurnPlayer();
     if (cur && cur.isBot && state.activeGame) {
-      setTimeout(() => runBotTurn(cur.id), 950);
+      setTimeout(() => runBotTurn(cur.id), 900);
     }
   }
 
@@ -1881,16 +2393,56 @@
     const cur = getCurrentTurnPlayer();
     if (!cur || cur.id !== botId) return;
 
-    if (state.mode === 'rummikub') {
-      const hand = state.rummikub.hands[botId] || [];
-      const need30 = !state.rummikub.initialMelded[botId];
-      const meldIds = findBotRummiMeld(hand, need30);
-      if (meldIds) {
-        handleRummiMeldNew(botId, meldIds);
-        setTimeout(() => handleRummiEndTurn(botId, false), 500);
-      } else {
-        handleRummiEndTurn(botId, true);
+    if (state.mode === 'yutnori') {
+      const yn = state.yutnori;
+      if (yn.canThrow) {
+        handleYutThrow(botId);
+        setTimeout(() => runBotTurn(botId), 750);
+        return;
       }
+      if (yn.pendingRolls.length > 0) {
+        const myPieces = yn.pieces[botId] || [-1, -1, -1];
+        const roll = yn.pendingRolls[0];
+        let chosenIdx = myPieces.findIndex(pos => pos >= 0 && pos < 99);
+        if (chosenIdx === -1 && roll.steps > 0) {
+          chosenIdx = myPieces.findIndex(pos => pos === -1);
+        }
+        if (chosenIdx !== -1) {
+          handleYutMove(botId, 0, chosenIdx);
+          setTimeout(() => runBotTurn(botId), 750);
+          return;
+        }
+      }
+      advanceTurn();
+      return;
+    } else if (state.mode === 'rummikub') {
+      let madeMove = false;
+      while (true) {
+        const hand = state.rummikub.hands[botId] || [];
+        if (hand.length === 0) break;
+        const need30 = !state.rummikub.initialMelded[botId];
+        const meldIds = findBotRummiMeld(hand, need30);
+        if (!meldIds) break;
+        const ok = handleRummiMeldNew(botId, meldIds);
+        if (!ok) break;
+        madeMove = true;
+      }
+      if (state.rummikub.initialMelded[botId]) {
+        while (true) {
+          const hand = state.rummikub.hands[botId] || [];
+          if (hand.length === 0) break;
+          const appendTarget = findBotRummiAppend(hand, state.rummikub.tableSets);
+          if (!appendTarget) break;
+          const ok = handleRummiAppendToSet(botId, appendTarget.setIdx, appendTarget.tileIds);
+          if (!ok) break;
+          madeMove = true;
+        }
+      }
+      setTimeout(() => {
+        if (state.mode === 'rummikub' && getCurrentTurnPlayer()?.id === botId) {
+          handleRummiEndTurn(botId, !madeMove);
+        }
+      }, 550);
       return;
     } else if (state.mode === 'wordchain') {
       const lastChar = state.wordchain.lastWord.slice(-1);
@@ -1986,6 +2538,8 @@
         state.scores[senderId] = (state.scores[senderId] || 0) + 20;
         state.scores[state.catchmind.drawerId] = (state.scores[state.catchmind.drawerId] || 0) + 10;
         addLog(`🎉 ${senderName} 님 정답! 제시어는 [${state.catchmind.prompt.word}] (+20점 / 출제자 +10점)`);
+        syncStateToPeers();
+        renderAll();
         setTimeout(() => advanceTurn(), 900);
       }
     } else if (state.mode === 'chosung' && !state.chosung.solved) {
@@ -2027,7 +2581,7 @@
     if (!state.isHost && !state.soloIsland) return;
     const sz = [4, 8, 16].includes(Number(newSize)) ? Number(newSize) : 4;
     state.cardflip = { size: sz, cards: buildCardDeck(sz), flipped: [], matched: [] };
-    state.timeLeft = GAME_CONFIG.cardFlipSeconds[sz] || 35;
+    state.timeLeft = GAME_CONFIG.cardFlipSeconds[sz] || 45;
     addLog(`🃏 ${getPlayerName(playerId)}님이 같은 그림찾기 판 크기를 ${sz}×${sz}(${sz * sz}장)으로 변경했습니다!`);
     syncStateToPeers();
     renderAll();
@@ -2331,7 +2885,6 @@
     });
 
     state.gostop.stock = shuffled;
-
     const cur = getCurrentTurnPlayer();
     state.gostop.turnId = cur ? cur.id : state.myId;
     hoveredHandMonth = null;
@@ -2473,7 +3026,7 @@
       return `<div class="player-chip ${isTurn ? 'turn' : ''}">
         <span>${icon} <strong>${p.name}</strong></span>
         ${p.id === state.myId ? '<span style="color:#38bdf8; font-size:0.75rem;">(나)</span>' : ''}
-        ${isTurn ? '<span style="color:#facc15; font-size:0.75rem;">● 내 차례</span>' : ''}
+        ${isTurn ? '<span style="color:#facc15; font-size:0.75rem;">● 차례</span>' : ''}
       </div>`;
     }).join('');
     $('sharedMoneyLabel').textContent = state.sharedMoney.toLocaleString() + '원';
@@ -2489,6 +3042,88 @@
     $('scoreList').innerHTML = sorted.map((p, idx) =>
       `<div class="log-line"><strong>${idx + 1}위</strong> ${p.char || '👤'} ${p.name} — <span style="color:#7dd3fc; font-weight:700;">${state.scores[p.id] || 0}점</span></div>`
     ).join('');
+  }
+
+  function updateTimerPillUI() {
+    const pill = document.querySelector('.timer-pill');
+    if (!pill) return;
+    const limit = getTurnSecondsForCurrentState();
+    if (limit === 0) {
+      pill.textContent = '⏱ 무제한';
+      pill.classList.add('unlimited');
+      pill.classList.remove('urgent');
+    } else {
+      pill.textContent = `⏱ ${state.timeLeft}초`;
+      pill.classList.remove('unlimited');
+      pill.classList.toggle('urgent', state.timeLeft <= 5);
+    }
+  }
+
+  function renderYutnoriBoardSvg(previewDest = -1) {
+    const lineSegments = [
+      // 외곽 사각형
+      [430, 430, 430, 50],
+      [430, 50, 50, 50],
+      [50, 50, 50, 430],
+      [50, 430, 430, 430],
+      // 대각선 지름길 2개
+      [430, 50, 50, 430],
+      [50, 50, 430, 430]
+    ];
+
+    // 칸별 말 그룹화
+    const occupantsByNode = {};
+    state.players.forEach((p, pIdx) => {
+      const color = YUT_PLAYER_COLORS[pIdx % YUT_PLAYER_COLORS.length];
+      const pPieces = state.yutnori.pieces[p.id] || [];
+      pPieces.forEach((pos, idx) => {
+        if (pos >= 0 && pos < 99) {
+          occupantsByNode[pos] = occupantsByNode[pos] || [];
+          occupantsByNode[pos].push({ player: p, color, pieceIdx: idx });
+        }
+      });
+    });
+
+    const linesSvg = lineSegments.map(([x1, y1, x2, y2]) =>
+      `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#78350f" stroke-width="5" stroke-linecap="round"/>`
+    ).join('');
+
+    const nodesSvg = YUT_NODES.map(n => {
+      const r = n.corner ? 21 : 14;
+      const fill = n.id === 0 ? '#dc2626' : n.corner ? '#f59e0b' : '#fffbeb';
+      const stroke = n.id === previewDest ? '#22c55e' : '#78350f';
+      const sw = n.id === previewDest ? 5 : 3;
+      const occ = occupantsByNode[n.id] || [];
+
+      let tokensSvg = '';
+      if (occ.length > 0) {
+        const first = occ[0];
+        const countBadge = occ.length > 1 ? `×${occ.length}` : `${first.pieceIdx + 1}`;
+        tokensSvg = `
+          <g transform="translate(${n.x}, ${n.y})">
+            <circle r="15" fill="${first.color}" stroke="#ffffff" stroke-width="2.5"/>
+            <text y="4" text-anchor="middle" fill="#ffffff" font-size="11" font-weight="900">${countBadge}</text>
+          </g>
+        `;
+      }
+
+      return `
+        <g class="yut-node-circle" data-node="${n.id}">
+          <circle cx="${n.x}" cy="${n.y}" r="${r}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"/>
+          ${n.corner ? `<circle cx="${n.x}" cy="${n.y}" r="${r - 5}" fill="none" stroke="#ffffff" stroke-width="1.5" opacity="0.7"/>` : ''}
+          ${n.label ? `<text x="${n.x}" y="${n.id === 0 ? n.y + 34 : n.y - 25}" text-anchor="middle" fill="#78350f" font-size="11" font-weight="800">${n.label}</text>` : ''}
+          ${tokensSvg}
+        </g>
+      `;
+    }).join('');
+
+    return `
+      <svg viewBox="0 0 480 480" xmlns="http://www.w3.org/2000/svg">
+        <rect x="8" y="8" width="464" height="464" rx="18" fill="none" stroke="#b45309" stroke-width="2" stroke-dasharray="6 4"/>
+        ${linesSvg}
+        ${nodesSvg}
+      </svg>
+    `;
   }
 
   function renderLiarCircleArena(myVoteTarget) {
@@ -2537,10 +3172,12 @@
     `;
   }
 
-  function renderRummiTileHtml(tile, isTable = false, isSelected = false) {
+  function renderRummiTileHtml(tile, isTable = false, isSelected = false, canDrag = false) {
     const cls = tile.isJoker ? 'rummi-joker' : `rummi-${tile.color}`;
     return `
-      <div class="rummi-tile ${cls} ${isTable ? 'table-tile' : ''} ${isSelected ? 'selected' : ''}" data-tid="${tile.id}">
+      <div class="rummi-tile ${cls} ${isTable ? 'table-tile' : ''} ${isSelected ? 'selected' : ''}"
+           data-tid="${tile.id}"
+           ${canDrag ? 'draggable="true"' : ''}>
         <div class="num">${tile.isJoker ? '🃏' : tile.num}</div>
         <div class="suit-dot"></div>
       </div>
@@ -2549,9 +3186,23 @@
 
   function renderGameViewport() {
     const vp = $('gameViewport');
+
+    const activeEl = document.activeElement;
+    let savedFocus = null;
+    if (activeEl && vp.contains(activeEl) && activeEl.id && (activeEl.tagName === 'INPUT')) {
+      savedFocus = {
+        id: activeEl.id,
+        value: activeEl.value,
+        start: activeEl.selectionStart,
+        end: activeEl.selectionEnd
+      };
+    }
+
     const cur = getCurrentTurnPlayer();
     const myTurn = isMyTurn();
-    const urgent = state.timeLeft <= 5 ? 'urgent' : '';
+    const limit = getTurnSecondsForCurrentState();
+    const isUnlimited = limit === 0;
+    const urgent = !isUnlimited && state.timeLeft <= 5 ? 'urgent' : '';
 
     const hudHtml = `
       <div class="hud-strip">
@@ -2562,864 +3213,22 @@
           </span>
         </div>
         <div class="row">
-          <span class="timer-pill ${urgent}">⏱ ${state.timeLeft}초</span>
+          <span class="timer-pill ${isUnlimited ? 'unlimited' : urgent}">${isUnlimited ? '⏱ 무제한' : `⏱ ${state.timeLeft}초`}</span>
           ${state.isHost ? `<button id="btnNextTurn" class="btn-ghost" style="padding:5px 10px; font-size:0.8rem;">턴 넘기기</button>` : ''}
         </div>
       </div>
     `;
 
-    if (state.mode === 'rummikub') {
-      const rk = state.rummikub;
-      const myHand = rk.hands[state.myId] || [];
-      const melded = Boolean(rk.initialMelded[state.myId]);
-      const selectedTiles = myHand.filter(t => selectedRummiTileIds.has(t.id));
-      const previewEval = selectedTiles.length >= 3 ? evaluateRummiSet(selectedTiles) : null;
+    if (state.mode === 'yutnori') {
+      const yn = state.yutnori;
+      const myPieces = yn.pieces[state.myId] || [-1, -1, -1];
+      if (selectedYutRollIdx >= yn.pendingRolls.length) selectedYutRollIdx = 0;
 
-      const othersSummary = state.players
-        .filter(p => p.id !== state.myId)
-        .map(p => `${getPlayerName(p.id)}: <strong>${(rk.hands[p.id] || []).length}장</strong>${rk.initialMelded[p.id] ? ' (등록완료)' : ' (첫등록전)'}`)
-        .join(' · ');
+      const activeRoll = yn.pendingRolls[selectedYutRollIdx] || null;
+      const curPiecePos = myPieces[selectedYutPieceIdx];
+      const previewDest = myTurn && activeRoll && typeof curPiecePos === 'number' && curPiecePos < 99 && !(activeRoll.steps === -1 && curPiecePos === -1)
+        ? computeYutDestination(curPiecePos, activeRoll.steps)
+        : -1;
 
-      vp.innerHTML = hudHtml + `
-        <div class="row" style="justify-content:space-between; margin-bottom:8px; font-size:0.84rem;">
-          <div>
-            상태: ${melded
-              ? '<span style="color:#4ade80; font-weight:700;">✅ 첫 등록 완료 (자유 등록·세트 연결·테이블 재배치 가능)</span>'
-              : '<span style="color:#facc15; font-weight:700;">🔒 첫 등록 전 (선택 타일 합계 30점 이상 필요)</span>'}
-          </div>
-          <div>남은 더미: <strong style="color:#38bdf8;">${rk.pool.length}장</strong> ${othersSummary ? ' | ' + othersSummary : ''}</div>
-        </div>
-
-        <div class="rummi-table-board">
-          <div style="font-size:0.82rem; color:#a7f3d0; font-weight:700; margin-bottom:8px;">
-            🟢 공용 테이블 (${rk.tableSets.length}세트)
-            ${myTurn && melded ? ' — 세트 박스를 누르면 선택한 손패를 이어 붙이고, 테이블 타일을 누르면 가져와 재배치할 수 있습니다.' : ''}
-          </div>
-          <div class="rummi-sets-wrap">
-            ${rk.tableSets.map((set, sIdx) => `
-              <div class="rummi-set-group ${myTurn && melded && selectedTiles.length > 0 ? 'appendable' : ''}" data-sidx="${sIdx}">
-                ${set.map(t => renderRummiTileHtml(t, true, false)).join('')}
-              </div>
-            `).join('') || '<span style="color:#6ee7b7; font-size:0.84rem;">아직 테이블에 등록된 세트가 없습니다. 30점 이상 조합을 먼저 등록해보세요!</span>'}
-          </div>
-        </div>
-
-        <div class="rummi-rack">
-          <div class="row" style="justify-content:space-between;">
-            <span style="font-size:0.86rem; font-weight:700;">
-              내 타일 거치대 (${myHand.length}장)
-              ${selectedTiles.length > 0
-                ? ` · 선택 ${selectedTiles.length}장 ${previewEval ? (previewEval.valid ? `<span style="color:#4ade80;">(유효 · ${previewEval.points}점)</span>` : `<span style="color:#f87171;">(${previewEval.reason})</span>`) : ''}`
-                : ''}
-            </span>
-            <div class="row">
-              <button id="btnRummiMeld" class="btn-green" style="padding:6px 11px; font-size:0.82rem;" ${!myTurn || selectedTiles.length < 3 ? 'disabled' : ''}>🧩 선택한 타일 새 세트로 등록</button>
-              <button id="btnRummiReset" class="btn-ghost" style="padding:6px 10px; font-size:0.82rem;" ${!myTurn ? 'disabled' : ''}>↩️ 이번 턴 원상복구</button>
-              <button id="btnRummiDone" class="btn-primary" style="padding:6px 11px; font-size:0.82rem;" ${!myTurn || !rk.playedThisTurn ? 'disabled' : ''}>✅ 배치 완료 & 턴 종료</button>
-              <button id="btnRummiDraw" class="btn-amber" style="padding:6px 11px; font-size:0.82rem;" ${!myTurn ? 'disabled' : ''}>📥 타일 1장 뽑고 턴 넘기기</button>
-            </div>
-          </div>
-          <div class="rummi-hand-row">
-            ${myHand.map(t => renderRummiTileHtml(t, false, selectedRummiTileIds.has(t.id))).join('')}
-          </div>
-        </div>
-      `;
-
-      vp.querySelectorAll('.rummi-hand-row .rummi-tile').forEach(el => {
-        el.addEventListener('click', () => {
-          const tid = el.dataset.tid;
-          if (selectedRummiTileIds.has(tid)) selectedRummiTileIds.delete(tid);
-          else selectedRummiTileIds.add(tid);
-          renderGameViewport();
-        });
-      });
-
-      vp.querySelectorAll('.rummi-set-group').forEach(grpEl => {
-        grpEl.addEventListener('click', (e) => {
-          if (!myTurn) return;
-          const sIdx = Number(grpEl.dataset.sidx);
-          const pickedIds = Array.from(selectedRummiTileIds);
-          if (pickedIds.length > 0) {
-            if (state.isHost) handleRummiAppendToSet(state.myId, sIdx, pickedIds);
-            else broadcast({ type: 'ACTION_RUMMI_APPEND', playerId: state.myId, setIdx: sIdx, tileIds: pickedIds });
-            return;
-          }
-          const tileEl = e.target.closest('.rummi-tile');
-          if (tileEl) {
-            const tid = tileEl.dataset.tid;
-            if (state.isHost) handleRummiTakeFromTable(state.myId, sIdx, tid);
-            else broadcast({ type: 'ACTION_RUMMI_TAKE', playerId: state.myId, setIdx: sIdx, tileId: tid });
-          }
-        });
-      });
-
-      $('btnRummiMeld')?.addEventListener('click', () => {
-        const pickedIds = Array.from(selectedRummiTileIds);
-        if (state.isHost) handleRummiMeldNew(state.myId, pickedIds);
-        else broadcast({ type: 'ACTION_RUMMI_MELD', playerId: state.myId, tileIds: pickedIds });
-      });
-
-      $('btnRummiReset')?.addEventListener('click', () => {
-        if (state.isHost) handleRummiResetTurn(state.myId);
-        else broadcast({ type: 'ACTION_RUMMI_RESET', playerId: state.myId });
-      });
-
-      $('btnRummiDone')?.addEventListener('click', () => {
-        if (state.isHost) handleRummiEndTurn(state.myId, false);
-        else broadcast({ type: 'ACTION_RUMMI_END', playerId: state.myId, drawTile: false });
-      });
-
-      $('btnRummiDraw')?.addEventListener('click', () => {
-        if (state.isHost) handleRummiEndTurn(state.myId, true);
-        else broadcast({ type: 'ACTION_RUMMI_END', playerId: state.myId, drawTile: true });
-      });
-    } else if (state.mode === 'wordchain') {
-      vp.innerHTML = hudHtml + `
-        <p style="margin:6px 0;">마지막 단어: <strong style="font-size:1.25rem; color:#38bdf8;">${state.wordchain.lastWord}</strong>
-        (다음 글자: <strong style="color:#4ade80;">'${state.wordchain.lastWord.slice(-1)}'</strong> · 연속 콤보: ${state.wordchain.combo})</p>
-        <div class="row">
-          <input id="wcInput" type="text" placeholder="이어갈 단어 입력..." ${myTurn ? '' : 'disabled'} />
-          <button id="wcSubmit" class="btn-primary" ${myTurn ? '' : 'disabled'}>제출</button>
-        </div>
-        <p style="font-size:0.8rem; color:var(--muted); margin-top:8px;">사용된 단어: ${state.wordchain.used.join(', ') || '-'}</p>
-      `;
-      $('wcSubmit')?.addEventListener('click', () => {
-        const val = $('wcInput').value;
-        $('wcInput').value = '';
-        if (state.isHost) handleWordchainSubmit(state.myId, val);
-        else broadcast({ type: 'ACTION_WORDCHAIN', playerId: state.myId, word: val });
-      });
-      if (myTurn) setTimeout(() => $('wcInput')?.focus(), 30);
-    } else if (state.mode === 'hunmin') {
-      vp.innerHTML = hudHtml + `
-        <p style="margin:6px 0;">랜덤 출제 초성 (${HUNMIN_PROMPTS.length}종 풀): <strong style="font-size:1.5rem; color:#facc15; letter-spacing:4px;">${state.hunmin.prompt}</strong></p>
-        <div class="row">
-          <input id="hmInput" type="text" maxlength="2" placeholder="초성에 맞는 2글자 입력" ${myTurn ? '' : 'disabled'} />
-          <button id="hmSubmit" class="btn-green" ${myTurn ? '' : 'disabled'}>정답 제출</button>
-        </div>
-        <p style="font-size:0.8rem; color:var(--muted); margin-top:8px;">정답 목록: ${state.hunmin.used.join(', ') || '아직 없음'}</p>
-      `;
-      $('hmSubmit')?.addEventListener('click', () => {
-        const val = $('hmInput').value;
-        $('hmInput').value = '';
-        if (state.isHost) handleHunminSubmit(state.myId, val);
-        else broadcast({ type: 'ACTION_HUNMIN', playerId: state.myId, word: val });
-      });
-      if (myTurn) setTimeout(() => {
-        const el = $('hmInput');
-        if (el && !el.disabled) el.focus();
-      }, 30);
-    } else if (state.mode === 'wordassoc') {
-      const item = WORDASSOC_POOL[state.wordassoc.index] || WORDASSOC_POOL[0];
-      vp.innerHTML = hudHtml + `
-        <div style="font-size:0.8rem; color:var(--muted); margin-bottom:4px;">랜덤 연상 문제 풀: ${WORDASSOC_POOL.length}개</div>
-        <p style="margin:6px 0;">연상 단서: ${item.clues.map(cl => `<span class="nunchi-badge" style="padding:4px 10px;">#${cl}</span>`).join(' ')}</p>
-        <p style="margin:8px 0 0; color:#fde047;"><strong>아래 채팅창에 연상되는 정답을 입력하세요!</strong></p>
-      `;
-    } else if (state.mode === 'proverb') {
-      const item = PROVERB_POOL[state.proverb.index] || PROVERB_POOL[0];
-      vp.innerHTML = hudHtml + `
-        <div style="font-size:0.8rem; color:var(--muted); margin-bottom:4px;">랜덤 속담 문제 풀: ${PROVERB_POOL.length}개</div>
-        <div style="font-size:1.25rem; font-weight:700; color:#7dd3fc; margin:8px 0;">"${item.prompt}"</div>
-        <p style="margin:4px 0 0; color:#fde047;"><strong>빈칸/뒷부분 정답을 채팅창에 입력하세요!</strong></p>
-      `;
-    } else if (state.mode === 'catchmind') {
-      const isDrawer = state.catchmind.drawerId === state.myId;
-      const colors = ['#0f172a','#ef4444','#f97316','#eab308','#22c55e','#3b82f6','#a855f7','#ec4899','#92400e'];
-      vp.innerHTML = hudHtml + `
-        <div style="margin-bottom:8px;">
-          출제자: <strong>${getPlayerName(state.catchmind.drawerId)}</strong> (${CATCHMIND_PROMPTS.length}종 제시어 풀) ·
-          ${isDrawer
-            ? `내 제시어: <strong style="color:#4ade80; font-size:1.15rem;">[${state.catchmind.prompt.cat}] ${state.catchmind.prompt.word}</strong>`
-            : `카테고리 힌트: <strong style="color:#facc15;">[${state.catchmind.prompt.cat}]</strong> (${state.catchmind.prompt.word.length}글자 — 채팅창에 정답 입력!)`}
-        </div>
-        ${isDrawer ? `
-          <div class="palette-row">
-            ${colors.map(c => `<button class="swatch ${!brush.eraser && brush.color === c ? 'selected' : ''}" data-color="${c}" style="background:${c};" title="${c}"></button>`).join('')}
-            <select id="brushSize">
-              <option value="2" ${brush.size === 2 ? 'selected' : ''}>가는 선</option>
-              <option value="4" ${brush.size === 4 ? 'selected' : ''}>중간 선</option>
-              <option value="9" ${brush.size === 9 ? 'selected' : ''}>굵은 선</option>
-            </select>
-            <button id="btnEraser" class="btn-ghost ${brush.eraser ? 'btn-amber' : ''}" style="padding:6px 10px; font-size:0.82rem;">🧽 지우개</button>
-            <button id="btnClearCanvas" class="btn-danger" style="padding:6px 10px; font-size:0.82rem;">🗑️ 전체 지우기</button>
-          </div>
-        ` : ''}
-        <canvas id="catchCanvas" class="draw-canvas" width="640" height="310"></canvas>
-      `;
-      bindCatchmindEvents(isDrawer);
-      redrawCatchmindCanvas();
-    } else if (state.mode === 'cardflip') {
-      const cf = state.cardflip;
-      const sz = cf.size || 4;
-      const canChangeSize = state.isHost || state.soloIsland;
-      vp.innerHTML = hudHtml + `
-        <div class="row" style="justify-content:space-between; margin-bottom:8px;">
-          <span style="font-size:0.88rem; color:var(--muted);">
-            판 크기: <strong style="color:#38bdf8;">${sz}×${sz}</strong> (${cf.cards.length}장) ·
-            맞춘 짝: <strong>${cf.matched.length / 2}</strong> / ${cf.cards.length / 2}
-          </span>
-          <div class="row">
-            ${[4, 8, 16].map(n => `
-              <button class="btn-size-pick ${sz === n ? 'btn-primary' : 'btn-ghost'}" data-sz="${n}" style="padding:5px 10px; font-size:0.8rem;" ${!canChangeSize ? 'disabled' : ''}>${n}×${n}</button>
-            `).join('')}
-          </div>
-        </div>
-        <div class="card-flip-board size-${sz}">
-          ${cf.cards.map((c, idx) => {
-            const isMatched = cf.matched.includes(idx);
-            const open = cf.flipped.includes(idx) || isMatched;
-            return `<button class="flip-btn ${open ? 'revealed' : ''} ${isMatched ? 'matched' : ''}" data-idx="${idx}" ${!myTurn || open ? 'disabled' : ''}>${open ? c.icon : '❓'}</button>`;
-          }).join('')}
-        </div>
-      `;
-      vp.querySelectorAll('.btn-size-pick').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const nextSize = Number(btn.dataset.sz);
-          if (state.isHost || state.soloIsland) handleCardFlipSizeChange(state.myId, nextSize);
-          else broadcast({ type: 'ACTION_CARDFLIP_SIZE', playerId: state.myId, size: nextSize });
-        });
-      });
-      vp.querySelectorAll('.flip-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const i = Number(btn.dataset.idx);
-          if (state.isHost) handleCardFlip(state.myId, i);
-          else broadcast({ type: 'ACTION_CARDFLIP', playerId: state.myId, index: i });
-        });
-      });
-    } else if (state.mode === 'emojiquiz') {
-      const item = EMOJI_POOL[state.emojiquiz.index] || EMOJI_POOL[0];
-      vp.innerHTML = hudHtml + `
-        <div style="font-size:0.8rem; color:var(--muted);">랜덤 이모지 문제 풀: ${EMOJI_POOL.length}개</div>
-        <div style="font-size:2.2rem; margin:8px 0;">${item.e}</div>
-        <p style="margin:4px 0 10px; color:#fde047;">힌트: ${item.hint} · <strong>아래 채팅창에 정답을 입력하세요!</strong></p>
-      `;
-    } else if (state.mode === 'chosung') {
-      const item = CHOSUNG_POOL[state.chosung.index] || CHOSUNG_POOL[0];
-      vp.innerHTML = hudHtml + `
-        <div style="font-size:0.8rem; color:var(--muted);">랜덤 초성 문제 풀: ${CHOSUNG_POOL.length}개</div>
-        <div style="font-size:2rem; letter-spacing:6px; font-weight:800; color:#38bdf8; margin:8px 0;">${item.q}</div>
-        <p style="margin:4px 0 10px; color:#fde047;">힌트: ${item.hint} · <strong>아래 채팅창에 정답을 입력하세요!</strong></p>
-      `;
-    } else if (state.mode === 'liar') {
-      const isLiar = state.liar.liarId === state.myId;
-      let selectedVote = state.liar.votes[state.myId] || (state.players[0] && state.players[0].id) || '';
-
-      vp.innerHTML = hudHtml + `
-        <div style="margin-bottom:8px;">
-          주제 카테고리: <strong>[${state.liar.topic.cat}]</strong> (${LIAR_TOPICS.length}종 주제 풀) ·
-          ${isLiar
-            ? `<span style="color:#f87171; font-weight:700;">당신은 라이어입니다! 들키지 않게 둘러대세요.</span>`
-            : `제시어: <strong style="color:#4ade80; font-size:1.15rem;">${state.liar.topic.word}</strong>`}
-        </div>
-        ${renderLiarCircleArena(selectedVote)}
-        <div class="row" style="margin-bottom:10px;">
-          <input id="liarHintInput" type="text" placeholder="내 차례 힌트 한마디 입력..." ${myTurn ? '' : 'disabled'} style="flex:1; min-width:180px;" />
-          <button id="btnLiarHint" class="btn-primary" ${myTurn ? '' : 'disabled'}>🎤 힌트 말하기</button>
-        </div>
-        <div class="row">
-          <span style="font-size:0.84rem; color:var(--muted);">좌석 클릭 또는 선택 후 투표:</span>
-          <select id="liarVoteSelect">
-            ${state.players.map(p => `<option value="${p.id}" ${p.id === selectedVote ? 'selected' : ''}>${p.char || '👤'} ${p.name} 지목</option>`).join('')}
-          </select>
-          <button id="btnLiarVote" class="btn-amber">🗳️ 라이어 투표</button>
-        </div>
-      `;
-
-      vp.querySelectorAll('.liar-seat').forEach(seat => {
-        seat.addEventListener('click', () => {
-          selectedVote = seat.dataset.voteId;
-          const sel = $('liarVoteSelect');
-          if (sel) sel.value = selectedVote;
-          vp.querySelectorAll('.liar-seat').forEach(s => s.classList.toggle('selected-vote', s.dataset.voteId === selectedVote));
-        });
-      });
-
-      $('btnLiarHint')?.addEventListener('click', () => {
-        const h = $('liarHintInput').value.trim();
-        if (!h) return;
-        $('liarHintInput').value = '';
-        if (state.isHost) {
-          state.liar.hints[state.myId] = h;
-          addLog(`🕵️ ${getPlayerName(state.myId)} 힌트: "${h}"`);
-          advanceTurn();
-        } else {
-          broadcast({ type: 'ACTION_LIAR_HINT', playerId: state.myId, hint: h });
-        }
-      });
-      if (myTurn) setTimeout(() => $('liarHintInput')?.focus(), 30);
-
-      $('btnLiarVote')?.addEventListener('click', () => {
-        const targetId = $('liarVoteSelect').value;
-        if (state.isHost) {
-          state.liar.votes[state.myId] = targetId;
-          if (Object.keys(state.liar.votes).length >= state.players.length) resolveLiarVote();
-          else { syncStateToPeers(); renderAll(); }
-        } else {
-          broadcast({ type: 'ACTION_LIAR_VOTE', playerId: state.myId, targetId });
-        }
-      });
-    } else if (state.mode === 'island') {
-      const isl = state.island;
-      const expectedGain =
-        (isl.wood || 0) * GAME_CONFIG.marketPrices.wood +
-        (isl.fish || 0) * GAME_CONFIG.marketPrices.fish +
-        (isl.coconut || 0) * GAME_CONFIG.marketPrices.coconut;
-
-      vp.innerHTML = hudHtml + `
-        <div style="margin-bottom:8px; font-size:0.9rem;">오늘의 날씨/이벤트: <strong style="color:#fde047;">${isl.weather}</strong></div>
-        <div class="island-stats">
-          <div class="stat-box">🪵 통나무 (개당 ${GAME_CONFIG.marketPrices.wood}원)<strong>${isl.wood}</strong></div>
-          <div class="stat-box">🐟 물고기 (마리당 ${GAME_CONFIG.marketPrices.fish}원)<strong>${isl.fish}</strong></div>
-          <div class="stat-box">🥥 코코넛 (개당 ${GAME_CONFIG.marketPrices.coconut}원)<strong>${isl.coconut}</strong></div>
-          <div class="stat-box">💰 공용 자금<strong>${state.sharedMoney.toLocaleString()}원</strong></div>
-        </div>
-        <div class="row">
-          <button id="btnStageFish" class="btn-primary">🎣 물고기 잡기 스테이지</button>
-          <button id="btnStageWood" class="btn-amber">🪓 나무 패기 스테이지</button>
-          <button id="btnStageCoconut" class="btn-green">🌴 코코넛 열매 따기 스테이지</button>
-          <button id="btnSellIsland" class="btn-purple">💵 자원 전량 판매 (+${expectedGain.toLocaleString()}원)</button>
-          <button id="btnGoGostop" class="btn-danger">🎰 고스톱 판으로 출정!</button>
-        </div>
-        <div id="miniStageContainer"></div>
-      `;
-
-      $('btnStageFish').onclick = () => openIslandMiniStage('fish');
-      $('btnStageWood').onclick = () => openIslandMiniStage('wood');
-      $('btnStageCoconut').onclick = () => openIslandMiniStage('coconut');
-      $('btnSellIsland').onclick = () => {
-        if (state.isHost || state.soloIsland) applyIslandSell(state.myId);
-        else broadcast({ type: 'ACTION_ISLAND_SELL', playerId: state.myId });
-      };
-      $('btnGoGostop').onclick = () => {
-        if (!state.isHost && !state.soloIsland) return;
-        state.mode = 'gostop';
-        initGostopRound();
-        addLog('🎰 무인도 자금을 품고 고스톱 판으로 출정했습니다!');
-        syncStateToPeers();
-        renderAll();
-      };
-      updateMiniStageUI();
-    } else if (state.mode === 'gostop') {
-      const gs = state.gostop;
-      const floorCards = gs.floor || [];
-      const stockCount = (gs.stock || []).length;
-      const myHand = gs.hands[state.myId] || [];
-      const myCap = gs.captured[state.myId] || [];
-      const isGsTurn = gs.turnId === state.myId;
-      const mult = (gs.shaken[state.myId] ? 2 : 1) * Math.pow(2, gs.goCount);
-
-      const opponentsHtml = state.players
-        .filter(p => p.id !== state.myId)
-        .map(p => {
-          const oppHand = gs.hands[p.id] || [];
-          const oppCap = gs.captured[p.id] || [];
-          const isOppTurn = gs.turnId === p.id;
-          return `
-            <div class="opponent-gostop-box ${isOppTurn ? 'active-turn' : ''}">
-              <div class="opponent-header">
-                <span>${p.char || (p.isBot ? '🤖' : '👤')} ${p.name} ${isOppTurn ? '<span style="color:#facc15;">(차례)</span>' : ''}</span>
-                <span style="color:#93c5fd;">손패 ${oppHand.length}장 · 획득 ${oppCap.length}장</span>
-              </div>
-              <div class="face-down-row">
-                ${oppHand.map(() => `<div class="hwatu-back-card" title="상대 손패 뒷면"></div>`).join('') || '<span style="font-size:0.74rem; color:var(--muted);">손패 없음</span>'}
-              </div>
-              <div style="font-size:0.72rem; color:var(--muted);">획득 패:</div>
-              <div class="captured-mini-row">
-                ${oppCap.map(c => `
-                  <div class="captured-mini-card">
-                    ${renderHwatuArtSvg(c)}
-                    <span>${c.id}·${c.type}</span>
-                  </div>
-                `).join('') || '<span style="font-size:0.72rem; color:var(--muted);">없음</span>'}
-              </div>
-            </div>
-          `;
-        }).join('');
-
-      vp.innerHTML = hudHtml + `
-        <div class="row" style="justify-content:space-between; margin-bottom:8px;">
-          <div>
-            판돈: <strong style="color:#4ade80;">${gs.stake.toLocaleString()}원</strong> ·
-            현재 배수: <strong style="color:#facc15;">x${mult}</strong> (${gs.goCount}고${gs.shaken[state.myId] ? ' · 흔들기' : ''})
-          </div>
-          <div class="row">
-            <button id="btnStakeUp" class="btn-ghost" style="padding:5px 10px; font-size:0.8rem;">📈 판돈 키우기 (+1,000)</button>
-            <button id="btnShake" class="btn-amber" style="padding:5px 10px; font-size:0.8rem;">🌪️ 흔들기</button>
-            <button id="btnGo" class="btn-green" style="padding:5px 10px; font-size:0.8rem;">고 (GO)</button>
-            <button id="btnStop" class="btn-danger" style="padding:5px 10px; font-size:0.8rem;">스톱 (STOP)</button>
-          </div>
-        </div>
-
-        ${opponentsHtml ? `<div class="opponents-gostop-grid">${opponentsHtml}</div>` : ''}
-
-        <div class="gostop-felt-board">
-          <div class="gostop-board-title">
-            <span>🟢 바닥패 (${floorCards.length}장) — 손패에 올리면 같은 월 패가 빛납니다</span>
-            <span class="stock-pill">🎴 남은 더미: ${stockCount}장 (낼 때 1장 뒤집기)</span>
-          </div>
-          <div class="hwatu-row" id="gostopFloorRow">
-            ${floorCards.map(c => {
-              const isMatch = hoveredHandMonth !== null && c.month === hoveredHandMonth;
-              return `
-                <div class="hwatu-svg-card floor-card tier-${c.type} ${isMatch ? 'floor-match' : ''}">
-                  ${renderHwatuArtSvg(c)}
-                  <div class="hwatu-footer">
-                    <span>${c.name}</span>
-                    <span class="hwatu-tier-tag tier-tag-${c.type}">${c.type}</span>
-                  </div>
-                </div>
-              `;
-            }).join('') || '<span style="color:#bbf7d0; font-size:0.84rem;">바닥에 깔린 패가 없습니다.</span>'}
-          </div>
-        </div>
-
-        <div style="font-size:0.85rem; margin-bottom:6px;">내 손패 (${isGsTurn ? '<strong style="color:#fde047;">내 차례 — 패를 내면 바닥 짝 맞추기 + 더미 뒤집기 진행</strong>' : getPlayerName(gs.turnId) + ' 차례'}):</div>
-        <div class="hwatu-row">
-          ${myHand.map(c => `
-            <div class="hwatu-svg-card tier-${c.type} ${isGsTurn ? 'playable' : ''}" data-cid="${c.id}" data-month="${c.month}">
-              ${renderHwatuArtSvg(c)}
-              <div class="hwatu-footer">
-                <span>${c.name}</span>
-                <span class="hwatu-tier-tag tier-tag-${c.type}">${c.type}</span>
-              </div>
-            </div>
-          `).join('') || '<span style="color:var(--muted); font-size:0.85rem;">손패가 없습니다.</span>'}
-        </div>
-        <div style="font-size:0.82rem; color:var(--muted); margin-top:10px;">내 획득 패 (${myCap.length}장):</div>
-        <div class="captured-mini-row">
-          ${myCap.map(c => `
-            <div class="captured-mini-card">
-              ${renderHwatuArtSvg(c)}
-              <span>${c.id}·${c.type}</span>
-            </div>
-          `).join('') || '<span style="color:var(--muted); font-size:0.82rem;">아직 획득한 패가 없습니다.</span>'}
-        </div>
-      `;
-
-      $('btnStakeUp')?.addEventListener('click', () => {
-        if (!state.isHost && !state.soloIsland) return;
-        gs.stake += 1000;
-        addLog(`📈 판돈이 ${gs.stake.toLocaleString()}원으로 올랐습니다!`);
-        syncStateToPeers();
-        renderAll();
-      });
-      $('btnShake')?.addEventListener('click', () => {
-        if (state.isHost || state.soloIsland) handleGostopShake(state.myId);
-        else broadcast({ type: 'ACTION_GOSTOP_SHAKE', playerId: state.myId });
-      });
-      $('btnGo')?.addEventListener('click', () => {
-        if (state.isHost || state.soloIsland) handleGostopGoStop(state.myId, 'GO');
-        else broadcast({ type: 'ACTION_GOSTOP_GO_STOP', playerId: state.myId, choice: 'GO' });
-      });
-      $('btnStop')?.addEventListener('click', () => {
-        if (state.isHost || state.soloIsland) handleGostopGoStop(state.myId, 'STOP');
-        else broadcast({ type: 'ACTION_GOSTOP_GO_STOP', playerId: state.myId, choice: 'STOP' });
-      });
-      vp.querySelectorAll('.hwatu-svg-card[data-cid]').forEach(el => {
-        el.addEventListener('mouseenter', () => {
-          hoveredHandMonth = Number(el.dataset.month);
-          vp.querySelectorAll('.floor-card').forEach((fc, idx) => {
-            const fCard = floorCards[idx];
-            fc.classList.toggle('floor-match', Boolean(fCard && fCard.month === hoveredHandMonth));
-          });
-        });
-        el.addEventListener('mouseleave', () => {
-          hoveredHandMonth = null;
-          vp.querySelectorAll('.floor-card').forEach(fc => fc.classList.remove('floor-match'));
-        });
-        el.addEventListener('click', () => {
-          const cid = el.dataset.cid;
-          if (state.isHost || state.soloIsland) handleGostopPlay(state.myId, cid);
-          else broadcast({ type: 'ACTION_GOSTOP_PLAY', playerId: state.myId, cardId: cid });
-        });
-      });
-    }
-
-    $('btnNextTurn')?.addEventListener('click', () => {
-      advanceTurn(`⏭️ ${getPlayerName(state.myId)} 방장이 턴을 넘겼습니다.`);
-    });
-  }
-
-  function updateMiniStageUI() {
-    const box = $('miniStageContainer');
-    const st = state.island.miniStage;
-    if (!box || !st) {
-      if (box) box.innerHTML = '';
-      return;
-    }
-
-    if (st === 'fish') {
-      const f = miniLocal.fish;
-      box.innerHTML = `
-        <div class="stage-overlay">
-          <div class="row" style="justify-content:space-between;">
-            <strong>🎣 물고기 낚시 스테이지</strong>
-            <button id="btnSettleMini" class="btn-green" style="padding:5px 10px; font-size:0.8rem;">✅ 채집 완료 & 정산 (${f.caughtCount}마리)</button>
-          </div>
-          <div class="stage-banner" style="margin-top:8px;">${f.msg}</div>
-          <div id="fishPullZone" style="padding:18px; border-radius:12px; background:#0c4a6e; border:1px dashed #7dd3fc; text-align:center; user-select:none;">
-            <div style="font-size:1.3rem; margin-bottom:8px;">${f.bite ? '🐟❗ 입질 왔어요! 위로 드래그하거나 당기세요!' : '🌊 물고기가 헤엄치는 중...'}</div>
-            <div style="background:#082f49; height:16px; border-radius:999px; overflow:hidden; max-width:340px; margin:0 auto 10px;">
-              <div style="width:${Math.min(100, f.reel)}%; height:100%; background:#38bdf8;"></div>
-            </div>
-            <button id="btnPullFish" class="btn-primary">🎣 낚싯대 당기기 (+35%)</button>
-          </div>
-        </div>
-      `;
-      const pullAction = () => {
-        if (!miniLocal.fish.bite) {
-          miniLocal.fish.msg = '아직 입질이 오지 않았어요! 조금만 기다려 보세요.';
-          updateMiniStageUI();
-          return;
-        }
-        miniLocal.fish.reel += 35;
-        if (miniLocal.fish.reel >= 100) {
-          miniLocal.fish.caughtCount += 1;
-          miniLocal.fish.reel = 0;
-          miniLocal.fish.bite = false;
-          miniLocal.fish.msg = `🎉 월척! 현재 ${miniLocal.fish.caughtCount}마리 잡았습니다! 다음 입질을 기다리거나 정산하세요.`;
-          setTimeout(() => {
-            if (state.island.miniStage === 'fish') {
-              miniLocal.fish.bite = true;
-              miniLocal.fish.msg = '❗ 또 입질이 왔습니다! 위로 당기세요!';
-              updateMiniStageUI();
-            }
-          }, 1200);
-        } else {
-          miniLocal.fish.msg = `당기는 중... 릴 게이지 ${miniLocal.fish.reel}%`;
-        }
-        updateMiniStageUI();
-      };
-      $('btnPullFish').onclick = pullAction;
-      const zone = $('fishPullZone');
-      zone.addEventListener('pointerdown', (e) => { miniLocal.dragStartY = e.clientY; });
-      zone.addEventListener('pointerup', (e) => {
-        if (miniLocal.dragStartY !== null && miniLocal.dragStartY - e.clientY > 18) {
-          pullAction();
-        }
-        miniLocal.dragStartY = null;
-      });
-      $('btnSettleMini').onclick = settleAndCloseMiniStage;
-      return;
-    }
-
-    if (st === 'wood') {
-      const w = miniLocal.wood;
-      box.innerHTML = `
-        <div class="stage-overlay">
-          <div class="row" style="justify-content:space-between;">
-            <strong>🪓 나무 패기 스테이지 (Space 또는 버튼 클릭)</strong>
-            <button id="btnSettleMini" class="btn-green" style="padding:5px 10px; font-size:0.8rem;">✅ 채집 완료 & 정산 (${w.choppedCount}개)</button>
-          </div>
-          <div class="stage-banner" style="margin-top:8px;">${w.msg}</div>
-          <div class="chop-track">
-            <div class="crit-zone"></div>
-            <div id="strikeCursor" class="strike-cursor" style="left:calc(${w.pos}% - 5px);"></div>
-          </div>
-          <button id="btnChopHit" class="btn-amber">🪓 도끼질 타격!</button>
-        </div>
-      `;
-      $('btnChopHit').onclick = triggerWoodHit;
-      $('btnSettleMini').onclick = settleAndCloseMiniStage;
-      return;
-    }
-
-    if (st === 'coconut') {
-      const c = miniLocal.coconut;
-      box.innerHTML = `
-        <div class="stage-overlay">
-          <div class="row" style="justify-content:space-between;">
-            <strong>🌴 코코넛 열매 따기 스테이지</strong>
-            <button id="btnSettleMini" class="btn-green" style="padding:5px 10px; font-size:0.8rem;">✅ 채집 완료 & 정산 (${c.harvestedCount}개)</button>
-          </div>
-          <div class="stage-banner" style="margin-top:8px;">${c.msg}</div>
-          <div class="coconut-grid">
-            ${c.slots.map((sl, i) => `
-              <div class="coconut-slot" data-cidx="${i}">
-                <div>${sl.icon}</div>
-                <small>${sl.label}</small>
-              </div>
-            `).join('')}
-          </div>
-        </div>
-      `;
-      box.querySelectorAll('.coconut-slot').forEach(slotEl => {
-        slotEl.onclick = () => {
-          const i = Number(slotEl.dataset.cidx);
-          const item = miniLocal.coconut.slots[i];
-          if (!item) return;
-          if (item.kind === 'bug') {
-            miniLocal.coconut.msg = '🐛 벌레 열매를 건드렸어요! 조심하세요.';
-          } else {
-            const gain = item.kind === 'gold' ? 2 : 1;
-            miniLocal.coconut.harvestedCount += gain;
-            miniLocal.coconut.msg = `🥥 ${item.label} 코코넛 +${gain}개 수확! (누적 ${miniLocal.coconut.harvestedCount}개)`;
-          }
-          spawnCoconutSlots();
-          updateMiniStageUI();
-        };
-      });
-      $('btnSettleMini').onclick = settleAndCloseMiniStage;
-    }
-  }
-
-  function triggerWoodHit() {
-    if (state.island.miniStage !== 'wood') return;
-    const p = miniLocal.wood.pos;
-    if (p >= 38 && p <= 62) {
-      miniLocal.wood.choppedCount += 2;
-      miniLocal.wood.critCount += 1;
-      miniLocal.wood.msg = `⚡ 크리티컬 명중! 통나무 +2개 (총 ${miniLocal.wood.choppedCount}개)`;
-    } else {
-      miniLocal.wood.choppedCount += 1;
-      miniLocal.wood.msg = `🪓 나무 타격! 통나무 +1개 (총 ${miniLocal.wood.choppedCount}개)`;
-    }
-    updateMiniStageUI();
-  }
-
-  function bindCatchmindEvents(isDrawer) {
-    const canvas = $('catchCanvas');
-    if (!canvas) return;
-
-    document.querySelectorAll('.swatch').forEach(btn => {
-      btn.onclick = () => {
-        brush.eraser = false;
-        brush.color = btn.dataset.color;
-        renderGameViewport();
-      };
-    });
-    $('brushSize')?.addEventListener('change', (e) => {
-      brush.size = Number(e.target.value);
-    });
-    $('btnEraser')?.addEventListener('click', () => {
-      brush.eraser = !brush.eraser;
-      renderGameViewport();
-    });
-    $('btnClearCanvas')?.addEventListener('click', () => {
-      state.catchmind.strokes = [];
-      redrawCatchmindCanvas();
-      broadcast({ type: 'CLEAR_CANVAS' });
-    });
-
-    if (!isDrawer) return;
-
-    const getPos = (e) => {
-      const rect = canvas.getBoundingClientRect();
-      const sx = canvas.width / rect.width;
-      const sy = canvas.height / rect.height;
-      return {
-        x: (e.clientX - rect.left) * sx,
-        y: (e.clientY - rect.top) * sy
-      };
-    };
-
-    canvas.onpointerdown = (e) => {
-      brush.drawing = true;
-      const pt = getPos(e);
-      brush.currentStroke = {
-        color: brush.eraser ? '#ffffff' : brush.color,
-        width: brush.eraser ? brush.size * 2.5 : brush.size,
-        points: [pt]
-      };
-    };
-
-    canvas.onpointermove = (e) => {
-      if (!brush.drawing || !brush.currentStroke) return;
-      const pt = getPos(e);
-      const prev = brush.currentStroke.points[brush.currentStroke.points.length - 1];
-      brush.currentStroke.points.push(pt);
-      drawSegment(canvas.getContext('2d'), prev, pt, brush.currentStroke.color, brush.currentStroke.width);
-    };
-
-    const finishStroke = () => {
-      if (!brush.drawing || !brush.currentStroke) return;
-      brush.drawing = false;
-      const st = brush.currentStroke;
-      brush.currentStroke = null;
-      if (st.points.length > 0) {
-        state.catchmind.strokes.push(st);
-        broadcast({ type: 'DRAW_STROKE', stroke: st });
-      }
-    };
-
-    canvas.onpointerup = finishStroke;
-    canvas.onpointerleave = finishStroke;
-  }
-
-  function drawSegment(ctx, a, b, color, width) {
-    ctx.save();
-    ctx.strokeStyle = color;
-    ctx.lineWidth = width;
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-    ctx.beginPath();
-    ctx.moveTo(a.x, a.y);
-    ctx.lineTo(b.x, b.y);
-    ctx.stroke();
-    ctx.restore();
-  }
-
-  function appendStrokeToCanvas(stroke) {
-    const canvas = $('catchCanvas');
-    if (!canvas || !stroke || !stroke.points?.length) return;
-    const ctx = canvas.getContext('2d');
-    if (stroke.points.length === 1) {
-      const p = stroke.points[0];
-      drawSegment(ctx, p, { x: p.x + 0.5, y: p.y + 0.5 }, stroke.color, stroke.width);
-      return;
-    }
-    for (let i = 1; i < stroke.points.length; i++) {
-      drawSegment(ctx, stroke.points[i - 1], stroke.points[i], stroke.color, stroke.width);
-    }
-  }
-
-  function redrawCatchmindCanvas() {
-    const canvas = $('catchCanvas');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    state.catchmind.strokes.forEach(appendStrokeToCanvas);
-  }
-
-  function renderAll() {
-    const inRoom = Boolean(state.roomCode);
-    $('roomInfoBar').classList.toggle('hidden', !inRoom);
-    $('btnLeaveRoom').classList.toggle('hidden', !inRoom);
-    $('roomStage').classList.toggle('hidden', !inRoom && !state.soloIsland);
-
-    $('activeRoomCode').textContent = state.roomCode || '-';
-    $('hostBadge').textContent = state.soloIsland ? '🏝️ 솔로 모드' : state.isHost ? '👑 방장' : '👥 참여자';
-
-    renderProfilePicker();
-    renderModeGrid();
-    renderPlayers();
-    renderGameViewport();
-    renderLogs();
-  }
-
-  setInterval(() => {
-    if (state.island.miniStage === 'wood') {
-      miniLocal.wood.pos += miniLocal.wood.dir * 3.2;
-      if (miniLocal.wood.pos >= 94) { miniLocal.wood.pos = 94; miniLocal.wood.dir = -1; }
-      if (miniLocal.wood.pos <= 6) { miniLocal.wood.pos = 6; miniLocal.wood.dir = 1; }
-      const curEl = $('strikeCursor');
-      if (curEl) curEl.style.left = `calc(${miniLocal.wood.pos}% - 5px)`;
-    }
-  }, 30);
-
-  tickTimer = setInterval(() => {
-    if (!state.activeGame) return;
-    state.timeLeft = Math.max(0, state.timeLeft - 1);
-    const pill = document.querySelector('.timer-pill');
-    if (pill) {
-      pill.textContent = `⏱ ${state.timeLeft}초`;
-      pill.classList.toggle('urgent', state.timeLeft <= 5);
-    }
-    if (state.timeLeft === 0 && state.isHost) {
-      if (state.mode === 'rummikub') {
-        const cur = getCurrentTurnPlayer();
-        if (cur) {
-          addLog(`⏰ 시간 초과! ${getPlayerName(cur.id)} 페널티 1장 드로우 후 턴 이동`);
-          handleRummiEndTurn(cur.id, true);
-        }
-      } else {
-        advanceTurn('⏰ 시간 초과! 다음 턴으로 넘어갑니다.');
-      }
-    }
-  }, 1000);
-
-  document.addEventListener('keydown', (e) => {
-    if (e.code === 'Space' && state.island.miniStage === 'wood') {
-      e.preventDefault();
-      triggerWoodHit();
-    }
-  });
-
-  $('btnApplyProfile').addEventListener('click', () => applyMyProfile(true));
-  $('nickInput').addEventListener('change', () => applyMyProfile(true));
-  $('nickInput').addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') applyMyProfile(true);
-  });
-
-  $('btnCreateRoom').addEventListener('click', () => {
-    const code = Math.random().toString(36).substring(2, 8).toUpperCase();
-    setupPeerAsHost(code);
-  });
-
-  $('btnJoinRoom').addEventListener('click', () => {
-    const code = ($('roomCodeInput').value || '').trim().toUpperCase();
-    if (!code) {
-      addLog('⚠️ 참여할 방 코드를 입력하세요.');
-      return;
-    }
-    setupPeerAsGuest(code);
-  });
-
-  $('btnSoloIsland').addEventListener('click', () => {
-    enterSoloIsland();
-  });
-
-  $('btnLeaveRoom').addEventListener('click', () => {
-    if (peer) peer.destroy();
-    conns.clear();
-    state.roomCode = '';
-    state.soloIsland = false;
-    state.activeGame = false;
-    setConnStatus('', '대기 중');
-    renderAll();
-  });
-
-  $('btnCopyRoom').addEventListener('click', () => {
-    if (!state.roomCode) return;
-    navigator.clipboard?.writeText(state.roomCode).catch(() => {});
-    addLog(`📋 방 코드 [${state.roomCode}] 복사 완료!`);
-  });
-
-  $('btnAddBot').addEventListener('click', () => {
-    if (!state.isHost) return;
-    const idx = state.players.filter(p => p.isBot).length + 1;
-    const botId = 'bot_' + Date.now() + '_' + idx;
-    ensurePlayer(botId, `봇_${idx}호`, true, '🤖');
-    addLog(`🤖 AI 봇 [봇_${idx}호] 추가됨`);
-    syncStateToPeers();
-    renderAll();
-  });
-
-  $('btnStartGame').addEventListener('click', startGame);
-
-  const sendChat = () => {
-    const txt = ($('chatInput').value || '').trim();
-    if (!txt) return;
-    $('chatInput').value = '';
-    const senderLabel = `${state.myChar} ${state.myName}`;
-    addLog(`[${senderLabel}] ${txt}`);
-    broadcast({ type: 'CHAT', senderId: state.myId, sender: senderLabel, text: txt });
-    if (state.isHost && state.activeGame) {
-      evaluateChatAnswer(state.myId, senderLabel, txt);
-    }
-  };
-  $('btnSendChat').addEventListener('click', sendChat);
-  $('chatInput').addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') sendChat();
-  });
-
-  $('btnOpenRanking').addEventListener('click', () => {
-    const sorted = [...state.players].sort((a, b) => (state.scores[b.id] || 0) - (state.scores[a.id] || 0));
-    $('rankingBody').innerHTML = sorted.map((p, idx) =>
-      `<div style="padding:8px 10px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between;">
-        <span><strong>#${idx + 1}</strong> ${p.char || '👤'} ${p.name}</span>
-        <strong style="color:#4ade80;">${state.scores[p.id] || 0}점</strong>
-      </div>`
-    ).join('') || '<p>참여자가 없습니다.</p>';
-    $('rankingModal').classList.add('open');
-  });
-  $('btnCloseRanking').addEventListener('click', () => $('rankingModal').classList.remove('open'));
-
-  ensurePlayer(state.myId, state.myName, false, state.myChar);
-  renderAll();
-})();
-</script>
-</body>
-</html>
+      const sticksHtml = (yn.lastSticks || [false, true, true, true]).map((isFlat, idx) => `
+        <div class="yut-stick ${isFlat ? 'flat' : 'round'} ${idx === 0 && isFlat ? 'back
