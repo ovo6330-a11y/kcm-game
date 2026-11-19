@@ -120,6 +120,35 @@
   .btn-danger { background: #b91c1c; border-color: #ef4444; }
   .btn-ghost { background: var(--panel-2); border-color: var(--border); }
 
+  .profile-box {
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 12px;
+  }
+  .char-picker {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+  }
+  .char-btn {
+    padding: 6px 10px;
+    border-radius: 10px;
+    background: #132036;
+    border: 1px solid var(--border);
+    font-size: 0.85rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .char-btn.active {
+    border-color: var(--accent);
+    background: #0c2742;
+    box-shadow: 0 0 0 1px var(--accent);
+  }
+
   .mode-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -626,7 +655,7 @@
   <header class="topbar">
     <div class="brand">
       <h1>🎮 KCM 파티 아케이드</h1>
-      <p>12가지 미니게임 · 대확장 랜덤 퀴즈 풀 · 상대패 공개 SVG 고스톱</p>
+      <p>각자 닉네임·캐릭터 선택 · 12가지 미니게임 · 상대패 공개 SVG 고스톱</p>
     </div>
     <div class="conn-badge">
       <span id="connDot" class="dot"></span>
@@ -635,9 +664,20 @@
   </header>
 
   <section id="lobbyCard" class="card">
+    <div class="profile-box">
+      <div class="row" style="justify-content:space-between;">
+        <div class="row">
+          <span style="font-size:0.88rem; font-weight:700;">내 프로필 설정:</span>
+          <input id="nickInput" type="text" placeholder="내 닉네임 입력" maxlength="12" value="플레이어1" style="width:160px;" />
+          <button id="btnApplyProfile" class="btn-primary" style="padding:8px 12px; font-size:0.84rem;">닉네임·캐릭터 적용</button>
+        </div>
+        <div id="myProfilePreview" style="font-size:0.86rem; color:#7dd3fc; font-weight:700;">🐱 플레이어1</div>
+      </div>
+      <div id="charPicker" class="char-picker"></div>
+    </div>
+
     <div class="row" style="justify-content: space-between;">
       <div class="row">
-        <input id="nickInput" type="text" placeholder="닉네임 입력" maxlength="12" value="플레이어1" style="width:140px;" />
         <button id="btnCreateRoom" class="btn-primary">새 방 만들기</button>
         <input id="roomCodeInput" type="text" placeholder="방 코드 (예: KCM123)" maxlength="10" style="width:150px; text-transform:uppercase;" />
         <button id="btnJoinRoom" class="btn-green">코드로 방 참여</button>
@@ -709,6 +749,17 @@
 
 <script>
 (() => {
+  const CHARACTERS = [
+    { id: 'cat', icon: '🐱', label: '고양이' },
+    { id: 'fox', icon: '🦊', label: '여우' },
+    { id: 'panda', icon: '🐼', label: '판다' },
+    { id: 'penguin', icon: '🐧', label: '펭귄' },
+    { id: 'robot', icon: '🤖', label: '로봇' },
+    { id: 'alien', icon: '👽', label: '외계인' },
+    { id: 'crown', icon: '👑', label: '왕관' },
+    { id: 'fire', icon: '🔥', label: '불꽃' }
+  ];
+
   const GAME_CONFIG = {
     defaultMoney: 10000,
     turnSeconds: {
@@ -982,6 +1033,7 @@
   const state = {
     myId: 'u_' + Math.random().toString(36).slice(2, 8),
     myName: '플레이어1',
+    myChar: '🐱',
     roomCode: '',
     isHost: true,
     soloIsland: false,
@@ -1063,15 +1115,55 @@
     $('connText').textContent = label;
   }
 
-  function ensurePlayer(id, name, isBot = false) {
+  function ensurePlayer(id, name, isBot = false, charIcon = '🐱') {
     if (!state.players.some(p => p.id === id)) {
-      state.players.push({ id, name, isBot });
+      state.players.push({ id, name, isBot, char: charIcon });
     } else {
       const p = state.players.find(x => x.id === id);
       if (name) p.name = name;
+      if (charIcon) p.char = charIcon;
     }
     if (typeof state.scores[id] !== 'number') state.scores[id] = 0;
     if (typeof state.gostop.bankruptCount[id] !== 'number') state.gostop.bankruptCount[id] = 0;
+  }
+
+  function applyMyProfile(announce = true) {
+    const rawName = ($('nickInput').value || '').trim();
+    const nextName = rawName || '플레이어';
+    const nextChar = state.myChar || '🐱';
+    const nameChanged = state.myName !== nextName;
+    const charChanged = (() => {
+      const me = state.players.find(p => p.id === state.myId);
+      return me && me.char !== nextChar;
+    })();
+
+    state.myName = nextName;
+    ensurePlayer(state.myId, state.myName, false, nextChar);
+
+    if (announce && (nameChanged || charChanged)) {
+      addLog(`${nextChar} <strong>${nextName}</strong> 님이 프로필을 설정했습니다.`);
+    }
+
+    if (state.isHost) {
+      syncStateToPeers();
+    } else if (state.roomCode && !state.soloIsland) {
+      broadcast({
+        type: 'UPDATE_PROFILE',
+        playerId: state.myId,
+        playerName: state.myName,
+        char: state.myChar
+      });
+    }
+    renderAll();
+  }
+
+  function getPlayerInfo(id) {
+    return state.players.find(p => p.id === id) || { id, name: id, char: '👤', isBot: false };
+  }
+
+  function getPlayerName(id) {
+    const p = getPlayerInfo(id);
+    return `${p.char || '👤'} ${p.name}`;
   }
 
   function getCurrentTurnPlayer() {
@@ -1112,7 +1204,11 @@
     if (msg.type === 'SYNC_STATE') {
       const keepMini = state.island.miniStage;
       const prevStrokesLen = state.catchmind.strokes.length;
+      const savedMyName = state.myName;
+      const savedMyChar = state.myChar;
       Object.assign(state, msg.state);
+      state.myName = savedMyName;
+      state.myChar = savedMyChar;
       if (keepMini) state.island.miniStage = keepMini;
       renderAll();
       if (state.mode === 'catchmind' && state.catchmind.strokes.length !== prevStrokesLen) {
@@ -1146,8 +1242,13 @@
     if (!state.isHost) return;
 
     if (msg.type === 'HELLO') {
-      ensurePlayer(msg.playerId, msg.playerName, false);
-      addLog(`👋 ${msg.playerName} 님이 입장했습니다.`);
+      ensurePlayer(msg.playerId, msg.playerName, false, msg.char || '🐱');
+      addLog(`👋 ${msg.char || '🐱'} <strong>${msg.playerName}</strong> 님이 입장했습니다.`);
+      syncStateToPeers();
+      renderAll();
+    } else if (msg.type === 'UPDATE_PROFILE') {
+      ensurePlayer(msg.playerId, msg.playerName, false, msg.char || '🐱');
+      addLog(`✨ ${msg.char || '🐱'} <strong>${msg.playerName}</strong> 프로필 반영`);
       syncStateToPeers();
       renderAll();
     } else if (msg.type === 'ACTION_WORDCHAIN') {
@@ -1186,12 +1287,9 @@
     }
   }
 
-  function getPlayerName(id) {
-    return (state.players.find(p => p.id === id) || {}).name || id;
-  }
-
   function setupPeerAsHost(code) {
     if (peer) peer.destroy();
+    applyMyProfile(false);
     state.roomCode = code;
     state.isHost = true;
     state.soloIsland = false;
@@ -1200,8 +1298,8 @@
 
     peer.on('open', () => {
       setConnStatus('ok', `방장 연결됨 · ${code}`);
-      ensurePlayer(state.myId, state.myName, false);
-      addLog(`🏠 방 [${code}] 생성 완료! 친구에게 코드를 공유하세요.`);
+      ensurePlayer(state.myId, state.myName, false, state.myChar);
+      addLog(`🏠 방 [${code}] 생성 완료! (${state.myChar} ${state.myName})`);
       syncStateToPeers();
       renderAll();
     });
@@ -1218,7 +1316,7 @@
     peer.on('error', (err) => {
       console.warn(err);
       setConnStatus('err', `오프라인/샌드박스 모드 (${code})`);
-      ensurePlayer(state.myId, state.myName, false);
+      ensurePlayer(state.myId, state.myName, false, state.myChar);
       addLog(`ℹ️ 네트워크 제한으로 로컬/샌드박스 방 [${code}]으로 동작합니다.`);
       renderAll();
     });
@@ -1226,6 +1324,7 @@
 
   function setupPeerAsGuest(code) {
     if (peer) peer.destroy();
+    applyMyProfile(false);
     state.roomCode = code;
     state.isHost = false;
     state.soloIsland = false;
@@ -1237,7 +1336,12 @@
       conns.set(conn.peer, conn);
       conn.on('open', () => {
         setConnStatus('ok', `참여 중 · ${code}`);
-        conn.send(JSON.stringify({ type: 'HELLO', playerId: state.myId, playerName: state.myName }));
+        conn.send(JSON.stringify({
+          type: 'HELLO',
+          playerId: state.myId,
+          playerName: state.myName,
+          char: state.myChar
+        }));
       });
       conn.on('data', (d) => handleIncomingData(conn.peer, d));
       conn.on('close', () => setConnStatus('err', '연결 종료됨'));
@@ -1250,16 +1354,17 @@
   }
 
   function enterSoloIsland() {
+    applyMyProfile(false);
     state.soloIsland = true;
     state.isHost = true;
     state.roomCode = 'SOLO';
-    state.players = [{ id: state.myId, name: state.myName, isBot: false }];
+    state.players = [{ id: state.myId, name: state.myName, isBot: false, char: state.myChar }];
     state.scores[state.myId] = state.scores[state.myId] || 0;
     state.mode = 'island';
     state.activeGame = true;
     state.island.miniStage = null;
     setConnStatus('ok', '무인도 솔로 입장');
-    addLog('🏝️ 방 참여 없이 무인도에 혼자 입장했습니다! 채집·판매·고스톱 전환이 가능합니다.');
+    addLog(`🏝️ ${state.myChar} <strong>${state.myName}</strong> 님이 무인도에 혼자 입장했습니다!`);
     renderAll();
   }
 
@@ -1268,9 +1373,9 @@
       addLog('⚠️ 방장만 게임을 시작할 수 있습니다.');
       return;
     }
-    ensurePlayer(state.myId, state.myName, false);
+    applyMyProfile(false);
     if (state.players.length === 1 && state.mode !== 'island') {
-      ensurePlayer('bot_1', '봇_알파', true);
+      ensurePlayer('bot_1', '봇_알파', true, '🤖');
     }
     state.activeGame = true;
     state.turnIndex = 0;
@@ -1387,7 +1492,7 @@
     } else if (state.mode === 'liar') {
       if (!state.liar.hints[botId]) {
         state.liar.hints[botId] = '일상에서 자주 접하는 느낌';
-        addLog(`🕵️ ${cur.name} 힌트: "${state.liar.hints[botId]}"`);
+        addLog(`🕵️ ${getPlayerName(botId)} 힌트: "${state.liar.hints[botId]}"`);
         advanceTurn();
         return;
       }
@@ -1399,7 +1504,7 @@
         return;
       }
     }
-    advanceTurn(`🤖 ${cur.name} 턴 패스`);
+    advanceTurn(`🤖 ${getPlayerName(botId)} 턴 패스`);
   }
 
   function handleWordchainSubmit(playerId, rawWord) {
@@ -1407,16 +1512,16 @@
     const cur = getCurrentTurnPlayer();
     if (!cur || cur.id !== playerId) return;
     if (word.length < 2) {
-      addLog(`❌ ${cur.name}: 두 글자 이상 입력하세요.`);
+      addLog(`❌ ${getPlayerName(playerId)}: 두 글자 이상 입력하세요.`);
       return;
     }
     const needStart = state.wordchain.lastWord.slice(-1);
     if (word[0] !== needStart) {
-      addLog(`❌ ${cur.name}: '${needStart}'(으)로 시작해야 합니다! (${word})`);
+      addLog(`❌ ${getPlayerName(playerId)}: '${needStart}'(으)로 시작해야 합니다! (${word})`);
       return;
     }
     if (state.wordchain.used.includes(word)) {
-      addLog(`❌ ${cur.name}: 이미 나온 단어입니다! (${word})`);
+      addLog(`❌ ${getPlayerName(playerId)}: 이미 나온 단어입니다! (${word})`);
       return;
     }
     state.wordchain.used.push(word);
@@ -1424,7 +1529,7 @@
     state.wordchain.combo += 1;
     const pts = 10 + (state.wordchain.combo >= 3 ? 5 : 0);
     state.scores[playerId] = (state.scores[playerId] || 0) + pts;
-    addLog(`✅ ${cur.name}: "${word}" (+${pts}점${state.wordchain.combo >= 3 ? ' · 3콤보!' : ''})`);
+    addLog(`✅ ${getPlayerName(playerId)}: "${word}" (+${pts}점${state.wordchain.combo >= 3 ? ' · 3콤보!' : ''})`);
     advanceTurn();
   }
 
@@ -1433,21 +1538,21 @@
     const cur = getCurrentTurnPlayer();
     if (!cur || cur.id !== playerId) return;
     if (word.length !== 2) {
-      addLog(`❌ ${cur.name}: 정확히 2글자 단어를 입력하세요.`);
+      addLog(`❌ ${getPlayerName(playerId)}: 정확히 2글자 단어를 입력하세요.`);
       return;
     }
     const cs = getChosung(word);
     if (cs !== state.hunmin.prompt) {
-      addLog(`❌ ${cur.name}: 초성 [${state.hunmin.prompt}]과 다릅니다! ("${word}" -> ${cs})`);
+      addLog(`❌ ${getPlayerName(playerId)}: 초성 [${state.hunmin.prompt}]과 다릅니다! ("${word}" -> ${cs})`);
       return;
     }
     if (state.hunmin.used.includes(word)) {
-      addLog(`❌ ${cur.name}: 이미 사용한 단어입니다!`);
+      addLog(`❌ ${getPlayerName(playerId)}: 이미 사용한 단어입니다!`);
       return;
     }
     state.hunmin.used.push(word);
     state.scores[playerId] = (state.scores[playerId] || 0) + 15;
-    addLog(`🎯 ${cur.name}: "${word}" (${state.hunmin.prompt}) 정답! +15점`);
+    addLog(`🎯 ${getPlayerName(playerId)}: "${word}" (${state.hunmin.prompt}) 정답! +15점`);
     state.hunmin.prompt = pickRandomItem(HUNMIN_PROMPTS, state.hunmin.prompt);
     advanceTurn();
   }
@@ -1549,7 +1654,7 @@
         cf.flipped = [];
         const bonus = cf.size === 16 ? 20 : cf.size === 8 ? 15 : 10;
         state.scores[playerId] = (state.scores[playerId] || 0) + bonus;
-        addLog(`🃏 ${cur.name} 짝 맞추기 성공! (${cf.cards[a].icon} +${bonus}점 · 연속 턴)`);
+        addLog(`🃏 ${getPlayerName(playerId)} 짝 맞추기 성공! (${cf.cards[a].icon} +${bonus}점 · 연속 턴)`);
         if (cf.matched.length === cf.cards.length) {
           addLog(`🏆 ${cf.size}×${cf.size} 보드 올클리어! 새 판을 준비합니다.`);
           state.cardflip = { size: cf.size, cards: buildCardDeck(cf.size), flipped: [], matched: [] };
@@ -1559,7 +1664,7 @@
         syncStateToPeers();
         renderAll();
       } else {
-        addLog(`❌ ${cur.name} 짝 불일치! 다음 턴으로 넘어갑니다.`);
+        addLog(`❌ ${getPlayerName(playerId)} 짝 불일치! 다음 턴으로 넘어갑니다.`);
         syncStateToPeers();
         renderAll();
         setTimeout(() => {
@@ -1584,15 +1689,15 @@
       if (cnt > topVotes) { topVotes = cnt; topId = tid; }
     });
     state.liar.revealed = true;
-    const liarName = getPlayerName(state.liar.liarId);
+    const liarLabel = getPlayerName(state.liar.liarId);
     if (topId === state.liar.liarId) {
       state.players.forEach(p => {
         if (p.id !== state.liar.liarId) state.scores[p.id] = (state.scores[p.id] || 0) + 15;
       });
-      addLog(`🎉 라이어 [${liarName}] 검거 성공! 시민들 +15점!`);
+      addLog(`🎉 라이어 [${liarLabel}] 검거 성공! 시민들 +15점!`);
     } else {
       state.scores[state.liar.liarId] = (state.scores[state.liar.liarId] || 0) + 25;
-      addLog(`😈 라이어 [${liarName}] 검거 실패! 라이어 +25점!`);
+      addLog(`😈 라이어 [${liarLabel}] 검거 실패! 라이어 +25점!`);
     }
     syncStateToPeers();
     renderAll();
@@ -1628,7 +1733,7 @@
   function openIslandMiniStage(stage) {
     state.island.miniStage = stage;
     if (stage === 'fish') {
-      miniLocal.fish = { bite: false, reel: 0, caughtCount: 0, msg: '입질(!)이 오면 마우스/터치를 위로 당기거나 [낚싯대 당기기]를 누르세요!' };
+      miniLocal.fish = { bite: false, reel: 0, caughtCount: 0, msg: '찌를 던지고 입질(!)이 오면 위로 드래그하거나 당기세요!' };
       setTimeout(() => {
         if (state.island.miniStage === 'fish') {
           miniLocal.fish.bite = true;
@@ -1917,6 +2022,23 @@
     renderAll();
   }
 
+  function renderProfilePicker() {
+    $('myProfilePreview').textContent = `${state.myChar} ${state.myName}`;
+    $('charPicker').innerHTML = CHARACTERS.map(ch => `
+      <button type="button" class="char-btn ${state.myChar === ch.icon ? 'active' : ''}" data-char="${ch.icon}">
+        <span>${ch.icon}</span>
+        <span>${ch.label}</span>
+      </button>
+    `).join('');
+
+    $('charPicker').querySelectorAll('.char-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        state.myChar = btn.dataset.char;
+        applyMyProfile(true);
+      });
+    });
+  }
+
   function renderModeGrid() {
     const grid = $('modeGrid');
     const canPick = state.isHost && !state.soloIsland;
@@ -1954,8 +2076,9 @@
     const cur = getCurrentTurnPlayer();
     $('playersBar').innerHTML = state.players.map(p => {
       const isTurn = cur && cur.id === p.id && state.activeGame;
+      const icon = p.char || (p.isBot ? '🤖' : '👤');
       return `<div class="player-chip ${isTurn ? 'turn' : ''}">
-        <span>${p.isBot ? '🤖' : '👤'} <strong>${p.name}</strong></span>
+        <span>${icon} <strong>${p.name}</strong></span>
         ${p.id === state.myId ? '<span style="color:#38bdf8; font-size:0.75rem;">(나)</span>' : ''}
         ${isTurn ? '<span style="color:#facc15; font-size:0.75rem;">● 내 차례</span>' : ''}
       </div>`;
@@ -1971,12 +2094,12 @@
 
     const sorted = [...state.players].sort((a, b) => (state.scores[b.id] || 0) - (state.scores[a.id] || 0));
     $('scoreList').innerHTML = sorted.map((p, idx) =>
-      `<div class="log-line"><strong>${idx + 1}위</strong> ${p.name} — <span style="color:#7dd3fc; font-weight:700;">${state.scores[p.id] || 0}점</span></div>`
+      `<div class="log-line"><strong>${idx + 1}위</strong> ${p.char || '👤'} ${p.name} — <span style="color:#7dd3fc; font-weight:700;">${state.scores[p.id] || 0}점</span></div>`
     ).join('');
   }
 
   function renderLiarCircleArena(myVoteTarget) {
-    const list = state.players.length ? state.players : [{ id: state.myId, name: state.myName, isBot: false }];
+    const list = state.players.length ? state.players : [{ id: state.myId, name: state.myName, isBot: false, char: state.myChar }];
     const count = list.length;
     const rx = count <= 2 ? 155 : 192;
     const ry = count <= 2 ? 95 : 122;
@@ -1995,12 +2118,13 @@
       const hintText = state.liar.hints[p.id];
       const vCnt = voteCounts[p.id] || 0;
       const isActualLiar = state.liar.revealed && state.liar.liarId === p.id;
+      const pChar = p.char || (p.isBot ? '🤖' : '👤');
 
       return `
         <div class="liar-seat ${isSpeaking ? 'speaking' : ''} votable ${isSelected ? 'selected-vote' : ''}"
              data-vote-id="${p.id}"
              style="left:${leftPct.toFixed(1)}%; top:${topPct.toFixed(1)}%;">
-          <div class="liar-chair-icon">${isActualLiar ? '😈🪑' : isSpeaking ? '🎤🪑' : '🪑'}</div>
+          <div class="liar-chair-icon">${isActualLiar ? `😈${pChar}` : isSpeaking ? `🎤${pChar}` : pChar}</div>
           <div class="liar-seat-name">${p.name}${p.id === state.myId ? ' (나)' : ''}</div>
           ${hintText ? `<div class="liar-speech-bubble">"${hintText}"</div>` : `<div style="font-size:0.7rem; color:var(--muted); margin-top:2px;">${isSpeaking ? '말하는 중...' : '대기'}</div>`}
           ${vCnt > 0 ? `<div style="font-size:0.7rem; color:#fb923c; font-weight:700; margin-top:2px;">🗳️ ${vCnt}표</div>` : ''}
@@ -2013,7 +2137,7 @@
         <div class="liar-center-table">
           <small>라운드 테이블</small>
           <strong>[${state.liar.topic.cat}]</strong>
-          <small style="margin-top:4px; color:#fde047;">${curSpeaker && !state.liar.revealed ? curSpeaker.name + ' 발언 차례' : '투표/결과'}</small>
+          <small style="margin-top:4px; color:#fde047;">${curSpeaker && !state.liar.revealed ? getPlayerName(curSpeaker.id) + ' 발언 차례' : '투표/결과'}</small>
         </div>
         ${seatsHtml}
       </div>
@@ -2031,7 +2155,7 @@
         <div>
           <strong>${MODES.find(m => m.id === state.mode)?.name || state.mode}</strong>
           <span style="margin-left:10px; color:#facc15;">
-            현재 턴: <strong>${cur ? cur.name : '-'}</strong> ${myTurn ? '(내 차례!)' : ''}
+            현재 턴: <strong>${cur ? getPlayerName(cur.id) : '-'}</strong> ${myTurn ? '(내 차례!)' : ''}
           </span>
         </div>
         <div class="row">
@@ -2086,7 +2210,7 @@
           <button id="btnNunchiNext" class="btn-amber">👀 다음 숫자 "${nextNum}" 외치기!</button>
         </div>
         <div class="nunchi-board">
-          ${state.nunchi.calls.map(c => `<div class="nunchi-badge">${c.num} · ${c.name}</div>`).join('') || '<span style="color:var(--muted); font-size:0.84rem;">아직 외친 숫자가 없습니다.</span>'}
+          ${state.nunchi.calls.map(c => `<div class="nunchi-badge">${c.num} · ${getPlayerName(c.playerId)}</div>`).join('') || '<span style="color:var(--muted); font-size:0.84rem;">아직 외친 숫자가 없습니다.</span>'}
         </div>
       `;
       $('btnNunchiNext')?.addEventListener('click', () => {
@@ -2204,7 +2328,7 @@
         <div class="row">
           <span style="font-size:0.84rem; color:var(--muted);">좌석 클릭 또는 선택 후 투표:</span>
           <select id="liarVoteSelect">
-            ${state.players.map(p => `<option value="${p.id}" ${p.id === selectedVote ? 'selected' : ''}>${p.name} 지목</option>`).join('')}
+            ${state.players.map(p => `<option value="${p.id}" ${p.id === selectedVote ? 'selected' : ''}>${p.char || '👤'} ${p.name} 지목</option>`).join('')}
           </select>
           <button id="btnLiarVote" class="btn-amber">🗳️ 라이어 투표</button>
         </div>
@@ -2225,7 +2349,7 @@
         $('liarHintInput').value = '';
         if (state.isHost) {
           state.liar.hints[state.myId] = h;
-          addLog(`🕵️ ${state.myName} 힌트: "${h}"`);
+          addLog(`🕵️ ${getPlayerName(state.myId)} 힌트: "${h}"`);
           advanceTurn();
         } else {
           broadcast({ type: 'ACTION_LIAR_HINT', playerId: state.myId, hint: h });
@@ -2302,7 +2426,7 @@
           return `
             <div class="opponent-gostop-box ${isOppTurn ? 'active-turn' : ''}">
               <div class="opponent-header">
-                <span>${p.isBot ? '🤖' : '👤'} ${p.name} ${isOppTurn ? '<span style="color:#facc15;">(차례)</span>' : ''}</span>
+                <span>${p.char || (p.isBot ? '🤖' : '👤')} ${p.name} ${isOppTurn ? '<span style="color:#facc15;">(차례)</span>' : ''}</span>
                 <span style="color:#93c5fd;">손패 ${oppHand.length}장 · 획득 ${oppCap.length}장</span>
               </div>
               <div class="face-down-row">
@@ -2421,7 +2545,7 @@
     }
 
     $('btnNextTurn')?.addEventListener('click', () => {
-      advanceTurn(`⏭️ ${state.myName} 방장이 턴을 넘겼습니다.`);
+      advanceTurn(`⏭️ ${getPlayerName(state.myId)} 방장이 턴을 넘겼습니다.`);
     });
   }
 
@@ -2676,6 +2800,7 @@
     $('activeRoomCode').textContent = state.roomCode || '-';
     $('hostBadge').textContent = state.soloIsland ? '🏝️ 솔로 모드' : state.isHost ? '👑 방장' : '👥 참여자';
 
+    renderProfilePicker();
     renderModeGrid();
     renderPlayers();
     renderGameViewport();
@@ -2712,15 +2837,13 @@
     }
   });
 
-  $('nickInput').addEventListener('change', (e) => {
-    state.myName = (e.target.value || '플레이어').trim();
-    ensurePlayer(state.myId, state.myName, false);
-    syncStateToPeers();
-    renderAll();
+  $('btnApplyProfile').addEventListener('click', () => applyMyProfile(true));
+  $('nickInput').addEventListener('change', () => applyMyProfile(true));
+  $('nickInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') applyMyProfile(true);
   });
 
   $('btnCreateRoom').addEventListener('click', () => {
-    state.myName = ($('nickInput').value || '방장').trim();
     const code = Math.random().toString(36).substring(2, 8).toUpperCase();
     setupPeerAsHost(code);
   });
@@ -2731,12 +2854,10 @@
       addLog('⚠️ 참여할 방 코드를 입력하세요.');
       return;
     }
-    state.myName = ($('nickInput').value || '참여자').trim();
     setupPeerAsGuest(code);
   });
 
   $('btnSoloIsland').addEventListener('click', () => {
-    state.myName = ($('nickInput').value || '탐험가').trim();
     enterSoloIsland();
   });
 
@@ -2760,7 +2881,7 @@
     if (!state.isHost) return;
     const idx = state.players.filter(p => p.isBot).length + 1;
     const botId = 'bot_' + Date.now() + '_' + idx;
-    ensurePlayer(botId, `봇_${idx}호`, true);
+    ensurePlayer(botId, `봇_${idx}호`, true, '🤖');
     addLog(`🤖 AI 봇 [봇_${idx}호] 추가됨`);
     syncStateToPeers();
     renderAll();
@@ -2772,10 +2893,11 @@
     const txt = ($('chatInput').value || '').trim();
     if (!txt) return;
     $('chatInput').value = '';
-    addLog(`[${state.myName}] ${txt}`);
-    broadcast({ type: 'CHAT', senderId: state.myId, sender: state.myName, text: txt });
+    const senderLabel = `${state.myChar} ${state.myName}`;
+    addLog(`[${senderLabel}] ${txt}`);
+    broadcast({ type: 'CHAT', senderId: state.myId, sender: senderLabel, text: txt });
     if (state.isHost && state.activeGame) {
-      evaluateChatAnswer(state.myId, state.myName, txt);
+      evaluateChatAnswer(state.myId, senderLabel, txt);
     }
   };
   $('btnSendChat').addEventListener('click', sendChat);
@@ -2787,7 +2909,7 @@
     const sorted = [...state.players].sort((a, b) => (state.scores[b.id] || 0) - (state.scores[a.id] || 0));
     $('rankingBody').innerHTML = sorted.map((p, idx) =>
       `<div style="padding:8px 10px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between;">
-        <span><strong>#${idx + 1}</strong> ${p.name}</span>
+        <span><strong>#${idx + 1}</strong> ${p.char || '👤'} ${p.name}</span>
         <strong style="color:#4ade80;">${state.scores[p.id] || 0}점</strong>
       </div>`
     ).join('') || '<p>참여자가 없습니다.</p>';
@@ -2795,7 +2917,7 @@
   });
   $('btnCloseRanking').addEventListener('click', () => $('rankingModal').classList.remove('open'));
 
-  ensurePlayer(state.myId, state.myName, false);
+  ensurePlayer(state.myId, state.myName, false, state.myChar);
   renderAll();
 })();
 </script>
