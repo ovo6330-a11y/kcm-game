@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>KCM 파티 아케이드 — 로비 & 멀티플레이 (윷놀이 팀전 지원)</title>
+<title>KCM 파티 아케이드 — 3D 윷놀이(팀전) · 3D 루미큐브 · 실시간 멀티플레이</title>
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <style>
   :root {
@@ -234,7 +234,7 @@
   .timer-pill.unlimited { background: #052e16; border-color: #22c55e; color: #86efac; }
   .timer-pill.urgent { background: #450a0a; border-color: var(--danger); color: #fca5a5; }
 
-  /* 윷놀이 전용 스타일 */
+  /* ================= 윷놀이 & 3D 윷 회전 애니메이션 ================= */
   .yut-mode-banner {
     display: flex;
     flex-wrap: wrap;
@@ -259,39 +259,80 @@
     border: 3px solid #92400e;
     border-radius: 16px;
     padding: 10px;
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.45);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5), inset 0 0 18px rgba(180, 83, 9, 0.25);
   }
   .yut-board-wrap svg { width: 100%; height: auto; display: block; }
   .yut-node-circle { cursor: pointer; }
   .yut-side-panel { display: flex; flex-direction: column; gap: 10px; }
   .yut-sticks-box {
-    background: #0b1120;
+    background: radial-gradient(circle at top, #172554 0%, #0b1120 75%);
     border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 12px;
+    border-radius: 14px;
+    padding: 14px;
+  }
+  .yut-3d-stage {
+    perspective: 750px;
+    padding: 12px 0;
   }
   .yut-sticks-row {
     display: flex;
-    gap: 12px;
+    gap: 16px;
     justify-content: center;
     align-items: center;
-    margin: 10px 0;
+    transform-style: preserve-3d;
   }
-  .yut-stick {
-    width: 30px;
-    height: 102px;
-    border-radius: 14px;
+  .yut-stick-3d {
+    width: 34px;
+    height: 112px;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .yut-stick-3d.rolling {
+    animation: yutTumble3D 0.68s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+  .yut-stick-3d.rolling:nth-child(2) { animation-delay: 0.04s; }
+  .yut-stick-3d.rolling:nth-child(3) { animation-delay: 0.08s; }
+  .yut-stick-3d.rolling:nth-child(4) { animation-delay: 0.12s; }
+
+  @keyframes yutTumble3D {
+    0%   { transform: translateY(0) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(1); }
+    25%  { transform: translateY(-34px) rotateX(260deg) rotateY(140deg) rotateZ(-14deg) scale(1.12); }
+    55%  { transform: translateY(-18px) rotateX(540deg) rotateY(290deg) rotateZ(12deg) scale(1.06); }
+    80%  { transform: translateY(4px) rotateX(700deg) rotateY(350deg) rotateZ(-4deg) scale(0.98); }
+    100% { transform: translateY(0) rotateX(720deg) rotateY(360deg) rotateZ(0deg) scale(1); }
+  }
+
+  .yut-face {
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-evenly;
     font-weight: 900;
-    font-size: 0.84rem;
-    box-shadow: 0 5px 12px rgba(0,0,0,0.45);
+    font-size: 0.86rem;
+    backface-visibility: hidden;
   }
-  .yut-stick.flat { background: linear-gradient(180deg, #fef3c7 0%, #fde68a 100%); border: 2px solid #b45309; color: #92400e; }
-  .yut-stick.round { background: linear-gradient(180deg, #92400e 0%, #78350f 100%); border: 2px solid #451a03; color: #fef3c7; }
-  .yut-stick.backdo { border-color: #ef4444; box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.45); }
+  .yut-face.flat {
+    background: linear-gradient(180deg, #fffbeb 0%, #fde68a 65%, #f59e0b 100%);
+    border: 2px solid #b45309;
+    color: #92400e;
+    box-shadow: 0 7px 0 #78350f, 0 12px 18px rgba(0,0,0,0.5);
+  }
+  .yut-face.flat.backdo {
+    border-color: #ef4444;
+    color: #dc2626;
+    box-shadow: 0 7px 0 #991b1b, 0 0 14px rgba(239, 68, 68, 0.55);
+  }
+  .yut-face.round {
+    background: radial-gradient(circle at 32% 30%, #b45309 0%, #78350f 65%, #451a03 100%);
+    border: 2px solid #451a03;
+    color: #fef3c7;
+    box-shadow: 0 7px 0 #290f02, 0 12px 18px rgba(0,0,0,0.55);
+  }
+
   .yut-roll-chip {
     padding: 6px 12px;
     border-radius: 999px;
@@ -323,55 +364,145 @@
   }
   .yut-piece-btn.selected { outline: 2px solid #facc15; box-shadow: 0 0 10px rgba(250, 204, 21, 0.45); }
 
-  /* 루미큐브 */
-  .rummi-table-board {
-    background: radial-gradient(circle at center, #0f3d2e 0%, #072219 100%);
-    border: 2px solid #10b981;
-    border-radius: 16px;
-    padding: 14px;
-    margin-bottom: 12px;
+  /* ================= 3D 입체 루미큐브 스타일 ================= */
+  .rummi-3d-scene {
+    perspective: 1100px;
   }
-  .rummi-sets-wrap { display: flex; flex-wrap: wrap; gap: 10px; min-height: 76px; align-items: center; }
+  .rummi-table-board {
+    background: radial-gradient(ellipse at center, #115e46 0%, #063729 68%, #031f17 100%);
+    border: 3px solid #10b981;
+    border-radius: 18px;
+    padding: 16px;
+    margin-bottom: 14px;
+    box-shadow: inset 0 0 36px rgba(0, 0, 0, 0.65), 0 12px 26px rgba(0, 0, 0, 0.45);
+    transition: box-shadow 0.15s ease, border-color 0.15s ease;
+  }
+  .rummi-table-board.drag-over {
+    border-color: #38bdf8;
+    box-shadow: inset 0 0 36px rgba(56, 189, 248, 0.35), 0 0 0 3px rgba(56, 189, 248, 0.5);
+  }
+  .rummi-sets-wrap { display: flex; flex-wrap: wrap; gap: 12px; min-height: 86px; align-items: center; }
+  .rummi-new-dropzone {
+    min-width: 170px;
+    height: 70px;
+    border: 2px dashed rgba(110, 231, 183, 0.5);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 14px;
+    color: #a7f3d0;
+    font-size: 0.82rem;
+    font-weight: 700;
+    background: rgba(6, 78, 59, 0.4);
+  }
   .rummi-set-group {
     display: inline-flex;
     align-items: center;
-    gap: 4px;
-    padding: 6px 8px;
-    border-radius: 12px;
-    background: rgba(15, 23, 42, 0.65);
+    gap: 5px;
+    padding: 8px 10px;
+    border-radius: 14px;
+    background: rgba(15, 23, 42, 0.55);
     border: 1.5px solid rgba(110, 231, 183, 0.45);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
+    transition: transform 0.15s ease, border-color 0.15s ease;
   }
-  .rummi-set-group.appendable { cursor: pointer; border-color: #facc15; }
+  .rummi-set-group.appendable {
+    cursor: pointer;
+    border-color: #facc15;
+    box-shadow: 0 0 14px rgba(250, 204, 21, 0.35);
+  }
+  .rummi-set-group.appendable:hover { transform: translateY(-2px); }
+
   .rummi-tile {
-    width: 44px;
-    height: 60px;
-    border-radius: 9px;
-    background: linear-gradient(180deg, #fffbeb 0%, #fef3c7 100%);
-    border: 2px solid #d97706;
+    width: 48px;
+    height: 66px;
+    border-radius: 10px;
+    background: linear-gradient(165deg, #ffffff 0%, #fffbeb 55%, #fde68a 100%);
+    border: 1.5px solid #e2e8f0;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     font-weight: 900;
     user-select: none;
-    cursor: pointer;
+    cursor: grab;
+    position: relative;
+    transform-style: preserve-3d;
+    box-shadow:
+      0 5px 0 #cbd5e1,
+      0 6px 0 #94a3b8,
+      0 10px 16px rgba(0, 0, 0, 0.48),
+      inset 0 2px 3px rgba(255, 255, 255, 0.95);
+    transition: transform 0.16s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.16s ease;
   }
-  .rummi-tile.selected { transform: translateY(-8px); border-color: #38bdf8; box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.65); }
-  .rummi-tile.table-tile { width: 40px; height: 54px; }
-  .rummi-tile .num { font-size: 1.15rem; line-height: 1; }
-  .rummi-tile .suit-dot { width: 7px; height: 7px; border-radius: 50%; margin-top: 5px; }
+  .rummi-tile::after {
+    content: "";
+    position: absolute;
+    inset: 4px;
+    border-radius: 7px;
+    border: 1px solid rgba(148, 163, 184, 0.25);
+    pointer-events: none;
+  }
+  .rummi-tile:hover {
+    transform: translateY(-6px) rotateX(8deg) scale(1.04);
+    box-shadow:
+      0 8px 0 #cbd5e1,
+      0 9px 0 #94a3b8,
+      0 15px 22px rgba(0, 0, 0, 0.55),
+      inset 0 2px 3px rgba(255, 255, 255, 0.95);
+  }
+  .rummi-tile.selected {
+    transform: translateY(-12px) rotateX(10deg) scale(1.06);
+    border-color: #38bdf8;
+    box-shadow:
+      0 8px 0 #0284c7,
+      0 9px 0 #0369a1,
+      0 16px 24px rgba(56, 189, 248, 0.55),
+      inset 0 2px 4px #ffffff;
+  }
+  .rummi-tile.table-tile {
+    width: 42px;
+    height: 58px;
+    cursor: default;
+  }
+  .rummi-tile.table-tile:hover { transform: translateY(-2px); }
+  .rummi-tile .num {
+    font-size: 1.25rem;
+    line-height: 1;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.8);
+  }
+  .rummi-tile .suit-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-top: 6px;
+    box-shadow: inset 0 -1px 2px rgba(0,0,0,0.35);
+  }
   .rummi-red .num { color: #dc2626; } .rummi-red .suit-dot { background: #dc2626; }
   .rummi-blue .num { color: #2563eb; } .rummi-blue .suit-dot { background: #2563eb; }
   .rummi-yellow .num { color: #d97706; } .rummi-yellow .suit-dot { background: #eab308; }
   .rummi-black .num { color: #0f172a; } .rummi-black .suit-dot { background: #0f172a; }
-  .rummi-joker .num { font-size: 1.2rem; } .rummi-joker .suit-dot { background: #a855f7; }
+  .rummi-joker .num { font-size: 1.3rem; } .rummi-joker .suit-dot { background: #a855f7; }
+
   .rummi-rack {
-    background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
-    border: 2px solid #475569;
-    border-radius: 14px;
-    padding: 12px;
+    background: linear-gradient(180deg, #334155 0%, #1e293b 45%, #0f172a 100%);
+    border: 2px solid #64748b;
+    border-radius: 16px;
+    padding: 14px;
+    box-shadow: 0 8px 0 #090d16, 0 14px 24px rgba(0, 0, 0, 0.5);
   }
-  .rummi-hand-row { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 8px; min-height: 64px; }
+  .rummi-hand-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+    margin-top: 10px;
+    min-height: 74px;
+    padding: 8px 10px 12px;
+    border-radius: 12px;
+    background: rgba(2, 6, 23, 0.45);
+    border-bottom: 4px solid #475569;
+  }
 
   /* 공용 UI 요소 */
   .log-box {
@@ -442,7 +573,7 @@
   <header class="topbar">
     <div class="brand">
       <h1>🎮 KCM 파티 아케이드</h1>
-      <p>로비 · 실시간 멀티플레이 · 윷놀이(개인전/팀전) · 루미큐브 · 캐치마인드 · 고스톱</p>
+      <p>3D 윷놀이(개인전/팀전) · 3D 루미큐브 · 캐치마인드 · 고스톱 실시간 멀티플레이</p>
     </div>
     <div class="conn-badge">
       <span id="connDot" class="dot"></span>
@@ -495,7 +626,7 @@
         <div class="entry-card">
           <div>
             <h3>🏝️ 혼자 바로 즐기기</h3>
-            <p>방 코드 없이 무인도 생존이나 AI 봇과의 윷놀이(팀전 가능)·루미큐브·고스톱을 시작합니다.</p>
+            <p>방 코드 없이 무인도 생존이나 AI 봇과의 3D 윷놀이(팀전 가능)·3D 루미큐브를 시작합니다.</p>
           </div>
           <div class="row">
             <button id="btnSoloQuick" class="btn-amber" style="flex:1;">🎲 AI 봇 대전방 열기</button>
@@ -513,6 +644,7 @@
         <button id="btnLeaveRoom" class="btn-ghost" style="padding:6px 11px; font-size:0.82rem;">← 로비로 나가기</button>
         <span style="font-size:0.95rem;">방 코드: <strong id="activeRoomCode" style="color:#38bdf8; letter-spacing:1.5px;">-</strong></span>
         <button id="btnCopyRoom" class="btn-ghost" style="padding:5px 10px; font-size:0.8rem;">📋 코드 복사</button>
+        <button id="btnForceSync" class="btn-ghost" style="padding:5px 10px; font-size:0.8rem;" title="상대방과 화면이 다를 때 즉시 동기화">🔄 싱크 맞추기</button>
         <span id="hostBadge" style="font-size:0.82rem; color:#fde047; font-weight:700;"></span>
       </div>
       <div class="row">
@@ -570,6 +702,17 @@
 
 <script>
 (() => {
+  const PEER_ICE_CONFIG = {
+    config: {
+      iceServers: [
+        { urls: 'stun:stun.l.google.com:19302' },
+        { urls: 'stun:stun1.l.google.com:19302' },
+        { urls: 'stun:stun2.l.google.com:19302' },
+        { urls: 'stun:stun3.l.google.com:19302' }
+      ]
+    }
+  };
+
   const CHARACTERS = [
     { id: 'cat', icon: '🐱', label: '고양이' },
     { id: 'fox', icon: '🦊', label: '여우' },
@@ -603,8 +746,8 @@
   };
 
   const MODES = [
-    { id: 'yutnori', name: '윷놀이', desc: '개인전 · 팀전(홍팀 vs 청팀)' },
-    { id: 'rummikub', name: '루미큐브', desc: '드래그&드롭 · 첫 등록 30점' },
+    { id: 'yutnori', name: '윷놀이 (3D)', desc: '개인전 · 팀전(홍팀 vs 청팀)' },
+    { id: 'rummikub', name: '루미큐브 (3D)', desc: '입체 타일 · 드래그&드롭' },
     { id: 'wordchain', name: '끝말잇기', desc: '턴제 20초 · 3콤보 보너스' },
     { id: 'hunmin', name: '훈민정음', desc: '초성 2글자 랜덤 · 25초' },
     { id: 'catchmind', name: '캐치마인드', desc: '시간 무제한 · 실시간 그림' },
@@ -725,6 +868,7 @@
     soloIsland: false,
     modeDrawerOpen: true,
 
+    stateRev: 0,
     mode: 'yutnori',
     players: [],
     scores: {},
@@ -741,7 +885,8 @@
       pendingRolls: [],
       canThrow: true,
       lastSticks: [false, true, true, true],
-      lastRollLabel: '윷을 던져주세요!'
+      lastRollLabel: '윷을 던져주세요!',
+      rollAnimId: 0
     },
     rummikub: {
       pool: [],
@@ -766,16 +911,18 @@
 
   let peer = null;
   const conns = new Map();
+  let helloRetryTimer = null;
+  let lastSeenYutAnimId = 0;
+  let yutRollingActive = false;
   let selectedRummiTileIds = new Set();
+  let draggedRummiTileId = null;
   let selectedYutRollIdx = 0;
   let selectedYutPieceIdx = 0;
 
   const brush = { color: '#0f172a', size: 4, eraser: false, drawing: false, currentStroke: null };
   const $ = (id) => document.getElementById(id);
 
-  function nowStr() {
-    return new Date().toTimeString().slice(0, 8);
-  }
+  function nowStr() { return new Date().toTimeString().slice(0, 8); }
 
   function addLog(text) {
     state.logs.push({ t: nowStr(), text });
@@ -814,7 +961,7 @@
     if (announce) addLog(`${state.myChar} <strong>${state.myName}</strong> 프로필 적용`);
     if (state.isHost) syncStateToPeers();
     else if (state.roomCode && !state.soloIsland) {
-      broadcast({ type: 'UPDATE_PROFILE', playerId: state.myId, playerName: state.myName, char: state.myChar });
+      broadcast({ type: 'HELLO', playerId: state.myId, playerName: state.myName, char: state.myChar });
     }
     renderLobby();
   }
@@ -843,7 +990,9 @@
   function broadcast(payload) {
     const raw = JSON.stringify(payload);
     conns.forEach((c) => {
-      if (c && c.open) c.send(raw);
+      if (c && c.open) {
+        try { c.send(raw); } catch {}
+      }
     });
   }
 
@@ -854,10 +1003,18 @@
 
   function syncStateToPeers() {
     if (!state.isHost) return;
+    state.stateRev = (state.stateRev || 0) + 1;
     broadcast({ type: 'SYNC_STATE', state: getSharedRoomState() });
   }
 
-  /* ================= 방 입장 & 화면 전환 ================= */
+  function stopHelloRetry() {
+    if (helloRetryTimer) {
+      clearInterval(helloRetryTimer);
+      helloRetryTimer = null;
+    }
+  }
+
+  /* ================= 방 입장 & 고속 WebRTC 동기화 ================= */
   function enterRoomComplete(code, asHost, statusLabel) {
     state.roomCode = code;
     state.isHost = asHost;
@@ -869,13 +1026,16 @@
   }
 
   function setupPeerAsHost(code) {
+    stopHelloRetry();
     applyMyProfile(false);
     state.players = [];
     state.scores = {};
     state.yutnori.teams = {};
+    state.stateRev = 1;
     ensurePlayer(state.myId, state.myName, false, state.myChar);
 
     if (peer) { try { peer.destroy(); } catch {} peer = null; }
+    conns.clear();
 
     if (typeof Peer === 'undefined') {
       enterRoomComplete(code, true, `방장 (로컬/AI 모드) · ${code}`);
@@ -887,7 +1047,7 @@
     addLog(`🏠 방 [${code}] 생성 완료! (${state.myChar} ${state.myName})`);
 
     try {
-      peer = new Peer('KCM_' + code);
+      peer = new Peer('KCM_' + code, PEER_ICE_CONFIG);
       peer.on('open', () => {
         setConnStatus('ok', `방장 연결됨 · ${code}`);
         syncStateToPeers();
@@ -896,7 +1056,9 @@
         conns.set(conn.peer, conn);
         conn.on('data', (d) => handleIncomingData(conn.peer, d));
         conn.on('close', () => conns.delete(conn.peer));
-        conn.on('open', () => conn.send(JSON.stringify({ type: 'SYNC_STATE', state: getSharedRoomState() })));
+        conn.on('open', () => {
+          conn.send(JSON.stringify({ type: 'SYNC_STATE', state: getSharedRoomState() }));
+        });
       });
       peer.on('error', () => {
         setConnStatus('ok', `방장 (로컬/봇 모드) · ${code}`);
@@ -907,32 +1069,53 @@
   }
 
   function setupPeerAsGuest(code) {
+    stopHelloRetry();
     applyMyProfile(false);
     if (typeof Peer === 'undefined') {
       alert('현재 브라우저 미리보기 환경에서는 외부 P2P 서버가 차단되어 있어 [새 방 만들기] 또는 [AI 봇 대전방 열기]만 지원됩니다.');
       return;
     }
     if (peer) { try { peer.destroy(); } catch {} peer = null; }
+    conns.clear();
 
     setConnStatus('', `방 [${code}] 접속 중...`);
     try {
-      peer = new Peer();
+      peer = new Peer(PEER_ICE_CONFIG);
       peer.on('open', () => {
         const conn = peer.connect('KCM_' + code, { reliable: true });
         conns.set(conn.peer, conn);
+
+        const sendHello = () => {
+          if (conn && conn.open) {
+            conn.send(JSON.stringify({
+              type: 'HELLO',
+              playerId: state.myId,
+              playerName: state.myName,
+              char: state.myChar
+            }));
+          }
+        };
+
+        conn.on('data', (d) => handleIncomingData(conn.peer, d));
         conn.on('open', () => {
           enterRoomComplete(code, false, `참여 중 · ${code}`);
-          conn.send(JSON.stringify({
-            type: 'HELLO',
-            playerId: state.myId,
-            playerName: state.myName,
-            char: state.myChar
-          }));
+          sendHello();
+          // 방장 명단에 내 ID가 반영될 때까지 0.8초마다 자동 재전송
+          helloRetryTimer = setInterval(() => {
+            if (state.players.some(p => p.id === state.myId && state.stateRev > 0)) {
+              stopHelloRetry();
+              return;
+            }
+            sendHello();
+          }, 800);
         });
-        conn.on('data', (d) => handleIncomingData(conn.peer, d));
-        conn.on('close', () => setConnStatus('err', '연결 종료됨'));
+        conn.on('close', () => {
+          stopHelloRetry();
+          setConnStatus('err', '연결 종료됨');
+        });
       });
       peer.on('error', () => {
+        stopHelloRetry();
         setConnStatus('err', '방 연결 실패 (방 코드 확인)');
         alert(`방 [${code}]을 찾을 수 없습니다. 방장이 먼저 방을 열었는지 확인하세요.`);
       });
@@ -945,11 +1128,12 @@
     const code = 'BOT' + Math.floor(100 + Math.random() * 900);
     setupPeerAsHost(code);
     ensurePlayer('bot_1', '봇_알파', true, '🤖');
-    addLog('🤖 AI 봇 [봇_알파]가 자동 참가했습니다. 원하는 종목을 선택하고 게임을 시작하세요!');
+    addLog('🤖 AI 봇 [봇_알파]가 자동 참가했습니다. 원하는 종목과 팀전 여부를 선택하고 시작하세요!');
     renderAll();
   }
 
   function enterSoloIsland() {
+    stopHelloRetry();
     applyMyProfile(false);
     state.soloIsland = true;
     state.isHost = true;
@@ -965,7 +1149,7 @@
     renderAll();
   }
 
-  /* ================= 윷놀이 엔진 (개인전 + 팀전 지원) ================= */
+  /* ================= 윷놀이 엔진 (개인전 + 팀전 + 3D 애니메이션) ================= */
   const YUT_NODES = [
     { id: 0, x: 430, y: 430, corner: true, label: '출발' },
     { id: 1, x: 430, y: 354 }, { id: 2, x: 430, y: 278 }, { id: 3, x: 430, y: 202 }, { id: 4, x: 430, y: 126 },
@@ -984,23 +1168,17 @@
   const YUT_PLAYER_COLORS = ['#ef4444', '#3b82f6', '#22c55e', '#a855f7', '#f59e0b', '#ec4899'];
 
   function getYutOwnerKey(playerId) {
-    if (state.yutnori.teamMode) {
-      return state.yutnori.teams[playerId] || 'red';
-    }
+    if (state.yutnori.teamMode) return state.yutnori.teams[playerId] || 'red';
     return playerId;
   }
 
   function getYutOwnerLabel(ownerKey) {
-    if (state.yutnori.teamMode) {
-      return ownerKey === 'red' ? '🔴 홍팀' : '🔵 청팀';
-    }
+    if (state.yutnori.teamMode) return ownerKey === 'red' ? '🔴 홍팀' : '🔵 청팀';
     return getPlayerName(ownerKey);
   }
 
   function getYutOwnerColor(ownerKey) {
-    if (state.yutnori.teamMode) {
-      return ownerKey === 'red' ? '#ef4444' : '#3b82f6';
-    }
+    if (state.yutnori.teamMode) return ownerKey === 'red' ? '#ef4444' : '#3b82f6';
     const idx = state.players.findIndex(p => p.id === ownerKey);
     return YUT_PLAYER_COLORS[Math.max(0, idx) % YUT_PLAYER_COLORS.length];
   }
@@ -1010,12 +1188,28 @@
     return state.players.map(p => p.id);
   }
 
+  function interleavePlayersByTeam() {
+    const reds = state.players.filter(p => (state.yutnori.teams[p.id] || 'red') === 'red');
+    const blues = state.players.filter(p => state.yutnori.teams[p.id] === 'blue');
+    const merged = [];
+    const maxLen = Math.max(reds.length, blues.length);
+    for (let i = 0; i < maxLen; i++) {
+      if (reds[i]) merged.push(reds[i]);
+      if (blues[i]) merged.push(blues[i]);
+    }
+    if (merged.length === state.players.length) {
+      state.players = merged;
+    }
+  }
+
   function initYutnoriRound() {
     const isTeam = Boolean(state.yutnori.teamMode);
     const teams = { ...state.yutnori.teams };
     state.players.forEach((p, idx) => {
       if (!teams[p.id]) teams[p.id] = idx % 2 === 0 ? 'red' : 'blue';
     });
+    state.yutnori.teams = teams;
+    if (isTeam) interleavePlayersByTeam();
 
     const pieces = {};
     if (isTeam) {
@@ -1032,7 +1226,8 @@
       pendingRolls: [],
       canThrow: true,
       lastSticks: [false, true, true, true],
-      lastRollLabel: '윷을 던져주세요!'
+      lastRollLabel: '윷을 던져주세요!',
+      rollAnimId: state.yutnori.rollAnimId || 0
     };
     selectedYutRollIdx = 0;
     selectedYutPieceIdx = 0;
@@ -1051,7 +1246,7 @@
       }
     }
     initYutnoriRound();
-    addLog(state.yutnori.teamMode ? '🤝 윷놀이 <strong>팀전 (홍팀 vs 청팀)</strong> 모드로 전환되었습니다!' : '👤 윷놀이 <strong>개인전</strong> 모드로 전환되었습니다!');
+    addLog(state.yutnori.teamMode ? '🤝 윷놀이 <strong>팀전 (🔴 홍팀 vs 🔵 청팀)</strong> 선택됨!' : '👤 윷놀이 <strong>개인전</strong> 선택됨!');
     syncStateToPeers();
     renderAll();
   }
@@ -1061,9 +1256,20 @@
     const curTeam = state.yutnori.teams[targetPlayerId] || 'red';
     const nextTeam = curTeam === 'red' ? 'blue' : 'red';
     state.yutnori.teams[targetPlayerId] = nextTeam;
-    addLog(`🔄 ${getPlayerName(targetPlayerId)} → ${nextTeam === 'red' ? '🔴 홍팀' : '🔵 청팀'} 이동`);
+    if (state.yutnori.teamMode) interleavePlayersByTeam();
+    addLog(`🔄 ${getPlayerName(targetPlayerId)} → ${nextTeam === 'red' ? '🔴 홍팀' : '🔵 청팀'} 배정`);
     syncStateToPeers();
     renderAll();
+  }
+
+  function triggerLocalYut3DAnim(animId) {
+    if (!animId || animId === lastSeenYutAnimId) return;
+    lastSeenYutAnimId = animId;
+    yutRollingActive = true;
+    setTimeout(() => {
+      yutRollingActive = false;
+      document.querySelectorAll('.yut-stick-3d').forEach(el => el.classList.remove('rolling'));
+    }, 720);
   }
 
   function rollFourYutSticks() {
@@ -1141,6 +1347,8 @@
     yn.lastRollLabel = res.name;
     yn.pendingRolls.push({ steps: res.steps, name: res.name });
     yn.canThrow = res.bonus;
+    yn.rollAnimId = (yn.rollAnimId || 0) + 1;
+    triggerLocalYut3DAnim(yn.rollAnimId);
 
     const ownerKey = getYutOwnerKey(playerId);
     const teamTag = yn.teamMode ? ` [${getYutOwnerLabel(ownerKey)}]` : '';
@@ -1151,7 +1359,9 @@
     if (!yn.canThrow && yn.pendingRolls.length === 1 && yn.pendingRolls[0].steps === -1 && !hasBoardPiece) {
       yn.pendingRolls = [];
       addLog(`💨 판 위에 이동할 말이 없어 빽도 무효 처리 후 턴이 넘어갑니다.`);
-      advanceTurn();
+      syncStateToPeers();
+      renderAll();
+      setTimeout(() => advanceTurn(), 750);
       return;
     }
 
@@ -1239,7 +1449,7 @@
     else { syncStateToPeers(); renderAll(); }
   }
 
-  /* ================= 루미큐브 엔진 ================= */
+  /* ================= 3D 루미큐브 엔진 ================= */
   function buildRummikubPool() {
     const colors = ['red', 'blue', 'yellow', 'black'];
     const pool = [];
@@ -1419,6 +1629,12 @@
         roomCode: state.roomCode, isHost: state.isHost, soloIsland: state.soloIsland, modeDrawerOpen: state.modeDrawerOpen
       };
       Object.assign(state, msg.state, localIdentity);
+      if (state.players.some(p => p.id === state.myId)) {
+        stopHelloRetry();
+      }
+      if (state.mode === 'yutnori' && state.yutnori?.rollAnimId) {
+        triggerLocalYut3DAnim(state.yutnori.rollAnimId);
+      }
       renderAll();
       if (state.mode === 'catchmind') redrawCatchmindCanvas();
       return;
@@ -1451,10 +1667,15 @@
     if (!state.isHost) return;
 
     if (msg.type === 'HELLO') {
+      const isNew = !state.players.some(p => p.id === msg.playerId);
       ensurePlayer(msg.playerId, msg.playerName, false, msg.char || '🐱');
-      addLog(`👋 ${msg.char || '🐱'} <strong>${msg.playerName}</strong> 입장!`);
+      if (isNew) {
+        addLog(`👋 ${msg.char || '🐱'} <strong>${msg.playerName}</strong> 입장!`);
+      }
       syncStateToPeers();
       renderAll();
+    } else if (msg.type === 'REQUEST_SYNC') {
+      syncStateToPeers();
     } else if (msg.type === 'ACTION_YUT_TEAM_MODE') setYutTeamMode(msg.enabled);
     else if (msg.type === 'ACTION_YUT_SWITCH_TEAM') togglePlayerYutTeam(msg.targetPlayerId);
     else if (msg.type === 'ACTION_YUT_THROW') handleYutThrow(msg.playerId);
@@ -1547,21 +1768,21 @@
     renderAll();
 
     const cur = getCurrentTurnPlayer();
-    if (cur && cur.isBot && state.activeGame) setTimeout(() => runBotTurn(cur.id), 850);
+    if (cur && cur.isBot && state.activeGame) setTimeout(() => runBotTurn(cur.id), 900);
   }
 
   function runBotTurn(botId) {
     if (!state.isHost || !state.activeGame || getCurrentTurnPlayer()?.id !== botId) return;
     if (state.mode === 'yutnori') {
       const yn = state.yutnori;
-      if (yn.canThrow) { handleYutThrow(botId); setTimeout(() => runBotTurn(botId), 700); return; }
+      if (yn.canThrow) { handleYutThrow(botId); setTimeout(() => runBotTurn(botId), 850); return; }
       if (yn.pendingRolls.length > 0) {
         const ownerKey = getYutOwnerKey(botId);
         const myPieces = yn.pieces[ownerKey] || [-1, -1, -1];
         const roll = yn.pendingRolls[0];
         let idx = myPieces.findIndex(pos => pos >= 0 && pos < 99);
         if (idx === -1 && roll.steps > 0) idx = myPieces.findIndex(pos => pos === -1);
-        if (idx !== -1) { handleYutMove(botId, 0, idx); setTimeout(() => runBotTurn(botId), 700); return; }
+        if (idx !== -1) { handleYutMove(botId, 0, idx); setTimeout(() => runBotTurn(botId), 750); return; }
       }
       advanceTurn();
       return;
@@ -1844,6 +2065,38 @@
     else { pill.textContent = `⏱ ${state.timeLeft}초`; pill.classList.remove('unlimited'); pill.classList.toggle('urgent', state.timeLeft <= 5); }
   }
 
+  function renderYutModeSetupBanner() {
+    const yn = state.yutnori;
+    const redMembers = state.players.filter(p => (yn.teams[p.id] || 'red') === 'red');
+    const blueMembers = state.players.filter(p => yn.teams[p.id] === 'blue');
+
+    return `
+      <div class="yut-mode-banner">
+        <div class="row">
+          <span style="font-size:0.88rem; font-weight:800; color:#fde047;">🪵 윷놀이 대전 방식:</span>
+          <button id="btnYutSoloMode" class="${!yn.teamMode ? 'btn-primary' : 'btn-ghost'}" style="padding:6px 13px; font-size:0.83rem;" ${!state.isHost ? 'disabled' : ''}>👤 개인전</button>
+          <button id="btnYutTeamMode" class="${yn.teamMode ? 'btn-danger' : 'btn-ghost'}" style="padding:6px 13px; font-size:0.83rem;" ${!state.isHost ? 'disabled' : ''}>🤝 팀전 (🔴 홍팀 vs 🔵 청팀)</button>
+        </div>
+        ${yn.teamMode ? `
+          <div class="row" style="font-size:0.82rem;">
+            <span style="padding:4px 10px; border-radius:8px; background:rgba(239,68,68,0.18); border:1px solid #ef4444;">
+              🔴 홍팀: ${redMembers.map(m => `${m.char || '👤'}${m.name}`).join(', ') || '없음'}
+            </span>
+            <span style="padding:4px 10px; border-radius:8px; background:rgba(59,130,246,0.18); border:1px solid #3b82f6;">
+              🔵 청팀: ${blueMembers.map(m => `${m.char || '👤'}${m.name}`).join(', ') || '없음'}
+            </span>
+            <span style="color:var(--muted);">(플레이어 칩 클릭 시 팀 이동)</span>
+          </div>
+        ` : `<span style="font-size:0.8rem; color:var(--muted);">개인전: 각 플레이어별 말 3개로 대결</span>`}
+      </div>
+    `;
+  }
+
+  function bindYutModeSetupEvents(container) {
+    container.querySelector('#btnYutSoloMode')?.addEventListener('click', () => setYutTeamMode(false));
+    container.querySelector('#btnYutTeamMode')?.addEventListener('click', () => setYutTeamMode(true));
+  }
+
   function renderYutnoriBoardSvg(previewDest = -1) {
     const segs = [[430,430,430,50],[430,50,50,50],[50,50,50,430],[50,430,430,430],[430,50,50,430],[50,50,430,430]];
     const occMap = {};
@@ -1890,16 +2143,19 @@
     const limit = getTurnSecondsForCurrentState();
 
     if (!state.activeGame) {
-      vp.innerHTML = `
-        <div style="text-align:center; padding:32px 16px; background:var(--panel-2); border:1px dashed var(--border); border-radius:14px;">
+      const yutPreSetup = state.mode === 'yutnori' ? renderYutModeSetupBanner() : '';
+      vp.innerHTML = yutPreSetup + `
+        <div style="text-align:center; padding:28px 16px; background:var(--panel-2); border:1px dashed var(--border); border-radius:14px;">
           <div style="font-size:2.2rem; margin-bottom:8px;">🎲</div>
           <h3 style="margin:0 0 6px;">대기실 준비 완료!</h3>
           <p style="margin:0 0 14px; color:var(--muted); font-size:0.9rem;">
-            위에서 <strong>[${MODES.find(m => m.id === state.mode)?.name}]</strong> 등 원하는 종목을 고른 뒤 <strong>[▶ 게임 시작]</strong>을 누르세요.
+            현재 선택된 종목: <strong style="color:#38bdf8;">[${MODES.find(m => m.id === state.mode)?.name}]</strong>
+            ${state.isHost ? ' — 준비가 끝나면 아래 버튼을 눌러 시작하세요!' : ' — 방장이 게임을 시작하면 자동으로 화면이 전환됩니다.'}
           </p>
-          <button id="btnCenterStart" class="btn-green" style="padding:11px 22px; font-size:1rem;">▶ 지금 바로 게임 시작하기</button>
+          ${state.isHost ? `<button id="btnCenterStart" class="btn-green" style="padding:11px 22px; font-size:1rem;">▶ 지금 바로 게임 시작하기</button>` : ''}
         </div>
       `;
+      bindYutModeSetupEvents(vp);
       $('btnCenterStart')?.addEventListener('click', startGame);
       return;
     }
@@ -1928,8 +2184,10 @@
         ? computeYutDestination(curPos, activeRoll.steps) : -1;
 
       const sticksHtml = (yn.lastSticks || [false, true, true, true]).map((isFlat, idx) => `
-        <div class="yut-stick ${isFlat ? 'flat' : 'round'} ${idx === 0 && isFlat ? 'backdo' : ''}">
-          ${isFlat ? (idx === 0 ? '<span>✕</span><span>빽도</span><span>✕</span>' : '<span>✕</span><span>✕</span><span>✕</span>') : '<span>●</span><span>●</span><span>●</span>'}
+        <div class="yut-stick-3d ${yutRollingActive ? 'rolling' : ''}">
+          <div class="yut-face ${isFlat ? 'flat' : 'round'} ${idx === 0 && isFlat ? 'backdo' : ''}">
+            ${isFlat ? (idx === 0 ? '<span>✕</span><span>빽도</span><span>✕</span>' : '<span>✕</span><span>✕</span><span>✕</span>') : '<span>●</span><span>●</span><span>●</span>'}
+          </div>
         </div>
       `).join('');
 
@@ -1976,26 +2234,18 @@
         `;
       }).join('');
 
-      vp.innerHTML = hudHtml + `
-        <div class="yut-mode-banner">
-          <div class="row">
-            <span style="font-size:0.86rem; font-weight:700;">대전 방식:</span>
-            <button id="btnYutSoloMode" class="${!yn.teamMode ? 'btn-primary' : 'btn-ghost'}" style="padding:5px 12px; font-size:0.82rem;" ${!state.isHost ? 'disabled' : ''}>👤 개인전</button>
-            <button id="btnYutTeamMode" class="${yn.teamMode ? 'btn-danger' : 'btn-ghost'}" style="padding:5px 12px; font-size:0.82rem;" ${!state.isHost ? 'disabled' : ''}>🤝 팀전 (홍팀 vs 청팀)</button>
-          </div>
-          <span style="font-size:0.8rem; color:var(--muted);">
-            ${yn.teamMode ? '팀전 모드: 같은 팀끼리 말 3개를 공유하며 [⇄] 버튼으로 팀을 바꿀 수 있습니다.' : '개인전 모드: 각 플레이어별 말 3개로 대결합니다.'}
-          </span>
-        </div>
+      vp.innerHTML = hudHtml + renderYutModeSetupBanner() + `
         <div class="yut-layout">
           <div class="yut-board-wrap">${renderYutnoriBoardSvg(previewDest)}</div>
           <div class="yut-side-panel">
             <div class="yut-sticks-box">
               <div class="row" style="justify-content:space-between;">
-                <strong style="font-size:0.95rem; color:#fde047;">🪵 ${yn.lastRollLabel}</strong>
-                <button id="btnYutThrow" class="btn-amber" ${!myTurn || !yn.canThrow ? 'disabled' : ''}>🪵 윷 던지기!</button>
+                <strong style="font-size:0.98rem; color:#fde047;">🪵 ${yn.lastRollLabel}</strong>
+                <button id="btnYutThrow" class="btn-amber" ${!myTurn || !yn.canThrow ? 'disabled' : ''}>🎲 3D 윷 던지기!</button>
               </div>
-              <div class="yut-sticks-row">${sticksHtml}</div>
+              <div class="yut-3d-stage">
+                <div class="yut-sticks-row">${sticksHtml}</div>
+              </div>
               <div style="font-size:0.8rem; color:var(--muted); margin-bottom:6px;">사용 가능한 이동 패 (${yn.pendingRolls.length}개):</div>
               <div class="row">
                 ${yn.pendingRolls.map((r, idx) => `<button class="yut-roll-chip ${idx === selectedYutRollIdx ? 'active' : ''}" data-ridx="${idx}" ${!myTurn ? 'disabled' : ''}>${r.name}</button>`).join('') || '<span style="font-size:0.8rem; color:var(--muted);">던진 패 없음</span>'}
@@ -2009,8 +2259,7 @@
         </div>
       `;
 
-      $('btnYutSoloMode')?.addEventListener('click', () => setYutTeamMode(false));
-      $('btnYutTeamMode')?.addEventListener('click', () => setYutTeamMode(true));
+      bindYutModeSetupEvents(vp);
 
       vp.querySelectorAll('[data-swap-pid]').forEach(btn => {
         btn.addEventListener('click', (e) => {
@@ -2040,46 +2289,91 @@
       const myHand = rk.hands[state.myId] || [];
       const melded = Boolean(rk.initialMelded[state.myId]);
       const selectedTiles = myHand.filter(t => selectedRummiTileIds.has(t.id));
+      const selectedSum = selectedTiles.reduce((acc, t) => acc + (t.isJoker ? 0 : t.num), 0);
 
       vp.innerHTML = hudHtml + `
-        <div class="rummi-table-board">
-          <div style="font-size:0.82rem; color:#a7f3d0; font-weight:700; margin-bottom:8px;">🟢 공용 테이블 (${rk.tableSets.length}세트) · 남은 더미 ${rk.pool.length}장</div>
-          <div class="rummi-sets-wrap">
-            ${rk.tableSets.map((set, sIdx) => `
-              <div class="rummi-set-group ${myTurn && melded && selectedTiles.length ? 'appendable' : ''}" data-sidx="${sIdx}">
-                ${set.map(t => `<div class="rummi-tile table-tile ${t.isJoker ? 'rummi-joker' : 'rummi-' + t.color}"><div class="num">${t.isJoker ? '🃏' : t.num}</div><div class="suit-dot"></div></div>`).join('')}
-              </div>
-            `).join('') || '<span style="color:#6ee7b7; font-size:0.84rem;">3장 이상(첫 등록 30점 이상)을 선택해 등록하세요.</span>'}
-          </div>
-        </div>
-        <div class="rummi-rack">
-          <div class="row" style="justify-content:space-between;">
-            <span style="font-size:0.86rem; font-weight:700;">내 거치대 (${myHand.length}장)</span>
-            <div class="row">
-              <button id="btnRummiMeld" class="btn-green" style="padding:6px 11px; font-size:0.82rem;" ${!myTurn || selectedTiles.length < 3 ? 'disabled' : ''}>🧩 새 세트 등록</button>
-              <button id="btnRummiReset" class="btn-ghost" style="padding:6px 10px; font-size:0.82rem;" ${!myTurn ? 'disabled' : ''}>↩️ 복구</button>
-              <button id="btnRummiDone" class="btn-primary" style="padding:6px 11px; font-size:0.82rem;" ${!myTurn || !rk.playedThisTurn ? 'disabled' : ''}>✅ 턴 종료</button>
-              <button id="btnRummiDraw" class="btn-amber" style="padding:6px 11px; font-size:0.82rem;" ${!myTurn ? 'disabled' : ''}>📥 1장 뽑고 넘기기</button>
+        <div class="rummi-3d-scene">
+          <div id="rummiTableDrop" class="rummi-table-board">
+            <div class="row" style="justify-content:space-between; margin-bottom:10px;">
+              <span style="font-size:0.86rem; color:#a7f3d0; font-weight:800;">🟢 3D 루미큐브 테이블 (${rk.tableSets.length}세트) · 남은 더미 ${rk.pool.length}장</span>
+              <span style="font-size:0.8rem; color:${melded ? '#86efac' : '#fde047'}; font-weight:700;">
+                ${melded ? '✅ 첫 등록 완료 (기존 세트 연결 가능)' : `⚠️ 첫 등록 미완료 (합계 30점 이상 필요 · 현재 선택 ${selectedSum}점)`}
+              </span>
+            </div>
+            <div class="rummi-sets-wrap">
+              ${rk.tableSets.map((set, sIdx) => `
+                <div class="rummi-set-group ${myTurn && melded && selectedTiles.length ? 'appendable' : ''}" data-sidx="${sIdx}">
+                  ${set.map(t => `<div class="rummi-tile table-tile ${t.isJoker ? 'rummi-joker' : 'rummi-' + t.color}"><div class="num">${t.isJoker ? '🃏' : t.num}</div><div class="suit-dot"></div></div>`).join('')}
+                </div>
+              `).join('')}
+              <div class="rummi-new-dropzone">＋ 선택 타일 드롭 / 새 세트</div>
             </div>
           </div>
-          <div class="rummi-hand-row">
-            ${myHand.map(t => `<div class="rummi-tile ${t.isJoker ? 'rummi-joker' : 'rummi-' + t.color} ${selectedRummiTileIds.has(t.id) ? 'selected' : ''}" data-tid="${t.id}"><div class="num">${t.isJoker ? '🃏' : t.num}</div><div class="suit-dot"></div></div>`).join('')}
+
+          <div class="rummi-rack">
+            <div class="row" style="justify-content:space-between;">
+              <span style="font-size:0.88rem; font-weight:800;">내 3D 타일 거치대 (${myHand.length}장 · 클릭 또는 드래그)</span>
+              <div class="row">
+                <button id="btnRummiMeld" class="btn-green" style="padding:6px 11px; font-size:0.82rem;" ${!myTurn || selectedTiles.length < 3 ? 'disabled' : ''}>🧩 새 세트 등록 (${selectedSum}점)</button>
+                <button id="btnRummiReset" class="btn-ghost" style="padding:6px 10px; font-size:0.82rem;" ${!myTurn ? 'disabled' : ''}>↩️ 복구</button>
+                <button id="btnRummiDone" class="btn-primary" style="padding:6px 11px; font-size:0.82rem;" ${!myTurn || !rk.playedThisTurn ? 'disabled' : ''}>✅ 턴 종료</button>
+                <button id="btnRummiDraw" class="btn-amber" style="padding:6px 11px; font-size:0.82rem;" ${!myTurn ? 'disabled' : ''}>📥 1장 뽑고 넘기기</button>
+              </div>
+            </div>
+            <div class="rummi-hand-row">
+              ${myHand.map(t => `<div class="rummi-tile ${t.isJoker ? 'rummi-joker' : 'rummi-' + t.color} ${selectedRummiTileIds.has(t.id) ? 'selected' : ''}" data-tid="${t.id}" draggable="${myTurn ? 'true' : 'false'}"><div class="num">${t.isJoker ? '🃏' : t.num}</div><div class="suit-dot"></div></div>`).join('')}
+            </div>
           </div>
         </div>
       `;
 
-      vp.querySelectorAll('.rummi-hand-row .rummi-tile').forEach(el => el.addEventListener('click', () => {
-        const tid = el.dataset.tid;
-        if (selectedRummiTileIds.has(tid)) selectedRummiTileIds.delete(tid); else selectedRummiTileIds.add(tid);
-        renderGameViewport();
-      }));
-      vp.querySelectorAll('.rummi-set-group').forEach(grp => grp.addEventListener('click', () => {
-        const ids = Array.from(selectedRummiTileIds);
-        if (!ids.length) return;
-        const sIdx = Number(grp.dataset.sidx);
-        if (state.isHost) handleRummiAppendToSet(state.myId, sIdx, ids);
-        else broadcast({ type: 'ACTION_RUMMI_APPEND', playerId: state.myId, setIdx: sIdx, tileIds: ids });
-      }));
+      const tableDrop = $('rummiTableDrop');
+      tableDrop?.addEventListener('dragover', (e) => { e.preventDefault(); tableDrop.classList.add('drag-over'); });
+      tableDrop?.addEventListener('dragleave', () => tableDrop.classList.remove('drag-over'));
+      tableDrop?.addEventListener('drop', (e) => {
+        e.preventDefault();
+        tableDrop.classList.remove('drag-over');
+        if (!myTurn) return;
+        const ids = selectedRummiTileIds.size >= 3 ? Array.from(selectedRummiTileIds) : (draggedRummiTileId ? [draggedRummiTileId] : []);
+        if (ids.length >= 3) {
+          if (state.isHost) handleRummiMeldNew(state.myId, ids);
+          else broadcast({ type: 'ACTION_RUMMI_MELD', playerId: state.myId, tileIds: ids });
+        }
+      });
+
+      vp.querySelectorAll('.rummi-hand-row .rummi-tile').forEach(el => {
+        el.addEventListener('click', () => {
+          const tid = el.dataset.tid;
+          if (selectedRummiTileIds.has(tid)) selectedRummiTileIds.delete(tid); else selectedRummiTileIds.add(tid);
+          renderGameViewport();
+        });
+        el.addEventListener('dragstart', () => {
+          draggedRummiTileId = el.dataset.tid;
+          selectedRummiTileIds.add(draggedRummiTileId);
+        });
+      });
+
+      vp.querySelectorAll('.rummi-set-group').forEach(grp => {
+        grp.addEventListener('dragover', (e) => e.preventDefault());
+        grp.addEventListener('drop', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          if (!myTurn) return;
+          const ids = selectedRummiTileIds.size ? Array.from(selectedRummiTileIds) : (draggedRummiTileId ? [draggedRummiTileId] : []);
+          if (!ids.length) return;
+          const sIdx = Number(grp.dataset.sidx);
+          if (state.isHost) handleRummiAppendToSet(state.myId, sIdx, ids);
+          else broadcast({ type: 'ACTION_RUMMI_APPEND', playerId: state.myId, setIdx: sIdx, tileIds: ids });
+        });
+        grp.addEventListener('click', () => {
+          const ids = Array.from(selectedRummiTileIds);
+          if (!ids.length) return;
+          const sIdx = Number(grp.dataset.sidx);
+          if (state.isHost) handleRummiAppendToSet(state.myId, sIdx, ids);
+          else broadcast({ type: 'ACTION_RUMMI_APPEND', playerId: state.myId, setIdx: sIdx, tileIds: ids });
+        });
+      });
+
       $('btnRummiMeld')?.addEventListener('click', () => {
         const ids = Array.from(selectedRummiTileIds);
         if (state.isHost) handleRummiMeldNew(state.myId, ids);
@@ -2297,6 +2591,7 @@
   $('btnSoloIsland').addEventListener('click', enterSoloIsland);
 
   $('btnLeaveRoom').addEventListener('click', () => {
+    stopHelloRetry();
     if (peer) { try { peer.destroy(); } catch {} peer = null; }
     conns.clear();
     state.roomCode = '';
@@ -2304,6 +2599,17 @@
     state.activeGame = false;
     setConnStatus('', '로비 대기 중');
     renderAll();
+  });
+
+  $('btnForceSync').addEventListener('click', () => {
+    if (state.isHost) {
+      syncStateToPeers();
+      addLog('🔄 방장이 모든 참여자에게 최신 상태를 전송했습니다.');
+    } else {
+      broadcast({ type: 'HELLO', playerId: state.myId, playerName: state.myName, char: state.myChar });
+      broadcast({ type: 'REQUEST_SYNC', playerId: state.myId });
+      addLog('🔄 방장에게 최신 화면 동기화를 요청했습니다.');
+    }
   });
 
   $('btnToggleModeDrawer').addEventListener('click', () => {
