@@ -3,2662 +3,1956 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>KCM 파티 아케이드 — 3D 윷놀이(팀전) · 3D 루미큐브 · 실시간 멀티플레이</title>
-<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<title>올인원 파티 & 아케이드 허브 (SKIN SHOP EDITION)</title>
 <style>
   :root {
-    --bg: #0b1120;
-    --panel: #162033;
-    --panel-2: #0f172a;
-    --border: #2c3e5a;
+    --bg: #0f172a;
+    --panel: #1e293b;
+    --panel-2: #273549;
+    --border: #334155;
     --text: #f8fafc;
     --muted: #94a3b8;
-    --accent: #38bdf8;
-    --accent-2: #22c55e;
-    --warn: #f59e0b;
+    --primary: #3b82f6;
+    --accent: #f59e0b;
+    --success: #10b981;
     --danger: #ef4444;
-    --purple: #a855f7;
   }
-  * { box-sizing: border-box; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
-    margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
-    background: radial-gradient(circle at top, #1e1b4b 0%, #0f172a 45%, var(--bg) 100%);
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', sans-serif;
+    background: var(--bg);
     color: var(--text);
     min-height: 100vh;
-    padding: 16px;
+    display: flex;
+    flex-direction: column;
   }
-  .app {
-    max-width: 1160px;
+  header {
+    background: #0b1120;
+    border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .brand { font-size: 1.15rem; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+  .brand span.badge {
+    background: linear-gradient(135deg, #8b5cf6, #ec4899);
+    font-size: 0.72rem;
+    padding: 2px 8px;
+    border-radius: 999px;
+    color: #fff;
+  }
+  .controls-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; }
+  select, input, button {
+    font-family: inherit;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--panel);
+    color: var(--text);
+    padding: 7px 10px;
+    font-size: 0.85rem;
+  }
+  button { cursor: pointer; font-weight: 600; transition: 0.15s; }
+  button:hover:not(:disabled) { filter: brightness(1.12); }
+  button:disabled { opacity: 0.45; cursor: not-allowed; }
+  button.primary { background: var(--primary); border-color: var(--primary); }
+  button.success { background: var(--success); border-color: var(--success); color: #052e16; }
+  button.warn { background: var(--accent); border-color: var(--accent); color: #1e1b04; }
+  button.danger { background: var(--danger); border-color: var(--danger); }
+  button.purple { background: #7c3aed; border-color: #8b5cf6; color: #fff; }
+
+  .main-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 265px 1fr 315px;
+    gap: 12px;
+    padding: 12px;
+    max-width: 1580px;
+    width: 100%;
     margin: 0 auto;
+  }
+  @media (max-width: 1120px) {
+    .main-grid { grid-template-columns: 1fr; }
+  }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .card-title {
+    font-size: 0.94rem;
+    font-weight: 700;
+    color: #e2e8f0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+  }
+  .player-list { display: flex; flex-direction: column; gap: 6px; }
+  .player-item {
+    background: var(--panel-2);
+    padding: 8px 10px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid transparent;
+    font-size: 0.86rem;
+  }
+  .player-item.active-turn { border-color: var(--accent); background: #2d3748; }
+  .score-pill {
+    background: #0f172a;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-weight: 700;
+    color: var(--accent);
+    font-size: 0.8rem;
+  }
+  .hof-box {
+    background: #0f172a;
+    border: 1px solid #334155;
+    border-radius: 10px;
+    padding: 10px;
+    font-size: 0.82rem;
+    line-height: 1.65;
+  }
+  .hof-box b { color: #fbbf24; }
+
+  /* 중앙 게임 스테이지 */
+  .stage-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    background: #0f172a;
+    padding: 10px 14px;
+    border-radius: 10px;
+  }
+  .timer-box { font-size: 1.02rem; font-weight: 800; color: #38bdf8; }
+  .stage-body {
+    flex: 1;
+    min-height: 500px;
+    background: #0b1120;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* 스킨 상점 그리드 */
+  .shop-panel {
+    width: 100%;
+    max-width: 720px;
     display: flex;
     flex-direction: column;
     gap: 14px;
   }
-  .hidden { display: none !important; }
-
-  header.topbar {
-    background: rgba(22, 32, 51, 0.94);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 14px 20px;
+  .shop-top-bar {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    gap: 10px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
-  }
-  .brand h1 {
-    margin: 0;
-    font-size: 1.3rem;
-    letter-spacing: -0.02em;
-    background: linear-gradient(90deg, #38bdf8, #a855f7, #facc15);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-  .brand p { margin: 3px 0 0; font-size: 0.82rem; color: var(--muted); }
-  .conn-badge {
-    display: inline-flex;
-    align-items: center;
     gap: 8px;
-    padding: 6px 14px;
-    border-radius: 999px;
-    background: var(--panel-2);
+    background: var(--panel);
+    padding: 12px 16px;
+    border-radius: 12px;
     border: 1px solid var(--border);
-    font-size: 0.84rem;
-    font-weight: 600;
   }
-  .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--warn); }
-  .dot.ok { background: var(--accent-2); box-shadow: 0 0 8px var(--accent-2); }
-  .dot.err { background: var(--danger); }
-
-  .card {
-    background: rgba(22, 32, 51, 0.94);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 18px;
-    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.32);
-  }
-  .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
-  .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 14px; }
-  .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
-
-  input, select, button {
-    font-family: inherit;
-    font-size: 0.93rem;
-    border-radius: 10px;
-    border: 1px solid var(--border);
-    padding: 10px 14px;
-    color: var(--text);
-    background: var(--panel-2);
-  }
-  input:focus, select:focus { outline: 2px solid var(--accent); border-color: var(--accent); }
-  button {
-    cursor: pointer;
-    font-weight: 700;
-    transition: transform 0.08s ease, filter 0.15s ease, opacity 0.15s ease;
-  }
-  button:hover:not(:disabled) { filter: brightness(1.1); }
-  button:active:not(:disabled) { transform: scale(0.98); }
-  button:disabled { opacity: 0.42; cursor: not-allowed; }
-  .btn-primary { background: linear-gradient(135deg, #0284c7, #2563eb); border-color: #38bdf8; }
-  .btn-green { background: linear-gradient(135deg, #16a34a, #15803d); border-color: #4ade80; }
-  .btn-amber { background: linear-gradient(135deg, #d97706, #b45309); border-color: #fbbf24; }
-  .btn-purple { background: linear-gradient(135deg, #9333ea, #7e22ce); border-color: #c084fc; }
-  .btn-danger { background: linear-gradient(135deg, #dc2626, #b91c1c); border-color: #f87171; }
-  .btn-ghost { background: var(--panel-2); border-color: var(--border); }
-
-  /* 전용 로비 화면 */
-  .lobby-hero { text-align: center; padding: 10px 0 6px; }
-  .lobby-hero h2 { margin: 0; font-size: 1.5rem; color: #f8fafc; }
-  .lobby-hero p { margin: 6px 0 0; color: var(--muted); font-size: 0.9rem; }
-  .char-grid {
+  .skin-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(105px, 1fr));
-    gap: 10px;
-    margin-top: 12px;
-  }
-  .char-card {
-    background: var(--panel-2);
-    border: 2px solid var(--border);
-    border-radius: 14px;
-    padding: 12px 8px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-    cursor: pointer;
-    transition: all 0.14s ease;
-  }
-  .char-card:hover { transform: translateY(-3px); border-color: #64748b; }
-  .char-card.active {
-    border-color: var(--accent);
-    background: linear-gradient(180deg, #0c2742 0%, #0f172a 100%);
-    box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.35);
-  }
-  .char-card .avatar { font-size: 2.1rem; line-height: 1; }
-  .char-card .cname { font-size: 0.84rem; font-weight: 700; }
-  .entry-card {
-    background: var(--panel-2);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 12px;
   }
-  .entry-card h3 { margin: 0; font-size: 1.05rem; display: flex; align-items: center; gap: 6px; }
-  .entry-card p { margin: 4px 0 0; font-size: 0.83rem; color: var(--muted); line-height: 1.45; }
-
-  /* 게임방 & 상단 컨트롤 */
-  .room-top-bar {
-    background: var(--panel-2);
-    border: 1px solid var(--border);
+  .skin-card {
+    background: var(--panel);
+    border: 1.5px solid var(--border);
     border-radius: 12px;
-    padding: 10px 14px;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 12px;
-  }
-  .mode-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
-    gap: 8px;
-    margin-top: 8px;
-  }
-  .mode-btn {
-    text-align: left;
-    padding: 9px 11px;
-    border-radius: 10px;
-    background: var(--panel-2);
-    border: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-  .mode-btn.active {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 1px var(--accent) inset;
-    background: #0c2742;
-  }
-  .mode-btn small { color: var(--muted); font-size: 0.73rem; font-weight: 400; }
-
-  .players-bar { display: flex; flex-wrap: wrap; gap: 8px; }
-  .player-chip {
-    padding: 6px 12px;
-    border-radius: 10px;
-    background: var(--panel-2);
-    border: 1px solid var(--border);
-    font-size: 0.84rem;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .player-chip.turn { border-color: var(--warn); box-shadow: 0 0 0 1px var(--warn); background: #2c1f07; }
-  .team-pill {
-    padding: 2px 8px;
-    border-radius: 999px;
-    font-size: 0.72rem;
-    font-weight: 800;
-    cursor: pointer;
-    border: 1px solid transparent;
-  }
-  .team-pill.red { background: rgba(239, 68, 68, 0.22); border-color: #ef4444; color: #fca5a5; }
-  .team-pill.blue { background: rgba(59, 130, 246, 0.22); border-color: #3b82f6; color: #93c5fd; }
-
-  .hud-strip {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    background: var(--panel-2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 10px 14px;
-    margin-bottom: 12px;
-  }
-  .timer-pill {
-    padding: 5px 12px;
-    border-radius: 999px;
-    font-weight: 700;
-    font-size: 0.88rem;
-    background: #172554;
-    border: 1px solid #3b82f6;
-  }
-  .timer-pill.unlimited { background: #052e16; border-color: #22c55e; color: #86efac; }
-  .timer-pill.urgent { background: #450a0a; border-color: var(--danger); color: #fca5a5; }
-
-  /* ================= 윷놀이 & 3D 윷 회전 애니메이션 ================= */
-  .yut-mode-banner {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    background: #0b1120;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 10px 14px;
-    margin-bottom: 12px;
-  }
-  .yut-layout {
-    display: grid;
-    grid-template-columns: minmax(290px, 430px) 1fr;
-    gap: 16px;
-    align-items: start;
-  }
-  @media (max-width: 820px) { .yut-layout { grid-template-columns: 1fr; } }
-  .yut-board-wrap {
-    background: radial-gradient(circle at center, #fef3c7 0%, #fde68a 100%);
-    border: 3px solid #92400e;
-    border-radius: 16px;
-    padding: 10px;
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5), inset 0 0 18px rgba(180, 83, 9, 0.25);
-  }
-  .yut-board-wrap svg { width: 100%; height: auto; display: block; }
-  .yut-node-circle { cursor: pointer; }
-  .yut-side-panel { display: flex; flex-direction: column; gap: 10px; }
-  .yut-sticks-box {
-    background: radial-gradient(circle at top, #172554 0%, #0b1120 75%);
-    border: 1px solid var(--border);
-    border-radius: 14px;
     padding: 14px;
-  }
-  .yut-3d-stage {
-    perspective: 750px;
-    padding: 12px 0;
-  }
-  .yut-sticks-row {
-    display: flex;
-    gap: 16px;
-    justify-content: center;
-    align-items: center;
-    transform-style: preserve-3d;
-  }
-  .yut-stick-3d {
-    width: 34px;
-    height: 112px;
-    position: relative;
-    transform-style: preserve-3d;
-    transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-  .yut-stick-3d.rolling {
-    animation: yutTumble3D 0.68s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-  }
-  .yut-stick-3d.rolling:nth-child(2) { animation-delay: 0.04s; }
-  .yut-stick-3d.rolling:nth-child(3) { animation-delay: 0.08s; }
-  .yut-stick-3d.rolling:nth-child(4) { animation-delay: 0.12s; }
-
-  @keyframes yutTumble3D {
-    0%   { transform: translateY(0) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(1); }
-    25%  { transform: translateY(-34px) rotateX(260deg) rotateY(140deg) rotateZ(-14deg) scale(1.12); }
-    55%  { transform: translateY(-18px) rotateX(540deg) rotateY(290deg) rotateZ(12deg) scale(1.06); }
-    80%  { transform: translateY(4px) rotateX(700deg) rotateY(350deg) rotateZ(-4deg) scale(0.98); }
-    100% { transform: translateY(0) rotateX(720deg) rotateY(360deg) rotateZ(0deg) scale(1); }
-  }
-
-  .yut-face {
-    position: absolute;
-    inset: 0;
-    border-radius: 16px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-evenly;
-    font-weight: 900;
-    font-size: 0.86rem;
-    backface-visibility: hidden;
+    text-align: center;
+    gap: 8px;
   }
-  .yut-face.flat {
-    background: linear-gradient(180deg, #fffbeb 0%, #fde68a 65%, #f59e0b 100%);
-    border: 2px solid #b45309;
-    color: #92400e;
-    box-shadow: 0 7px 0 #78350f, 0 12px 18px rgba(0,0,0,0.5);
+  .skin-card.equipped {
+    border-color: #10b981;
+    box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.35);
   }
-  .yut-face.flat.backdo {
-    border-color: #ef4444;
-    color: #dc2626;
-    box-shadow: 0 7px 0 #991b1b, 0 0 14px rgba(239, 68, 68, 0.55);
-  }
-  .yut-face.round {
-    background: radial-gradient(circle at 32% 30%, #b45309 0%, #78350f 65%, #451a03 100%);
-    border: 2px solid #451a03;
-    color: #fef3c7;
-    box-shadow: 0 7px 0 #290f02, 0 12px 18px rgba(0,0,0,0.55);
-  }
+  .skin-avatar { font-size: 2.3rem; line-height: 1.1; }
+  .skin-name { font-weight: 800; font-size: 1rem; color: #f8fafc; }
+  .skin-desc { font-size: 0.78rem; color: var(--muted); min-height: 32px; }
+  .skin-price { font-size: 0.85rem; font-weight: 700; color: #fbbf24; }
 
-  .yut-roll-chip {
-    padding: 6px 12px;
-    border-radius: 999px;
-    background: #1e293b;
-    border: 1.5px solid #475569;
-    font-size: 0.85rem;
-    font-weight: 700;
+  /* 퀴즈 카드 */
+  .quiz-box {
+    text-align: center;
+    max-width: 660px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    align-items: center;
   }
-  .yut-roll-chip.active {
-    background: #0c4a6e;
-    border-color: #38bdf8;
-    color: #ffffff;
-    box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.35);
-  }
-  .yut-player-card {
-    background: #0b1120;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 10px 12px;
-  }
-  .yut-player-card.active-turn { border-color: #facc15; box-shadow: 0 0 0 1px #facc15; }
-  .yut-piece-btn {
-    padding: 5px 10px;
+  .quiz-tag {
+    background: #1d4ed8;
+    color: #dbeafe;
+    padding: 4px 12px;
     border-radius: 999px;
     font-size: 0.8rem;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-  }
-  .yut-piece-btn.selected { outline: 2px solid #facc15; box-shadow: 0 0 10px rgba(250, 204, 21, 0.45); }
-
-  /* ================= 3D 입체 루미큐브 스타일 ================= */
-  .rummi-3d-scene {
-    perspective: 1100px;
-  }
-  .rummi-table-board {
-    background: radial-gradient(ellipse at center, #115e46 0%, #063729 68%, #031f17 100%);
-    border: 3px solid #10b981;
-    border-radius: 18px;
-    padding: 16px;
-    margin-bottom: 14px;
-    box-shadow: inset 0 0 36px rgba(0, 0, 0, 0.65), 0 12px 26px rgba(0, 0, 0, 0.45);
-    transition: box-shadow 0.15s ease, border-color 0.15s ease;
-  }
-  .rummi-table-board.drag-over {
-    border-color: #38bdf8;
-    box-shadow: inset 0 0 36px rgba(56, 189, 248, 0.35), 0 0 0 3px rgba(56, 189, 248, 0.5);
-  }
-  .rummi-sets-wrap { display: flex; flex-wrap: wrap; gap: 12px; min-height: 86px; align-items: center; }
-  .rummi-new-dropzone {
-    min-width: 170px;
-    height: 70px;
-    border: 2px dashed rgba(110, 231, 183, 0.5);
-    border-radius: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0 14px;
-    color: #a7f3d0;
-    font-size: 0.82rem;
     font-weight: 700;
-    background: rgba(6, 78, 59, 0.4);
   }
-  .rummi-set-group {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 8px 10px;
+  .quiz-main {
+    font-size: 2.05rem;
+    font-weight: 800;
+    line-height: 1.35;
+    word-break: keep-all;
+    background: var(--panel);
+    padding: 22px 26px;
     border-radius: 14px;
-    background: rgba(15, 23, 42, 0.55);
-    border: 1.5px solid rgba(110, 231, 183, 0.45);
-    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
-    transition: transform 0.15s ease, border-color 0.15s ease;
+    border: 1px solid var(--border);
+    width: 100%;
   }
-  .rummi-set-group.appendable {
-    cursor: pointer;
-    border-color: #facc15;
-    box-shadow: 0 0 14px rgba(250, 204, 21, 0.35);
-  }
-  .rummi-set-group.appendable:hover { transform: translateY(-2px); }
+  .quiz-sub { font-size: 0.96rem; color: #cbd5e1; }
 
-  .rummi-tile {
-    width: 48px;
-    height: 66px;
-    border-radius: 10px;
-    background: linear-gradient(165deg, #ffffff 0%, #fffbeb 55%, #fde68a 100%);
-    border: 1.5px solid #e2e8f0;
+  /* 루미큐브 */
+  .rummi-board { width: 100%; display: flex; flex-direction: column; gap: 12px; }
+  .rummi-table {
+    min-height: 190px;
+    background: #064e3b;
+    border: 2px solid #047857;
+    border-radius: 12px;
+    padding: 12px;
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-content: flex-start;
+  }
+  .rummi-set {
+    background: rgba(0, 0, 0, 0.28);
+    padding: 6px;
+    border-radius: 8px;
+    display: flex;
+    gap: 4px;
+    cursor: pointer;
+    border: 1px dashed rgba(255,255,255,0.25);
+  }
+  .rummi-set:hover { border-color: #fbbf24; }
+  .rummi-hand {
+    background: var(--panel);
+    padding: 10px;
+    border-radius: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    min-height: 68px;
+  }
+  .tile {
+    width: 38px;
+    height: 52px;
+    background: #fefce8;
+    border-radius: 6px;
+    border: 2px solid #cbd5e1;
+    display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 900;
+    font-size: 1.05rem;
+    cursor: pointer;
     user-select: none;
-    cursor: grab;
-    position: relative;
-    transform-style: preserve-3d;
-    box-shadow:
-      0 5px 0 #cbd5e1,
-      0 6px 0 #94a3b8,
-      0 10px 16px rgba(0, 0, 0, 0.48),
-      inset 0 2px 3px rgba(255, 255, 255, 0.95);
-    transition: transform 0.16s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.16s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.4);
   }
-  .rummi-tile::after {
-    content: "";
-    position: absolute;
-    inset: 4px;
-    border-radius: 7px;
-    border: 1px solid rgba(148, 163, 184, 0.25);
-    pointer-events: none;
-  }
-  .rummi-tile:hover {
-    transform: translateY(-6px) rotateX(8deg) scale(1.04);
-    box-shadow:
-      0 8px 0 #cbd5e1,
-      0 9px 0 #94a3b8,
-      0 15px 22px rgba(0, 0, 0, 0.55),
-      inset 0 2px 3px rgba(255, 255, 255, 0.95);
-  }
-  .rummi-tile.selected {
-    transform: translateY(-12px) rotateX(10deg) scale(1.06);
-    border-color: #38bdf8;
-    box-shadow:
-      0 8px 0 #0284c7,
-      0 9px 0 #0369a1,
-      0 16px 24px rgba(56, 189, 248, 0.55),
-      inset 0 2px 4px #ffffff;
-  }
-  .rummi-tile.table-tile {
-    width: 42px;
-    height: 58px;
-    cursor: default;
-  }
-  .rummi-tile.table-tile:hover { transform: translateY(-2px); }
-  .rummi-tile .num {
-    font-size: 1.25rem;
-    line-height: 1;
-    text-shadow: 0 1px 0 rgba(255,255,255,0.8);
-  }
-  .rummi-tile .suit-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    margin-top: 6px;
-    box-shadow: inset 0 -1px 2px rgba(0,0,0,0.35);
-  }
-  .rummi-red .num { color: #dc2626; } .rummi-red .suit-dot { background: #dc2626; }
-  .rummi-blue .num { color: #2563eb; } .rummi-blue .suit-dot { background: #2563eb; }
-  .rummi-yellow .num { color: #d97706; } .rummi-yellow .suit-dot { background: #eab308; }
-  .rummi-black .num { color: #0f172a; } .rummi-black .suit-dot { background: #0f172a; }
-  .rummi-joker .num { font-size: 1.3rem; } .rummi-joker .suit-dot { background: #a855f7; }
+  .tile.selected { transform: translateY(-7px); border-color: #f59e0b; box-shadow: 0 0 0 2px #f59e0b; }
+  .tile.red { color: #dc2626; }
+  .tile.blue { color: #2563eb; }
+  .tile.orange { color: #d97706; }
+  .tile.black { color: #0f172a; }
+  .tile.joker { color: #7c3aed; font-size: 1.15rem; }
 
-  .rummi-rack {
-    background: linear-gradient(180deg, #334155 0%, #1e293b 45%, #0f172a 100%);
-    border: 2px solid #64748b;
-    border-radius: 16px;
-    padding: 14px;
-    box-shadow: 0 8px 0 #090d16, 0 14px 24px rgba(0, 0, 0, 0.5);
+  /* 캔버스 공통 */
+  canvas.game-canvas {
+    background: #020617;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    max-width: 100%;
+    touch-action: none;
   }
-  .rummi-hand-row {
+  .arcade-hud {
+    width: 100%;
     display: flex;
     flex-wrap: wrap;
-    gap: 9px;
-    margin-top: 10px;
-    min-height: 74px;
-    padding: 8px 10px 12px;
-    border-radius: 12px;
-    background: rgba(2, 6, 23, 0.45);
-    border-bottom: 4px solid #475569;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    font-size: 0.88rem;
   }
+  .stairs-btns {
+    display: flex;
+    gap: 12px;
+    margin-top: 10px;
+    width: 100%;
+    max-width: 480px;
+  }
+  .stairs-btns button { flex: 1; padding: 14px; font-size: 1.02rem; font-weight: 800; }
 
-  /* 공용 UI 요소 */
-  .log-box {
-    background: var(--panel-2);
+  /* 채팅 패널 */
+  .chat-log {
+    flex: 1;
+    min-height: 360px;
+    max-height: 500px;
+    overflow-y: auto;
+    background: #0b1120;
     border: 1px solid var(--border);
     border-radius: 10px;
-    padding: 10px 12px;
-    height: 150px;
-    overflow-y: auto;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
     font-size: 0.85rem;
-    line-height: 1.45;
   }
-  .log-line { margin-bottom: 4px; }
-  .log-line span.time { color: var(--muted); font-size: 0.76rem; margin-right: 6px; }
+  .chat-msg { line-height: 1.4; word-break: break-word; }
+  .chat-msg.sys { color: #38bdf8; font-weight: 600; }
+  .chat-msg.win { color: #34d399; font-weight: 700; }
+  .chat-msg.danger { color: #f87171; font-weight: 700; }
+  .chat-input-row { display: flex; gap: 6px; }
+  .chat-input-row input { flex: 1; }
 
-  canvas.draw-canvas {
-    width: 100%;
-    max-width: 640px;
-    height: 310px;
-    background: #ffffff;
-    border-radius: 12px;
-    border: 2px solid var(--border);
-    touch-action: none;
-    display: block;
+  /* 시상식 & 벌칙 룰렛 모달 */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(2, 6, 23, 0.82);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+    padding: 16px;
   }
-  .palette-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 8px 0; }
-  .swatch { width: 26px; height: 26px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.35); padding: 0; }
-  .swatch.selected { transform: scale(1.16); border-color: #ffffff; box-shadow: 0 0 0 2px var(--accent); }
-
-  .island-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; margin-bottom: 12px; }
-  .stat-box { background: var(--panel-2); border: 1px solid var(--border); border-radius: 10px; padding: 10px; text-align: center; }
-  .stat-box strong { display: block; font-size: 1.15rem; margin-top: 3px; color: #7dd3fc; }
-
-  .gostop-felt-board {
-    background: radial-gradient(circle at center, #14532d 0%, #052e16 100%);
-    border: 2px solid #22c55e;
-    border-radius: 16px;
-    padding: 14px;
-    margin-bottom: 12px;
-  }
-  .hwatu-row { display: flex; flex-wrap: wrap; gap: 10px; margin: 8px 0; align-items: flex-end; }
-  .hwatu-svg-card { width: 88px; border-radius: 12px; background: #fffbeb; border: 2px solid #92400e; padding: 5px; cursor: pointer; user-select: none; }
-  .hwatu-svg-card.floor-card { width: 80px; cursor: default; }
-  .hwatu-svg-card svg { width: 100%; height: 104px; display: block; border-radius: 8px; }
-  .hwatu-footer { margin-top: 4px; display: flex; align-items: center; justify-content: space-between; font-size: 0.7rem; color: #1e293b; font-weight: 700; }
-  .captured-mini-row { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 4px; }
-  .captured-mini-card { width: 46px; background: #fffbeb; border: 1.5px solid #78350f; border-radius: 7px; padding: 2px; text-align: center; }
-  .captured-mini-card svg { width: 100%; height: 52px; display: block; border-radius: 4px; }
-  .captured-mini-card span { display: block; font-size: 0.58rem; font-weight: 700; color: #1e293b; }
-
-  .card-flip-board { display: grid; gap: 6px; margin: 10px 0; max-width: 100%; }
-  .card-flip-board.size-4 { grid-template-columns: repeat(4, minmax(60px, 1fr)); max-width: 340px; }
-  .card-flip-board.size-8 { grid-template-columns: repeat(8, minmax(36px, 1fr)); max-width: 560px; gap: 5px; }
-  .card-flip-board.size-16 { grid-template-columns: repeat(16, minmax(22px, 1fr)); max-width: 820px; gap: 3px; }
-  .flip-btn { padding: 2px; border-radius: 8px; height: 58px; font-size: 1.4rem; background: #1e3a8a; border: 1px solid #60a5fa; display: flex; align-items: center; justify-content: center; }
-  .card-flip-board.size-8 .flip-btn { height: 42px; font-size: 1rem; }
-  .card-flip-board.size-16 .flip-btn { height: 28px; font-size: 0.75rem; padding: 0; }
-  .flip-btn.revealed { background: #0f172a; border-color: #22c55e; }
-  .nunchi-badge { padding: 8px 14px; border-radius: 12px; background: #0b1120; border: 1px solid #38bdf8; font-weight: 700; display: inline-block; margin: 3px; }
-
-  .modal-backdrop { position: fixed; inset: 0; background: rgba(2, 6, 23, 0.78); display: none; align-items: center; justify-content: center; padding: 16px; z-index: 50; }
   .modal-backdrop.open { display: flex; }
-  .modal-box { width: 100%; max-width: 480px; background: var(--panel); border: 1px solid var(--accent); border-radius: 16px; padding: 18px; }
+  .modal-card {
+    background: var(--panel);
+    border: 2px solid #f59e0b;
+    border-radius: 18px;
+    max-width: 520px;
+    width: 100%;
+    padding: 22px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.65);
+  }
+  .roulette-wrap {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 4px auto;
+  }
+  .roulette-pointer {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1.5rem;
+    color: #ef4444;
+    z-index: 2;
+    text-shadow: 0 2px 4px #000;
+  }
 </style>
 </head>
 <body>
-<div class="app">
-  <header class="topbar">
-    <div class="brand">
-      <h1>🎮 KCM 파티 아케이드</h1>
-      <p>3D 윷놀이(개인전/팀전) · 3D 루미큐브 · 캐치마인드 · 고스톱 실시간 멀티플레이</p>
+
+<header>
+  <div class="brand">🎮 올인원 파티 & 아케이드 허브 <span class="badge">SKIN SHOP EDITION</span></div>
+  <div class="controls-bar">
+    <select id="modeSelect" title="게임 선택">
+      <option value="stairs">🪜 천국의 계단 (20콤보 피버)</option>
+      <option value="dodge">🚀 총알 피하기 (보호막·슬로우)</option>
+      <option value="rummikub">🀄 루미큐브 (30점+ AI)</option>
+      <option value="chosung">🔤 초성 퀴즈 (신조어·상식)</option>
+      <option value="fourchar">4️⃣ 예능 네글자 이어말하기</option>
+      <option value="emojiquiz">😎 이모지 퀴즈</option>
+      <option value="wordassoc">🧠 연상 퀴즈</option>
+      <option value="proverb">📜 속담·사자성어 퀴즈</option>
+      <option value="catchmind">🎨 캐치마인드</option>
+      <option value="wordchain">🔗 끝말잇기 (AI 사전)</option>
+      <option value="hunmin">🇰🇷 훈민정음 (초성 단어)</option>
+    </select>
+    <select id="diffSelect" title="난이도">
+      <option value="all">난이도: 전체</option>
+      <option value="easy">쉬움</option>
+      <option value="normal">보통</option>
+      <option value="hard">어려움</option>
+    </select>
+    <select id="goalSelect" title="목표 점수">
+      <option value="300">목표: 300점</option>
+      <option value="500">목표: 500점</option>
+      <option value="1000">목표: 1000점</option>
+      <option value="0">무제한 모드</option>
+    </select>
+    <button id="btnShopTab" class="purple">🛍️ 스킨 상점</button>
+    <button id="btnSound" class="primary">🔊 효과음 ON</button>
+    <button id="btnRouletteOpen" class="warn">🎡 벌칙 룰렛</button>
+    <button id="btnAddBot">🤖 봇 추가</button>
+    <button id="btnStart" class="success">▶ 게임 시작</button>
+    <button id="btnNext">⏭ 다음</button>
+  </div>
+</header>
+
+<div class="main-grid">
+  <!-- 좌측: 참가자 & 명예의 전당 -->
+  <aside class="card">
+    <div class="card-title">
+      <span>👥 참가자 & 점수판</span>
+      <span id="poolCountBadge" style="font-size:0.74rem;color:#38bdf8;"></span>
     </div>
-    <div class="conn-badge">
-      <span id="connDot" class="dot"></span>
-      <span id="connText">로비 대기 중</span>
+    <div id="playerList" class="player-list"></div>
+
+    <div class="card-title" style="margin-top:4px;">
+      <span>🏆 명예의 전당 (자동 저장)</span>
+      <button id="btnResetHof" style="padding:2px 6px;font-size:0.72rem;">초기화</button>
     </div>
-  </header>
+    <div id="hofBox" class="hof-box"></div>
 
-  <!-- ==================== 1. 전용 로비 화면 ==================== -->
-  <section id="lobbyScreen" class="card">
-    <div class="lobby-hero">
-      <h2>🎪 파티 아케이드 메인 로비</h2>
-      <p>닉네임과 캐릭터를 고른 뒤, 새 방을 만들거나 방 코드를 입력해 입장하세요!</p>
+    <div style="margin-top:auto;font-size:0.79rem;color:var(--muted);line-height:1.5;background:#0f172a;padding:9px;border-radius:8px;">
+      <b>💡 핵심 단축키 & 아이템</b><br/>
+      • <b>스킨 상점</b>: 점수로 우주비행사·닌자·로봇·황금왕관 해금<br/>
+      • <b>천국의 계단</b>: 20콤보 달성 시 3초 무적 자동회전 피버!<br/>
+      • <b>총알 피하기</b>: 🛡️초록(보호막 1회), ❄️파랑(탄막 감속)
     </div>
+  </aside>
 
-    <div style="margin-top:16px; background:var(--panel-2); border:1px solid var(--border); border-radius:14px; padding:16px;">
-      <div class="row" style="justify-content:space-between;">
-        <div class="row">
-          <span style="font-weight:700; font-size:0.95rem;">1단계 · 내 닉네임 & 캐릭터 선택</span>
-          <input id="nickInput" type="text" placeholder="닉네임 입력 (최대 12자)" maxlength="12" value="플레이어1" style="width:190px; font-weight:700;" />
-        </div>
-        <div id="myProfilePreview" style="padding:6px 14px; border-radius:999px; background:#0c2742; border:1px solid var(--accent); color:#7dd3fc; font-weight:700;">
-          🐱 플레이어1
-        </div>
-      </div>
-      <div id="charPicker" class="char-grid"></div>
+  <!-- 중앙: 메인 게임 무대 & 스킨 상점 -->
+  <main class="card">
+    <div class="stage-header">
+      <div id="stageTitle" style="font-weight:800;font-size:1rem;">게임을 선택하고 [게임 시작]을 눌러주세요!</div>
+      <div id="timerBox" class="timer-box">⏱ 대기 중</div>
     </div>
+    <div id="stageBody" class="stage-body"></div>
+  </main>
 
-    <div style="margin-top:16px;">
-      <div style="font-weight:700; font-size:0.95rem; margin-bottom:10px;">2단계 · 방 입장 방법 선택</div>
-      <div class="grid-3">
-        <div class="entry-card">
-          <div>
-            <h3>🏠 새 방 만들기 (방장)</h3>
-            <p>새로운 게임방을 개설하고 생성된 방 코드를 친구에게 공유해 함께 플레이합니다.</p>
-          </div>
-          <button id="btnCreateRoom" class="btn-primary" style="width:100%; padding:12px;">✨ 새 방 만들고 입장하기</button>
-        </div>
-
-        <div class="entry-card">
-          <div>
-            <h3>🔑 방 코드로 참여하기</h3>
-            <p>방장에게 전달받은 6자리 방 코드를 입력해 해당 방으로 바로 입장합니다.</p>
-          </div>
-          <div class="row">
-            <input id="roomCodeInput" type="text" placeholder="방 코드 (예: KCM123)" maxlength="10" style="flex:1; text-transform:uppercase; font-weight:700; letter-spacing:1px;" />
-            <button id="btnJoinRoom" class="btn-green">입장</button>
-          </div>
-        </div>
-
-        <div class="entry-card">
-          <div>
-            <h3>🏝️ 혼자 바로 즐기기</h3>
-            <p>방 코드 없이 무인도 생존이나 AI 봇과의 3D 윷놀이(팀전 가능)·3D 루미큐브를 시작합니다.</p>
-          </div>
-          <div class="row">
-            <button id="btnSoloQuick" class="btn-amber" style="flex:1;">🎲 AI 봇 대전방 열기</button>
-            <button id="btnSoloIsland" class="btn-purple">🏝️ 무인도</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ==================== 2. 게임방 & 플레이 화면 ==================== -->
-  <section id="roomScreen" class="card hidden">
-    <div class="room-top-bar">
-      <div class="row">
-        <button id="btnLeaveRoom" class="btn-ghost" style="padding:6px 11px; font-size:0.82rem;">← 로비로 나가기</button>
-        <span style="font-size:0.95rem;">방 코드: <strong id="activeRoomCode" style="color:#38bdf8; letter-spacing:1.5px;">-</strong></span>
-        <button id="btnCopyRoom" class="btn-ghost" style="padding:5px 10px; font-size:0.8rem;">📋 코드 복사</button>
-        <button id="btnForceSync" class="btn-ghost" style="padding:5px 10px; font-size:0.8rem;" title="상대방과 화면이 다를 때 즉시 동기화">🔄 싱크 맞추기</button>
-        <span id="hostBadge" style="font-size:0.82rem; color:#fde047; font-weight:700;"></span>
-      </div>
-      <div class="row">
-        <button id="btnAddBot" class="btn-ghost" style="padding:6px 11px; font-size:0.82rem;">+ AI 봇 추가</button>
-        <button id="btnOpenRanking" class="btn-purple" style="padding:6px 11px; font-size:0.82rem;">🏆 순위표</button>
-        <button id="btnToggleModeDrawer" class="btn-ghost" style="padding:6px 11px; font-size:0.82rem;">🎛️ 종목 변경</button>
-        <button id="btnStartGame" class="btn-green" style="padding:7px 16px;">▶ 게임 시작</button>
-      </div>
-    </div>
-
-    <div id="modeSelectorBox" style="background:var(--panel-2); border:1px solid var(--border); border-radius:12px; padding:12px; margin-bottom:12px;">
-      <div class="row" style="justify-content:space-between;">
-        <span style="font-size:0.88rem; font-weight:700;">플레이할 게임 종목 선택 <span id="hostLockNote" style="color:var(--warn); font-weight:500;"></span></span>
-        <span style="font-size:0.8rem; color:var(--muted);">종목을 고른 뒤 우측 상단 [▶ 게임 시작]을 누르세요</span>
-      </div>
-      <div id="modeGrid" class="mode-grid"></div>
-    </div>
-
-    <div class="row" style="justify-content:space-between; margin-bottom:10px;">
-      <div id="playersBar" class="players-bar"></div>
-      <div class="row">
-        <span style="font-size:0.85rem; color:var(--muted);">공용 자금:</span>
-        <strong id="sharedMoneyLabel" style="color:#4ade80;">10,000원</strong>
-      </div>
-    </div>
-
-    <div id="gameViewport"></div>
-
-    <div class="grid-2" style="margin-top:14px;">
-      <div>
-        <div style="font-size:0.85rem; font-weight:700; margin-bottom:6px;">💬 실시간 채팅 & 판 진행 로그</div>
-        <div id="logBox" class="log-box"></div>
-        <div class="row" style="margin-top:8px;">
-          <input id="chatInput" type="text" placeholder="메시지 또는 정답 입력..." style="flex:1;" />
-          <button id="btnSendChat" class="btn-primary">전송</button>
-        </div>
-      </div>
-      <div>
-        <div style="font-size:0.85rem; font-weight:700; margin-bottom:6px;">📊 현재 점수판</div>
-        <div id="scoreList" class="log-box" style="height:192px;"></div>
-      </div>
-    </div>
-  </section>
+  <!-- 우측: 실시간 채팅 & 정답 입력 -->
+  <aside class="card">
+    <div class="card-title">💬 실시간 채팅 & 정답 입력</div>
+    <div id="chatLog" class="chat-log"></div>
+    <form id="chatForm" class="chat-input-row">
+      <input id="chatInput" type="text" placeholder="정답 또는 채팅 입력 (Enter)..." autocomplete="off" />
+      <button type="submit" class="primary">전송</button>
+    </form>
+  </aside>
 </div>
 
-<div id="rankingModal" class="modal-backdrop">
-  <div class="modal-box">
-    <div class="row" style="justify-content:space-between;">
-      <h3 style="margin:0;">🏆 현재 랭킹</h3>
-      <button id="btnCloseRanking" class="btn-ghost">닫기</button>
+<!-- 우승 시상식 & 벌칙 룰렛 모달 -->
+<div id="ceremonyModal" class="modal-backdrop">
+  <div class="modal-card">
+    <div id="ceremonyHeader" style="font-size:1.35rem;font-weight:900;color:#fbbf24;">🏆 최종 우승 시상식 & 벌칙 룰렛</div>
+    <div id="ceremonyRankText" style="font-size:0.92rem;color:#e2e8f0;line-height:1.6;"></div>
+
+    <div class="roulette-wrap">
+      <div class="roulette-pointer">▼</div>
+      <canvas id="rouletteCanvas" width="250" height="250"></canvas>
     </div>
-    <div id="rankingBody" style="margin-top:12px;"></div>
+
+    <div id="rouletteResult" style="font-size:1.05rem;font-weight:800;color:#34d399;min-height:24px;">
+      꼴찌를 위한 벌칙 룰렛을 돌려보세요!
+    </div>
+
+    <div style="display:flex;gap:6px;">
+      <input id="penaltyInput" type="text" placeholder="새 벌칙 항목 추가 (예: 물 한 컵 원샷)" style="flex:1;" />
+      <button id="btnAddPenalty" class="primary">추가</button>
+    </div>
+
+    <div style="display:flex;gap:8px;justify-content:center;">
+      <button id="btnSpinRoulette" class="warn" style="flex:1;padding:10px;font-size:0.95rem;">🎡 룰렛 돌리기!</button>
+      <button id="btnNewMatch" class="success" style="padding:10px;">🔄 점수 리셋 후 새 판</button>
+      <button id="btnCloseModal" style="padding:10px;">닫기</button>
+    </div>
   </div>
 </div>
 
 <script>
 (() => {
-  const PEER_ICE_CONFIG = {
-    config: {
-      iceServers: [
-        { urls: 'stun:stun.l.google.com:19302' },
-        { urls: 'stun:stun1.l.google.com:19302' },
-        { urls: 'stun:stun2.l.google.com:19302' },
-        { urls: 'stun:stun3.l.google.com:19302' }
-      ]
-    }
-  };
-
-  const CHARACTERS = [
-    { id: 'cat', icon: '🐱', label: '고양이' },
-    { id: 'fox', icon: '🦊', label: '여우' },
-    { id: 'panda', icon: '🐼', label: '판다' },
-    { id: 'penguin', icon: '🐧', label: '펭귄' },
-    { id: 'rabbit', icon: '🐰', label: '토끼' },
-    { id: 'tiger', icon: '🐯', label: '호랑이' },
-    { id: 'robot', icon: '🤖', label: '로봇' },
-    { id: 'crown', icon: '👑', label: '왕관' }
-  ];
-
-  const GAME_CONFIG = {
-    defaultMoney: 10000,
-    turnSeconds: {
-      yutnori: 35,
-      rummikub: 75,
-      wordchain: 20,
-      hunmin: 25,
-      catchmind: 0,
-      cardflip: 45,
-      emojiquiz: 25,
-      liar: 35,
-      chosung: 25,
-      wordassoc: 25,
-      proverb: 25,
-      island: 0,
-      gostop: 30
+  /* =========================================================================
+     1. Web Audio API 신시사이저 효과음 엔진
+     ========================================================================= */
+  const SoundFX = {
+    enabled: true,
+    ctx: null,
+    ensureCtx() {
+      if (!this.ctx) {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (AudioCtx) this.ctx = new AudioCtx();
+      }
+      if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
     },
-    cardFlipSeconds: { 4: 45, 8: 80, 16: 150 },
-    marketPrices: { wood: 250, fish: 400, coconut: 350 }
+    tone(freq, type = 'sine', duration = 0.12, vol = 0.12, delay = 0) {
+      if (!this.enabled) return;
+      this.ensureCtx();
+      if (!this.ctx) return;
+      const now = this.ctx.currentTime + delay;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, now);
+      gain.gain.setValueAtTime(vol, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start(now);
+      osc.stop(now + duration);
+    },
+    step(combo = 0) {
+      const base = 340 + Math.min(480, combo * 12);
+      this.tone(base, 'triangle', 0.07, 0.11);
+    },
+    fever() {
+      [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => this.tone(f, 'sawtooth', 0.14, 0.1, i * 0.05));
+    },
+    item() {
+      this.tone(660, 'sine', 0.1, 0.14, 0);
+      this.tone(990, 'sine', 0.16, 0.14, 0.07);
+    },
+    shieldBreak() {
+      this.tone(420, 'square', 0.12, 0.13, 0);
+      this.tone(240, 'square', 0.18, 0.13, 0.08);
+    },
+    win() {
+      [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => this.tone(f, 'triangle', 0.18, 0.15, i * 0.08));
+    },
+    crash() {
+      this.tone(150, 'sawtooth', 0.25, 0.18, 0);
+      this.tone(85, 'sawtooth', 0.32, 0.18, 0.1);
+    },
+    tick() {
+      this.tone(880, 'sine', 0.05, 0.08);
+    }
   };
 
-  const MODES = [
-    { id: 'yutnori', name: '윷놀이 (3D)', desc: '개인전 · 팀전(홍팀 vs 청팀)' },
-    { id: 'rummikub', name: '루미큐브 (3D)', desc: '입체 타일 · 드래그&드롭' },
-    { id: 'wordchain', name: '끝말잇기', desc: '턴제 20초 · 3콤보 보너스' },
-    { id: 'hunmin', name: '훈민정음', desc: '초성 2글자 랜덤 · 25초' },
-    { id: 'catchmind', name: '캐치마인드', desc: '시간 무제한 · 실시간 그림' },
-    { id: 'cardflip', name: '같은 그림찾기', desc: '4×4 / 8×8 / 16×16 턴제' },
-    { id: 'emojiquiz', name: '이모지 맞추기', desc: '이모지 연상 퀴즈 · 25초' },
-    { id: 'liar', name: '라이어 게임', desc: '원탁 턴제 발언 & 투표' },
-    { id: 'chosung', name: '초성 퀴즈 배틀', desc: '초성 스피드 퀴즈 · 25초' },
-    { id: 'wordassoc', name: '단어 연상 퀴즈', desc: '단서 4개 연상 · 25초' },
-    { id: 'proverb', name: '속담 완성 퀴즈', desc: '빈칸 속담 완성 · 25초' },
-    { id: 'island', name: '무인도 생존', desc: '시간 무제한 · 채집·판매' },
-    { id: 'gostop', name: '고스톱 배틀', desc: 'SVG 화투 · 고/스톱/흔들기' }
+  /* =========================================================================
+     2. 스킨 상점 정의 & localStorage 저장 관리
+     ========================================================================= */
+  const SKIN_CATALOG = [
+    { id: 'default', name: '기본 선글라스', icon: '😎', cost: 0, coreColor: '#38bdf8', desc: '기본 제공 파티 플레이어 스킨' },
+    { id: 'astronaut', name: '우주비행사', icon: '👨‍🚀', cost: 100, coreColor: '#a78bfa', desc: '성층권 계단과 우주 탄막을 누비는 파일럿' },
+    { id: 'ninja', name: '닌자', icon: '🥷', cost: 250, coreColor: '#34d399', desc: '그림자처럼 날렵한 야간 임무 스페셜리스트' },
+    { id: 'robot', name: '로봇', icon: '🤖', cost: 450, coreColor: '#f97316', desc: '고정밀 반응속도 기어 코어 장착 기체' },
+    { id: 'crown', name: '황금왕관', icon: '👑', cost: 700, coreColor: '#fbbf24', desc: '최상위 랭커를 상징하는 골드 크라운 스킨' }
   ];
 
-  function pickRandomIndex(length, excludeIdx = -1) {
-    if (length <= 1) return 0;
-    let next = Math.floor(Math.random() * length);
-    if (next === excludeIdx) next = (next + 1 + Math.floor(Math.random() * (length - 1))) % length;
-    return next;
-  }
+  const HOF_KEY = 'party_arcade_hof_v1';
+  const SHOP_KEY = 'party_arcade_skins_v1';
 
-  function pickRandomItem(arr, prevItem = null) {
-    if (!arr.length) return null;
-    if (arr.length === 1) return arr[0];
-    let candidate = arr[Math.floor(Math.random() * arr.length)];
-    if (prevItem && candidate === prevItem) {
-      const idx = arr.indexOf(prevItem);
-      candidate = arr[(idx + 1 + Math.floor(Math.random() * (arr.length - 1))) % arr.length];
+  let hallOfFame = { maxStairs: 0, maxDodgeSec: 0, totalWins: 0 };
+  let skinState = { unlocked: ['default'], equipped: 'default' };
+
+  try {
+    const savedHof = JSON.parse(localStorage.getItem(HOF_KEY) || 'null');
+    if (savedHof) hallOfFame = { ...hallOfFame, ...savedHof };
+  } catch (_) {}
+
+  try {
+    const savedShop = JSON.parse(localStorage.getItem(SHOP_KEY) || 'null');
+    if (savedShop && Array.isArray(savedShop.unlocked)) {
+      skinState.unlocked = [...new Set(['default', ...savedShop.unlocked])];
+      if (savedShop.equipped && skinState.unlocked.includes(savedShop.equipped)) {
+        skinState.equipped = savedShop.equipped;
+      }
     }
-    return candidate;
+  } catch (_) {}
+
+  function getEquippedSkin() {
+    return SKIN_CATALOG.find(s => s.id === skinState.equipped) || SKIN_CATALOG[0];
   }
 
+  function saveHof() {
+    try { localStorage.setItem(HOF_KEY, JSON.stringify(hallOfFame)); } catch (_) {}
+    renderHof();
+  }
+
+  function saveShop() {
+    try { localStorage.setItem(SHOP_KEY, JSON.stringify(skinState)); } catch (_) {}
+    const me = state.players.find(p => p.id === state.myId);
+    if (me) me.char = getEquippedSkin().icon;
+  }
+
+  function renderHof() {
+    const box = document.getElementById('hofBox');
+    box.innerHTML = `
+      🪜 천국의 계단 최고: <b>${hallOfFame.maxStairs}층</b><br/>
+      🚀 총알 피하기 최장: <b>${hallOfFame.maxDodgeSec.toFixed(2)}초</b><br/>
+      👑 종합 1위 우승 횟수: <b>${hallOfFame.totalWins}회</b>
+    `;
+  }
+
+  /* =========================================================================
+     3. 문제 은행 & 단어 풀
+     ========================================================================= */
+  const parseQuizPack = (raw, mapper) =>
+    raw.trim().split('\n').map(l => l.trim()).filter(Boolean).map(l => mapper(l.split(':')));
+
+  const CHOSUNG_POOL = parseQuizPack(`
+    ㄱㄷㅅ:감이 다 살았네! 센스 넘칠 때 쓰는 유행어:감다살:normal
+    ㄹㅋㅂㅋ:장원영 유행어로 오히려 좋아를 넘어선 초긍정 마인드:럭키비키:easy
+    ㅇㅈㄸㄲㅅ:알아서 잘 딱 깔끔하고 센스 있게의 줄임말:알잘딱깔센:easy
+    ㅅㅂㅈ:스스로 불러온 재앙의 줄임말:스불재:easy
+    ㅈㄲㅁ:중요한 건 꺾이지 않는 마음의 줄임말:중꺾마:easy
+    ㄷㅉㅋ:두바이 쫀득 쿠키의 줄임말로 화제가 된 디저트 신조어:두쫀쿠:normal
+    ㄱㅊㅉㄱ:한국인이 가장 사랑하는 얼큰한 대표 찌개:김치찌개:easy
+    ㄸㅂㄲ:매콤달콤한 떡과 어묵의 국민 분식:떡볶이:easy
+    ㅅㄱㅅ:불판에 구워 쌈 싸 먹는 돼지고기 부위:삼겹살:easy
+    ㅂㅇㅃ:겨울철 길거리 팥 간식:붕어빵:easy
+    ㅌㅎㄹ:과일에 설탕 코팅을 입힌 간식:탕후루:easy
+    ㅇㅈㅂㅎㅅ:우주선을 타고 우주로 나가는 사람:우주비행사:easy
+    ㅍㄹㄱㄹㅁ:컴퓨터 소프트웨어를 개발하는 직업:프로그래머:easy
+    ㅅㅍㅋㅅ:사자의 몸에 사람의 머리를 한 신화 속 존재:스핑크스:easy
+    ㅍㄹㅁㄷ:고대 이집트의 거대한 삼각뿔 무덤:피라미드:easy
+  `, ([q, hint, a, diff]) => ({ q, c: q, hint, a, diff }));
+
+  const FOURCHAR_POOL = parseQuizPack(`
+    대한:민국:우리나라 국호:easy
+    쟁반:짜장:넓은 쟁반에 볶아 나오는 짜장면:easy
+    양념:치킨:달콤매콤한 소스를 버무린 치킨:easy
+    초코:파이:마시멜로가 들어간 국민 파이 과자:easy
+    인공:지능:사람처럼 학습하고 추론하는 AI 기술:easy
+    가상:현실:VR 기기로 체험하는 디지털 공간:easy
+    금상:첨화:좋은 일 위에 더 좋은 일이 더해짐:easy
+    일석:이조:한 가지 일로 두 가지 이득을 얻음:easy
+    역지:사지:상대방 입장에서 생각해 봄:easy
+    유비:무환:미리 준비하면 걱정이 없음:easy
+    새옹:지마:인생의 길흉화복은 예측하기 어려움:normal
+    파죽:지세:거침없이 내리밀고 나아가는 기세:normal
+  `, ([front, back, hint, diff]) => ({ front, q: `[ ${front} ] + ( ? ? )`, a: back, hint, diff }));
+
+  const EMOJI_POOL = parseQuizPack(`
+    🍎📱:스마트폰 대표 브랜드:애플:easy
+    ❄️👸:디즈니 인기 영화:겨울왕국:easy
+    🕷️🧑:거미줄 마블 히어로:스파이더맨:easy
+    🦇🧑:박쥐 DC 히어로:배트맨:easy
+    ⚡🐭:전기 포켓몬스터:피카츄:easy
+    🐉🔮:7개의 구슬 만화:드래곤볼:easy
+    🏴‍☠️👒:밀짚모자 해적 만화:원피스:easy
+    🔥🐔🍜:아주 매운 볶음 라면:불닭볶음면:easy
+    🐟🍞:겨울 길거리 팥 간식:붕어빵:easy
+    🍡🍓:설탕 코팅 과일 간식:탕후루:easy
+    🍀✌️😊:장원영식 초긍정 유행어:럭키비키:easy
+    👨‍🚀🌙🚀:달에 착륙하는 우주 탐험가:우주비행사:easy
+  `, ([q, hint, a, diff]) => ({ q, e: q, hint, a, diff }));
+
+  const WORDASSOC_POOL = parseQuizPack(`
+    안성재, 백종원, 이븐하게, 흑수저 백수저:흑백요리사:easy
+    장원영, 오히려 좋아, 초긍정, 행운:럭키비키:easy
+    비비, 달콤한 팥 디저트, 장기하 작사, 노래:밤양갱:easy
+    카다이프, 피스타치오, 두바이, 바삭한 초콜릿:두바이초콜릿:easy
+    빨간색, 둥글다, 백설공주, 아삭아삭:사과:easy
+    초록색, 줄무늬, 여름, 씨앗:수박:easy
+    하얀색, 겨울, 뭉치다, 당근 코:눈사람:easy
+    훈민정음, 측우기, 집현전, 조선 4대 왕:세종대왕:easy
+    거북선, 한산도 대첩, 명량, 충무공:이순신:easy
+  `, ([cluesStr, a, diff]) => {
+    const clues = cluesStr.split(',').map(s => s.trim());
+    return { q: clues.join(' · '), clues, a, diff };
+  });
+
+  const PROVERB_POOL = parseQuizPack(`
+    가는 말이 고와야 (   ) 말이 곱다:오는:남에게 좋게 대해야 남도 나에게 좋게 대함:easy
+    소 잃고 (   ) 고친다:외양간:이미 일을 그르친 뒤에 뒤늦게 수습함:easy
+    티끌 모아 (   ):태산:작은 것도 꾸준히 모으면 큰 것이 됨:easy
+    원숭이도 (   )에서 떨어질 때가 있다:나무:아무리 잘하는 사람도 실수할 때가 있음:easy
+    등잔 밑이 (   ):어둡다:가까이 있는 일을 오히려 잘 모름:easy
+    백지장도 (   ) 낫다:맞들면:쉬운 일도 협력하면 훨씬 수월함:easy
+    [사자성어] 일석이조: 돌 하나로 두 마리의 (   )를 잡는다:새:한 가지 일로 두 가지 이익을 얻음:easy
+    [사자성어] 금상첨화: 비단 위에 (   )을 더한다:꽃:좋은 일 위에 또 좋은 일이 더해짐:easy
+  `, ([q, a, hint, diff]) => ({ q, a, hint, diff }));
+
+  const CATCHMIND_PROMPTS = parseQuizPack(`
+    사과:음식:easy
+    바나나:음식:easy
+    수박:음식:easy
+    피자:음식:easy
+    햄버거:음식:easy
+    붕어빵:음식:easy
+    강아지:동물:easy
+    고양이:동물:easy
+    펭귄:동물:easy
+    우산:사물:easy
+    로켓:사물:easy
+    눈사람:자연:easy
+  `, ([word, cat, diff]) => ({ word, cat, diff }));
+
+  const BOT_KOREAN_WORDS = (
+    '가방 가족 가을 가지 갈매기 감자 강아지 거북이 거울 겨울 고구마 고래 고양이 공원 과자 구름 기린 기차 김밥 김치 ' +
+    '나비 나무 나라 낙타 냉장고 노래 노트북 눈사람 다람쥐 달팽이 도서관 도시락 돌고래 동화책 딸기 떡볶이 라면 로봇 ' +
+    '마스크 마카롱 만두 망원경 모자 무지개 문어 미술관 바나나 바다 바람 박물관 반지 발자국 밤하늘 배드민턴 백화점 벚꽃 ' +
+    '별빛 병원 보물섬 봄바람 부엉이 북극곰 불고기 붕어빵 비빔밥 비행기 사과 사다리 사막 사자 산책 삼겹살 새벽 선인장 ' +
+    '선풍기 설악산 소방관 소나무 수박 스마트폰 스케치북 시계 신발장 신호등 아이스크림 안경 알람시계 야구장 양말 어린이'
+  ).split(/\s+/).filter(Boolean);
+
+  /* =========================================================================
+     4. 전역 상태 & 유틸리티
+     ========================================================================= */
   const CHOSUNG_LIST = ['ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
   function getChosung(str) {
-    let out = '';
+    let res = '';
     for (const ch of str) {
-      const code = ch.charCodeAt(0) - 0xac00;
-      if (code >= 0 && code < 11172) out += CHOSUNG_LIST[Math.floor(code / 588)];
+      const code = ch.charCodeAt(0) - 0xAC00;
+      if (code >= 0 && code <= 11171) res += CHOSUNG_LIST[Math.floor(code / 588)];
+      else if (ch !== ' ') res += ch;
     }
-    return out;
+    return res;
   }
-
-  const BASE_ICONS = [
-    '🐱','🐶','🦊','🐼','🦁','🐸','🐙','🍕','🍔','🍟','🌮','🍣','🍩','🍦','🍓','🍉',
-    '🍎','🍌','🍇','🍒','🥝','🍍','🥑','🥕','🌽','🥦','🥨','🥐','🥞','🧇','🧀','🥩',
-    '🍗','🍤','🍙','🍡','🍧','🍨','🍰','🧁','🍭','🍬','🍫','🍿','☕','🍵','🧋','🥤',
-    '⚽','🏀','🏈','⚾','🎾','🏐','🎱','🏓','🏸','🥊','🎯','🎲','🎮','🕹️','🎸','🎹'
-  ];
-
-  function buildCardDeck(gridSize) {
-    const pairCount = (gridSize * gridSize) / 2;
-    const symbols = [];
-    for (let i = 0; i < pairCount; i++) {
-      const base = BASE_ICONS[i % BASE_ICONS.length];
-      const lap = Math.floor(i / BASE_ICONS.length);
-      symbols.push(lap === 0 ? base : `${base}${lap + 1}`);
-    }
-    return [...symbols, ...symbols].map((icon, idx) => ({ id: idx, icon })).sort(() => Math.random() - 0.5);
-  }
-
-  const HUNMIN_PROMPTS = ['ㄱㅅ','ㅅㅋ','ㅂㅋ','ㅎㄹ','ㅁㅋ','ㅊㅋ','ㄴㅁ','ㅍㅈ','ㅇㄹ','ㅂㅅ','ㄷㄹ','ㄱㅁ','ㅅㄷ','ㅎㄱ','ㅋㅍ','ㅈㅁ'];
-  const CATCHMIND_PROMPTS = [
-    { cat: '고양이', word: '삡삡이' }, { cat: '고양이', word: '빱빱이' }, { cat: '고양이', word: '꾹꾹이' },
-    { cat: '고양이', word: '캣타워' }, { cat: '음식', word: '떡볶이' }, { cat: '음식', word: '붕어빵' },
-    { cat: '음식', word: '탕후루' }, { cat: '음식', word: '피자' }, { cat: '동물', word: '펭귄' },
-    { cat: '동물', word: '코끼리' }, { cat: '동물', word: '문어' }, { cat: '장소', word: '캠핑' },
-    { cat: '장소', word: '등대' }, { cat: '사물', word: '우산' }, { cat: '사물', word: '신호등' }
-  ];
-  const CHOSUNG_POOL = [
-    { q: 'ㄹㅁㅋㅂ', a: '루미큐브', hint: '숫자 타일 보드게임' },
-    { q: 'ㅁㅇㄷ', a: '무인도', hint: '사람이 없는 섬' },
-    { q: 'ㄱㅅㅌ', a: '고스톱', hint: '화투 놀이' },
-    { q: 'ㅋㅋㄴ', a: '코코넛', hint: '열대 과일' },
-    { q: 'ㅃㅃㅇ', a: '빱빱이', hint: '귀여운 고양이' },
-    { q: 'ㅆㅆㅇ', a: '삡삡이', hint: '고양이 친구' },
-    { q: 'ㅈㅂㅇㅁ', a: '장바구니', hint: '쇼핑 필수템' },
-    { q: 'ㄷㄹㅇㅂ', a: '드라이브', hint: '차 타고 바람 쐬기' },
-    { q: 'ㅂㅇㅂ', a: '비빔밥', hint: '고추장과 나물' },
-    { q: 'ㅎㅂㄹ', a: '해바라기', hint: '해를 바라보는 꽃' }
-  ];
-  const EMOJI_POOL = [
-    { e: '🔥🍗🍺', a: '치맥', hint: '야식 조합' },
-    { e: '🏝️🥥🎣', a: '무인도생존', hint: '섬에서 살아남기' },
-    { e: '🐱🐟🧶', a: '고양이', hint: '야옹' },
-    { e: '🎨🖌️❓', a: '캐치마인드', hint: '그림 맞추기' },
-    { e: '🃏💸🔥', a: '고스톱', hint: '고와 스톱' },
-    { e: '⛺🔥🥩', a: '캠핑', hint: '야외 바비큐' },
-    { e: '🎢🎡🍿', a: '놀이공원', hint: '회전목마와 팝콘' },
-    { e: '🍜🥚🌶️', a: '라면', hint: '분식 대표 메뉴' }
-  ];
-  const WORDASSOC_POOL = [
-    { clues: ['바삭함', '양념', '후라이드', '맥주'], a: '치킨' },
-    { clues: ['고양', '꾹꾹이', '수염', '캣타워'], a: '고양이' },
-    { clues: ['광', '열끗', '띠', '고도리'], a: '고스톱' },
-    { clues: ['파도', '통나무', '코코넛', '표류'], a: '무인도' },
-    { clues: ['빨강', '초록', '노랑', '횡단보도'], a: '신호등' },
-    { clues: ['소금', '버터', '빵집', '짭짤'], a: '소금빵' }
-  ];
-  const PROVERB_POOL = [
-    { prompt: '가는 말이 고와야 ___ ____.', a: '오는 말이 곱다' },
-    { prompt: '백지장도 ____ ____.', a: '맞들면 낫다' },
-    { prompt: '소 잃고 ____ ____.', a: '외양간 고친다' },
-    { prompt: '티끌 모아 ____.', a: '태산' },
-    { prompt: '우물 안 ____.', a: '개구리' },
-    { prompt: '호랑이도 제 말 하면 ____.', a: '온다' }
-  ];
-  const LIAR_TOPICS = [
-    { cat: '음식', word: '라면' }, { cat: '음식', word: '떡볶이' }, { cat: '음식', word: '피자' },
-    { cat: '동물', word: '고양이' }, { cat: '동물', word: '펭귄' }, { cat: '장소', word: '노래방' },
-    { cat: '장소', word: '놀이공원' }, { cat: '물건', word: '우산' }, { cat: '물건', word: '이어폰' }
-  ];
+  const normText = (s) => String(s || '').replace(/\s+/g, '').toLowerCase();
 
   const state = {
-    myId: 'u_' + Math.random().toString(36).slice(2, 8),
-    myName: '플레이어1',
-    myChar: '🐱',
-    roomCode: '',
-    isHost: true,
-    soloIsland: false,
-    modeDrawerOpen: true,
-
-    stateRev: 0,
-    mode: 'yutnori',
-    players: [],
-    scores: {},
-    sharedMoney: GAME_CONFIG.defaultMoney,
-    turnIndex: 0,
-    timeLeft: 35,
-    round: 1,
+    mode: 'stairs',
+    shopOpen: false,
+    quizDifficulty: 'all',
+    goalScore: 300,
     activeGame: false,
-    logs: [],
-    yutnori: {
-      teamMode: false,
-      teams: {},
-      pieces: {},
-      pendingRolls: [],
-      canThrow: true,
-      lastSticks: [false, true, true, true],
-      lastRollLabel: '윷을 던져주세요!',
-      rollAnimId: 0
-    },
-    rummikub: {
-      pool: [],
-      tableSets: [],
-      hands: {},
-      initialMelded: {},
-      turnStartSnapshot: null,
-      playedThisTurn: false
-    },
-    wordchain: { used: [], lastWord: '', combo: 0 },
-    hunmin: { prompt: 'ㄱㅅ', used: [] },
-    catchmind: { drawerId: '', prompt: CATCHMIND_PROMPTS[0], strokes: [], guessed: false },
-    cardflip: { size: 4, cards: [], flipped: [], matched: [] },
-    emojiquiz: { index: 0, solved: false },
-    liar: { topic: LIAR_TOPICS[0], liarId: '', phase: 'hint', hints: {}, votes: {}, revealed: false },
+    ceremonyShown: false,
+    myId: 'player_me',
+    players: [
+      { id: 'player_me', name: '나 (플레이어)', char: getEquippedSkin().icon, isBot: false, score: 0 },
+      { id: 'bot_1', name: '알파봇', char: '🤖', isBot: true, score: 0 },
+      { id: 'bot_2', name: '지니어스봇', char: '🦊', isBot: true, score: 0 }
+    ],
+    turnIndex: 0,
+    timeLeft: 30,
+    mainTimerId: null,
+    decks: {},
     chosung: { index: 0, solved: false },
+    fourchar: { index: 0, solved: false },
+    emojiquiz: { index: 0, solved: false },
     wordassoc: { index: 0, solved: false },
     proverb: { index: 0, solved: false },
-    island: { weather: '☀️ 맑음', wood: 2, fish: 1, coconut: 1, miniStage: null },
-    gostop: { stake: 1000, goCount: 0, turnId: '', floor: [], stock: [], hands: {}, captured: {}, shaken: {}, bankruptCount: {} }
+    catchmind: { drawerId: 'bot_1', prompt: CATCHMIND_PROMPTS[0], guessed: false },
+    wordchain: { lastWord: '사과', used: new Set(['사과']) },
+    hunmin: { targetChosung: 'ㄱㅈ', used: new Set() },
+    rummikub: { deck: [], tableSets: [], hands: {}, initialMelded: {}, selectedTileIds: new Set(), playedThisTurn: false },
+    stairs: {
+      running: false,
+      steps: [],
+      playerStep: 0,
+      playerX: 0,
+      playerDir: 1,
+      energy: 100,
+      combo: 0,
+      feverTimer: 0,
+      botProgress: {},
+      animId: null
+    },
+    dodge: {
+      running: false,
+      player: { x: 270, y: 200, r: 8 },
+      bullets: [],
+      items: [],
+      shield: 0,
+      slowTimer: 0,
+      elapsed: 0,
+      keys: {},
+      botAlive: {},
+      animId: null
+    },
+    penalties: [
+      '💧 물 한 컵 원샷하기',
+      '🎤 좋아하는 노래 1소절 부르기',
+      '🐱 카메라 보고 애교 3종 세트',
+      '💪 스쿼트 10회 실시',
+      '👏 1등에게 진심 어린 칭찬 3가지',
+      '🥤 다음 간식/음료 쏘기!'
+    ]
   };
 
-  let peer = null;
-  const conns = new Map();
-  let helloRetryTimer = null;
-  let lastSeenYutAnimId = 0;
-  let yutRollingActive = false;
-  let selectedRummiTileIds = new Set();
-  let draggedRummiTileId = null;
-  let selectedYutRollIdx = 0;
-  let selectedYutPieceIdx = 0;
-
-  const brush = { color: '#0f172a', size: 4, eraser: false, drawing: false, currentStroke: null };
-  const $ = (id) => document.getElementById(id);
-
-  function nowStr() { return new Date().toTimeString().slice(0, 8); }
-
-  function addLog(text) {
-    state.logs.push({ t: nowStr(), text });
-    if (state.logs.length > 80) state.logs.shift();
-    renderLogs();
-  }
-
-  function setConnStatus(status, label) {
-    const dot = $('connDot');
-    dot.className = 'dot ' + (status === 'ok' ? 'ok' : status === 'err' ? 'err' : '');
-    $('connText').textContent = label;
-  }
-
-  function ensurePlayer(id, name, isBot = false, charIcon = '🐱') {
-    if (!state.players.some(p => p.id === id)) {
-      state.players.push({ id, name, isBot, char: charIcon });
-      const idx = state.players.length - 1;
-      state.yutnori.teams[id] = idx % 2 === 0 ? 'red' : 'blue';
-    } else {
-      const p = state.players.find(x => x.id === id);
-      if (name) p.name = name;
-      if (charIcon) p.char = charIcon;
-      if (!state.yutnori.teams[id]) {
-        const idx = state.players.findIndex(x => x.id === id);
-        state.yutnori.teams[id] = idx % 2 === 0 ? 'red' : 'blue';
-      }
-    }
-    if (typeof state.scores[id] !== 'number') state.scores[id] = 0;
-    if (typeof state.gostop.bankruptCount[id] !== 'number') state.gostop.bankruptCount[id] = 0;
-  }
-
-  function applyMyProfile(announce = false) {
-    const rawName = ($('nickInput').value || '').trim();
-    state.myName = rawName || '플레이어1';
-    ensurePlayer(state.myId, state.myName, false, state.myChar);
-    if (announce) addLog(`${state.myChar} <strong>${state.myName}</strong> 프로필 적용`);
-    if (state.isHost) syncStateToPeers();
-    else if (state.roomCode && !state.soloIsland) {
-      broadcast({ type: 'HELLO', playerId: state.myId, playerName: state.myName, char: state.myChar });
-    }
-    renderLobby();
-  }
-
-  function getPlayerInfo(id) {
-    return state.players.find(p => p.id === id) || { id, name: id, char: '👤', isBot: false };
-  }
-  function getPlayerName(id) {
-    const p = getPlayerInfo(id);
-    return `${p.char || '👤'} ${p.name}`;
-  }
-  function getCurrentTurnPlayer() {
-    if (!state.players.length) return null;
-    return state.players[state.turnIndex % state.players.length];
-  }
-  function isMyTurn() {
-    const cur = getCurrentTurnPlayer();
-    return Boolean(cur && cur.id === state.myId);
-  }
-  function getTurnSecondsForCurrentState() {
-    if (state.mode === 'cardflip') return GAME_CONFIG.cardFlipSeconds[state.cardflip.size] || 45;
-    const sec = GAME_CONFIG.turnSeconds[state.mode];
-    return typeof sec === 'number' ? sec : 25;
-  }
-
-  function broadcast(payload) {
-    const raw = JSON.stringify(payload);
-    conns.forEach((c) => {
-      if (c && c.open) {
-        try { c.send(raw); } catch {}
-      }
+  function nextFilteredDeckIndex(deckKey, pool, diff) {
+    const validIndices = [];
+    pool.forEach((item, idx) => {
+      if (diff === 'all' || item.diff === diff) validIndices.push(idx);
     });
+    const source = validIndices.length ? validIndices : pool.map((_, i) => i);
+    const cacheKey = `${deckKey}_${diff}`;
+    if (!state.decks[cacheKey] || state.decks[cacheKey].length === 0) {
+      const shuffled = [...source];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      state.decks[cacheKey] = shuffled;
+    }
+    return state.decks[cacheKey].pop();
   }
 
-  function getSharedRoomState() {
-    const { myId, myName, myChar, roomCode, isHost, soloIsland, modeDrawerOpen, ...shared } = state;
-    return shared;
+  function addLog(text, cls = '') {
+    const box = document.getElementById('chatLog');
+    const div = document.createElement('div');
+    div.className = `chat-msg ${cls}`;
+    div.textContent = text;
+    box.appendChild(div);
+    box.scrollTop = box.scrollHeight;
   }
 
-  function syncStateToPeers() {
-    if (!state.isHost) return;
-    state.stateRev = (state.stateRev || 0) + 1;
-    broadcast({ type: 'SYNC_STATE', state: getSharedRoomState() });
-  }
+  function addScore(playerId, pts) {
+    const p = state.players.find(x => x.id === playerId);
+    if (!p) return;
+    p.score += pts;
+    renderPlayers();
+    if (state.shopOpen && playerId === state.myId) renderStage();
 
-  function stopHelloRetry() {
-    if (helloRetryTimer) {
-      clearInterval(helloRetryTimer);
-      helloRetryTimer = null;
+    if (state.goalScore > 0 && !state.ceremonyShown && p.score >= state.goalScore) {
+      state.ceremonyShown = true;
+      stopAllLoops();
+      state.activeGame = false;
+      if (p.id === state.myId) {
+        hallOfFame.totalWins++;
+        saveHof();
+      }
+      SoundFX.win();
+      openCeremonyModal(p);
     }
   }
 
-  /* ================= 방 입장 & 고속 WebRTC 동기화 ================= */
-  function enterRoomComplete(code, asHost, statusLabel) {
-    state.roomCode = code;
-    state.isHost = asHost;
-    state.soloIsland = false;
-    state.modeDrawerOpen = true;
-    ensurePlayer(state.myId, state.myName, false, state.myChar);
-    setConnStatus('ok', statusLabel);
-    renderAll();
-  }
+  const getCurrentTurnPlayer = () => state.players[state.turnIndex % state.players.length];
 
-  function setupPeerAsHost(code) {
-    stopHelloRetry();
-    applyMyProfile(false);
-    state.players = [];
-    state.scores = {};
-    state.yutnori.teams = {};
-    state.stateRev = 1;
-    ensurePlayer(state.myId, state.myName, false, state.myChar);
+  /* =========================================================================
+     5. 스킨 상점 해금 & 장착 로직
+     ========================================================================= */
+  function buyOrEquipSkin(skinId) {
+    const skin = SKIN_CATALOG.find(s => s.id === skinId);
+    const me = state.players.find(p => p.id === state.myId);
+    if (!skin || !me) return;
 
-    if (peer) { try { peer.destroy(); } catch {} peer = null; }
-    conns.clear();
-
-    if (typeof Peer === 'undefined') {
-      enterRoomComplete(code, true, `방장 (로컬/AI 모드) · ${code}`);
-      addLog(`🏠 방 [${code}] 생성 완료! (AI 봇 추가 또는 바로 시작 가능)`);
-      return;
-    }
-
-    enterRoomComplete(code, true, `방 개설 중 · ${code}`);
-    addLog(`🏠 방 [${code}] 생성 완료! (${state.myChar} ${state.myName})`);
-
-    try {
-      peer = new Peer('KCM_' + code, PEER_ICE_CONFIG);
-      peer.on('open', () => {
-        setConnStatus('ok', `방장 연결됨 · ${code}`);
-        syncStateToPeers();
-      });
-      peer.on('connection', (conn) => {
-        conns.set(conn.peer, conn);
-        conn.on('data', (d) => handleIncomingData(conn.peer, d));
-        conn.on('close', () => conns.delete(conn.peer));
-        conn.on('open', () => {
-          conn.send(JSON.stringify({ type: 'SYNC_STATE', state: getSharedRoomState() }));
-        });
-      });
-      peer.on('error', () => {
-        setConnStatus('ok', `방장 (로컬/봇 모드) · ${code}`);
-      });
-    } catch {
-      setConnStatus('ok', `방장 (로컬/봇 모드) · ${code}`);
-    }
-  }
-
-  function setupPeerAsGuest(code) {
-    stopHelloRetry();
-    applyMyProfile(false);
-    if (typeof Peer === 'undefined') {
-      alert('현재 브라우저 미리보기 환경에서는 외부 P2P 서버가 차단되어 있어 [새 방 만들기] 또는 [AI 봇 대전방 열기]만 지원됩니다.');
-      return;
-    }
-    if (peer) { try { peer.destroy(); } catch {} peer = null; }
-    conns.clear();
-
-    setConnStatus('', `방 [${code}] 접속 중...`);
-    try {
-      peer = new Peer(PEER_ICE_CONFIG);
-      peer.on('open', () => {
-        const conn = peer.connect('KCM_' + code, { reliable: true });
-        conns.set(conn.peer, conn);
-
-        const sendHello = () => {
-          if (conn && conn.open) {
-            conn.send(JSON.stringify({
-              type: 'HELLO',
-              playerId: state.myId,
-              playerName: state.myName,
-              char: state.myChar
-            }));
-          }
-        };
-
-        conn.on('data', (d) => handleIncomingData(conn.peer, d));
-        conn.on('open', () => {
-          enterRoomComplete(code, false, `참여 중 · ${code}`);
-          sendHello();
-          // 방장 명단에 내 ID가 반영될 때까지 0.8초마다 자동 재전송
-          helloRetryTimer = setInterval(() => {
-            if (state.players.some(p => p.id === state.myId && state.stateRev > 0)) {
-              stopHelloRetry();
-              return;
-            }
-            sendHello();
-          }, 800);
-        });
-        conn.on('close', () => {
-          stopHelloRetry();
-          setConnStatus('err', '연결 종료됨');
-        });
-      });
-      peer.on('error', () => {
-        stopHelloRetry();
-        setConnStatus('err', '방 연결 실패 (방 코드 확인)');
-        alert(`방 [${code}]을 찾을 수 없습니다. 방장이 먼저 방을 열었는지 확인하세요.`);
-      });
-    } catch {
-      setConnStatus('err', '방 연결 실패');
-    }
-  }
-
-  function enterQuickBotRoom() {
-    const code = 'BOT' + Math.floor(100 + Math.random() * 900);
-    setupPeerAsHost(code);
-    ensurePlayer('bot_1', '봇_알파', true, '🤖');
-    addLog('🤖 AI 봇 [봇_알파]가 자동 참가했습니다. 원하는 종목과 팀전 여부를 선택하고 시작하세요!');
-    renderAll();
-  }
-
-  function enterSoloIsland() {
-    stopHelloRetry();
-    applyMyProfile(false);
-    state.soloIsland = true;
-    state.isHost = true;
-    state.roomCode = 'SOLO';
-    state.players = [{ id: state.myId, name: state.myName, isBot: false, char: state.myChar }];
-    state.scores[state.myId] = state.scores[state.myId] || 0;
-    state.mode = 'island';
-    state.activeGame = true;
-    state.modeDrawerOpen = false;
-    state.island.miniStage = null;
-    setConnStatus('ok', '무인도 솔로 입장');
-    addLog(`🏝️ ${state.myChar} <strong>${state.myName}</strong> 님이 무인도에 혼자 입장했습니다!`);
-    renderAll();
-  }
-
-  /* ================= 윷놀이 엔진 (개인전 + 팀전 + 3D 애니메이션) ================= */
-  const YUT_NODES = [
-    { id: 0, x: 430, y: 430, corner: true, label: '출발' },
-    { id: 1, x: 430, y: 354 }, { id: 2, x: 430, y: 278 }, { id: 3, x: 430, y: 202 }, { id: 4, x: 430, y: 126 },
-    { id: 5, x: 430, y: 50, corner: true, label: '모' },
-    { id: 6, x: 354, y: 50 }, { id: 7, x: 278, y: 50 }, { id: 8, x: 202, y: 50 }, { id: 9, x: 126, y: 50 },
-    { id: 10, x: 50, y: 50, corner: true, label: '모' },
-    { id: 11, x: 50, y: 126 }, { id: 12, x: 50, y: 202 }, { id: 13, x: 50, y: 278 }, { id: 14, x: 50, y: 354 },
-    { id: 15, x: 50, y: 430, corner: true, label: '모' },
-    { id: 16, x: 126, y: 430 }, { id: 17, x: 202, y: 430 }, { id: 18, x: 278, y: 430 }, { id: 19, x: 354, y: 430 },
-    { id: 20, x: 366, y: 114 }, { id: 21, x: 303, y: 177 },
-    { id: 22, x: 240, y: 240, corner: true, label: '방' },
-    { id: 23, x: 177, y: 303 }, { id: 24, x: 114, y: 366 },
-    { id: 25, x: 114, y: 114 }, { id: 26, x: 177, y: 177 },
-    { id: 27, x: 303, y: 303 }, { id: 28, x: 366, y: 366 }
-  ];
-  const YUT_PLAYER_COLORS = ['#ef4444', '#3b82f6', '#22c55e', '#a855f7', '#f59e0b', '#ec4899'];
-
-  function getYutOwnerKey(playerId) {
-    if (state.yutnori.teamMode) return state.yutnori.teams[playerId] || 'red';
-    return playerId;
-  }
-
-  function getYutOwnerLabel(ownerKey) {
-    if (state.yutnori.teamMode) return ownerKey === 'red' ? '🔴 홍팀' : '🔵 청팀';
-    return getPlayerName(ownerKey);
-  }
-
-  function getYutOwnerColor(ownerKey) {
-    if (state.yutnori.teamMode) return ownerKey === 'red' ? '#ef4444' : '#3b82f6';
-    const idx = state.players.findIndex(p => p.id === ownerKey);
-    return YUT_PLAYER_COLORS[Math.max(0, idx) % YUT_PLAYER_COLORS.length];
-  }
-
-  function getYutOwnerKeys() {
-    if (state.yutnori.teamMode) return ['red', 'blue'];
-    return state.players.map(p => p.id);
-  }
-
-  function interleavePlayersByTeam() {
-    const reds = state.players.filter(p => (state.yutnori.teams[p.id] || 'red') === 'red');
-    const blues = state.players.filter(p => state.yutnori.teams[p.id] === 'blue');
-    const merged = [];
-    const maxLen = Math.max(reds.length, blues.length);
-    for (let i = 0; i < maxLen; i++) {
-      if (reds[i]) merged.push(reds[i]);
-      if (blues[i]) merged.push(blues[i]);
-    }
-    if (merged.length === state.players.length) {
-      state.players = merged;
-    }
-  }
-
-  function initYutnoriRound() {
-    const isTeam = Boolean(state.yutnori.teamMode);
-    const teams = { ...state.yutnori.teams };
-    state.players.forEach((p, idx) => {
-      if (!teams[p.id]) teams[p.id] = idx % 2 === 0 ? 'red' : 'blue';
-    });
-    state.yutnori.teams = teams;
-    if (isTeam) interleavePlayersByTeam();
-
-    const pieces = {};
-    if (isTeam) {
-      pieces.red = [-1, -1, -1];
-      pieces.blue = [-1, -1, -1];
+    if (!skinState.unlocked.includes(skin.id)) {
+      if (me.score < skin.cost) {
+        addLog(`❌ [${skin.name}] 스킨 해금에 ${skin.cost}점이 필요합니다! (현재 ${me.score}점)`, 'danger');
+        return;
+      }
+      me.score -= skin.cost;
+      skinState.unlocked.push(skin.id);
+      skinState.equipped = skin.id;
+      me.char = skin.icon;
+      saveShop();
+      SoundFX.win();
+      addLog(`🛍️ [${skin.name} ${skin.icon}] 스킨을 해금하고 장착했습니다!`, 'win');
     } else {
-      state.players.forEach(p => { pieces[p.id] = [-1, -1, -1]; });
+      skinState.equipped = skin.id;
+      me.char = skin.icon;
+      saveShop();
+      SoundFX.item();
+      addLog(`✨ [${skin.name} ${skin.icon}] 스킨으로 변경했습니다!`, 'sys');
     }
 
-    state.yutnori = {
-      teamMode: isTeam,
-      teams,
-      pieces,
-      pendingRolls: [],
-      canThrow: true,
-      lastSticks: [false, true, true, true],
-      lastRollLabel: '윷을 던져주세요!',
-      rollAnimId: state.yutnori.rollAnimId || 0
-    };
-    selectedYutRollIdx = 0;
-    selectedYutPieceIdx = 0;
+    renderPlayers();
+    renderStage();
   }
 
-  function setYutTeamMode(enabled) {
-    if (!state.isHost) return;
-    state.yutnori.teamMode = Boolean(enabled);
-    if (state.yutnori.teamMode) {
-      const redCount = state.players.filter(p => state.yutnori.teams[p.id] === 'red').length;
-      const blueCount = state.players.filter(p => state.yutnori.teams[p.id] === 'blue').length;
-      if (redCount === 0 || blueCount === 0) {
-        state.players.forEach((p, idx) => {
-          state.yutnori.teams[p.id] = idx % 2 === 0 ? 'red' : 'blue';
-        });
-      }
-    }
-    initYutnoriRound();
-    addLog(state.yutnori.teamMode ? '🤝 윷놀이 <strong>팀전 (🔴 홍팀 vs 🔵 청팀)</strong> 선택됨!' : '👤 윷놀이 <strong>개인전</strong> 선택됨!');
-    syncStateToPeers();
-    renderAll();
-  }
-
-  function togglePlayerYutTeam(targetPlayerId) {
-    if (!state.isHost && targetPlayerId !== state.myId) return;
-    const curTeam = state.yutnori.teams[targetPlayerId] || 'red';
-    const nextTeam = curTeam === 'red' ? 'blue' : 'red';
-    state.yutnori.teams[targetPlayerId] = nextTeam;
-    if (state.yutnori.teamMode) interleavePlayersByTeam();
-    addLog(`🔄 ${getPlayerName(targetPlayerId)} → ${nextTeam === 'red' ? '🔴 홍팀' : '🔵 청팀'} 배정`);
-    syncStateToPeers();
-    renderAll();
-  }
-
-  function triggerLocalYut3DAnim(animId) {
-    if (!animId || animId === lastSeenYutAnimId) return;
-    lastSeenYutAnimId = animId;
-    yutRollingActive = true;
-    setTimeout(() => {
-      yutRollingActive = false;
-      document.querySelectorAll('.yut-stick-3d').forEach(el => el.classList.remove('rolling'));
-    }, 720);
-  }
-
-  function rollFourYutSticks() {
-    const r = Math.random();
-    let flatCount = 1, backDo = false;
-    if (r < 0.06) { flatCount = 1; backDo = true; }
-    else if (r < 0.28) flatCount = 1;
-    else if (r < 0.62) flatCount = 2;
-    else if (r < 0.86) flatCount = 3;
-    else if (r < 0.94) flatCount = 4;
-    else flatCount = 0;
-
-    const sticks = [false, false, false, false];
-    if (backDo) sticks[0] = true;
-    else {
-      const idxs = [0, 1, 2, 3].sort(() => Math.random() - 0.5);
-      for (let i = 0; i < flatCount; i++) sticks[idxs[i]] = true;
-    }
-
-    if (backDo) return { steps: -1, name: '빽도 (-1)', bonus: false, sticks };
-    if (flatCount === 1) return { steps: 1, name: '도 (+1)', bonus: false, sticks };
-    if (flatCount === 2) return { steps: 2, name: '개 (+2)', bonus: false, sticks };
-    if (flatCount === 3) return { steps: 3, name: '걸 (+3)', bonus: false, sticks };
-    if (flatCount === 4) return { steps: 4, name: '윷 (+4 · 한번 더!)', bonus: true, sticks };
-    return { steps: 5, name: '모 (+5 · 한번 더!)', bonus: true, sticks };
-  }
-
-  function computeYutDestination(startPos, steps) {
-    if (startPos === 99) return 99;
-    if (steps === -1) {
-      if (startPos === -1) return -1;
-      const backMap = {
-        0: 19, 1: 0, 2: 1, 3: 2, 4: 3, 5: 4, 6: 5, 7: 6, 8: 7, 9: 8, 10: 9,
-        11: 10, 12: 11, 13: 12, 14: 13, 15: 14, 16: 15, 17: 16, 18: 17, 19: 18,
-        20: 5, 21: 20, 22: 21, 23: 22, 24: 23, 25: 10, 26: 25, 27: 22, 28: 27
-      };
-      return backMap[startPos] ?? 0;
-    }
-
-    let cur = startPos === -1 ? 0 : startPos;
-    const fromBench = startPos === -1;
-    let prev = -1;
-    for (let s = 0; s < steps; s++) {
-      let next = cur;
-      if (s === 0 && !fromBench) {
-        if (cur === 5) next = 20;
-        else if (cur === 10) next = 25;
-        else if (cur === 22) next = 27;
-        else if (cur === 19 || cur === 28) next = 0;
-        else if (cur === 0) return 99;
-        else if (cur === 24) next = 15;
-        else next = cur + 1;
-      } else {
-        if (cur === 19 || cur === 28) next = 0;
-        else if (cur === 0 && !fromBench) return 99;
-        else if (cur === 0 && fromBench && s > 0) return 99;
-        else if (cur === 24) next = 15;
-        else if (cur === 22) next = prev === 26 ? 27 : 23;
-        else next = cur + 1;
-      }
-      prev = cur;
-      cur = next;
-    }
-    return cur;
-  }
-
-  function handleYutThrow(playerId) {
-    const cur = getCurrentTurnPlayer();
-    if (!cur || cur.id !== playerId) return;
-    const yn = state.yutnori;
-    if (!yn.canThrow) return;
-
-    const res = rollFourYutSticks();
-    yn.lastSticks = res.sticks;
-    yn.lastRollLabel = res.name;
-    yn.pendingRolls.push({ steps: res.steps, name: res.name });
-    yn.canThrow = res.bonus;
-    yn.rollAnimId = (yn.rollAnimId || 0) + 1;
-    triggerLocalYut3DAnim(yn.rollAnimId);
-
-    const ownerKey = getYutOwnerKey(playerId);
-    const teamTag = yn.teamMode ? ` [${getYutOwnerLabel(ownerKey)}]` : '';
-    addLog(`🪵 ${getPlayerName(playerId)}${teamTag} 윷 던지기: <strong>${res.name}</strong>`);
-
-    const teamPieces = yn.pieces[ownerKey] || [-1, -1, -1];
-    const hasBoardPiece = teamPieces.some(pos => pos >= 0 && pos < 99);
-    if (!yn.canThrow && yn.pendingRolls.length === 1 && yn.pendingRolls[0].steps === -1 && !hasBoardPiece) {
-      yn.pendingRolls = [];
-      addLog(`💨 판 위에 이동할 말이 없어 빽도 무효 처리 후 턴이 넘어갑니다.`);
-      syncStateToPeers();
-      renderAll();
-      setTimeout(() => advanceTurn(), 750);
-      return;
-    }
-
-    selectedYutRollIdx = 0;
-    const movableIdx = teamPieces.findIndex(pos => pos < 99 && !(res.steps === -1 && pos === -1));
-    if (movableIdx !== -1) selectedYutPieceIdx = movableIdx;
-
-    syncStateToPeers();
-    renderAll();
-  }
-
-  function handleYutMove(playerId, rollIdx, pieceIdx) {
-    const cur = getCurrentTurnPlayer();
-    if (!cur || cur.id !== playerId) return;
-    const yn = state.yutnori;
-    if (!yn.pendingRolls.length) return;
-    const rIdx = Math.max(0, Math.min(rollIdx, yn.pendingRolls.length - 1));
-    const chosenRoll = yn.pendingRolls[rIdx];
-    const ownerKey = getYutOwnerKey(playerId);
-    const myPieces = yn.pieces[ownerKey] || [-1, -1, -1];
-    const startPos = myPieces[pieceIdx];
-
-    if (typeof startPos !== 'number' || startPos === 99) return;
-    if (chosenRoll.steps === -1 && startPos === -1) {
-      addLog(`❌ 대기석 말은 빽도로 이동할 수 없습니다.`);
-      return;
-    }
-
-    const dest = computeYutDestination(startPos, chosenRoll.steps);
-    yn.pendingRolls.splice(rIdx, 1);
-
-    const stackedIndices = [];
-    if (startPos >= 0 && startPos < 99) {
-      myPieces.forEach((p, idx) => { if (p === startPos) stackedIndices.push(idx); });
-    } else {
-      stackedIndices.push(pieceIdx);
-    }
-    stackedIndices.forEach(idx => { myPieces[idx] = dest; });
-
-    const teamTag = yn.teamMode ? ` [${getYutOwnerLabel(ownerKey)}]` : '';
-
-    if (dest === 99) {
-      const gained = stackedIndices.length * 10;
-      state.scores[playerId] = (state.scores[playerId] || 0) + gained;
-      addLog(`🎊 ${getPlayerName(playerId)}${teamTag} 말 ${stackedIndices.length}개 완주! (+${gained}점)`);
-    } else {
-      const destName = YUT_NODES.find(n => n.id === dest)?.label || `${dest}번 칸`;
-      const stackTxt = stackedIndices.length > 1 ? ` (업기 ${stackedIndices.length}말 동시 이동)` : '';
-      addLog(`🏃 ${getPlayerName(playerId)}${teamTag} [${chosenRoll.name}] → ${destName} 이동${stackTxt}`);
-
-      let caughtCount = 0;
-      getYutOwnerKeys().forEach(otherKey => {
-        if (otherKey === ownerKey) return;
-        const otherPieces = yn.pieces[otherKey] || [];
-        otherPieces.forEach((oPos, oIdx) => {
-          if (oPos === dest) { otherPieces[oIdx] = -1; caughtCount += 1; }
-        });
-      });
-
-      if (caughtCount > 0) {
-        yn.canThrow = true;
-        addLog(`💥 ${getPlayerName(playerId)}${teamTag} 상대 말 ${caughtCount}개 잡기 성공! 한 번 더 던집니다!`);
-      }
-    }
-
-    if (myPieces.every(p => p === 99)) {
-      if (yn.teamMode) {
-        state.players.forEach(p => {
-          if (getYutOwnerKey(p.id) === ownerKey) {
-            state.scores[p.id] = (state.scores[p.id] || 0) + 35;
-          }
-        });
-        addLog(`🏆🎉 <strong>${getYutOwnerLabel(ownerKey)}</strong> 윷놀이 팀전 최종 승리! (팀원 전원 +35점)`);
-      } else {
-        state.scores[playerId] = (state.scores[playerId] || 0) + 35;
-        addLog(`🏆🎉 ${getPlayerName(playerId)} 윷놀이 최종 승리! (+35점)`);
-      }
-      initYutnoriRound();
-      advanceTurn();
-      return;
-    }
-
-    selectedYutRollIdx = 0;
-    if (!yn.canThrow && yn.pendingRolls.length === 0) advanceTurn();
-    else { syncStateToPeers(); renderAll(); }
-  }
-
-  /* ================= 3D 루미큐브 엔진 ================= */
-  function buildRummikubPool() {
-    const colors = ['red', 'blue', 'yellow', 'black'];
-    const pool = [];
-    let uid = 1;
-    for (let s = 0; s < 2; s++) {
+  /* =========================================================================
+     6. 루미큐브 & 퀴즈 AI 스케줄러
+     ========================================================================= */
+  function createRummiDeck() {
+    const colors = ['red', 'blue', 'orange', 'black'];
+    const deck = [];
+    let id = 1;
+    for (let copy = 0; copy < 2; copy++) {
       for (const color of colors) {
-        for (let num = 1; num <= 13; num++) pool.push({ id: `rk_${uid++}`, color, num, isJoker: false });
+        for (let num = 1; num <= 13; num++) deck.push({ id: `t_${id++}`, color, num, isJoker: false });
       }
     }
-    pool.push({ id: `rk_${uid++}`, color: 'joker', num: 0, isJoker: true });
-    pool.push({ id: `rk_${uid++}`, color: 'joker', num: 0, isJoker: true });
-    return pool.sort(() => Math.random() - 0.5);
-  }
-
-  function sortRummiTiles(tiles) {
-    const order = { red: 1, blue: 2, yellow: 3, black: 4, joker: 5 };
-    return [...tiles].sort((a, b) => {
-      if (a.isJoker && !b.isJoker) return 1;
-      if (!a.isJoker && b.isJoker) return -1;
-      if (order[a.color] !== order[b.color]) return order[a.color] - order[b.color];
-      return a.num - b.num;
-    });
+    deck.push({ id: `t_${id++}`, color: 'joker', num: 0, isJoker: true });
+    deck.push({ id: `t_${id++}`, color: 'joker', num: 0, isJoker: true });
+    for (let i = deck.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [deck[i], deck[j]] = [deck[j], deck[i]];
+    }
+    return deck;
   }
 
   function evaluateRummiSet(tiles) {
-    if (!tiles || tiles.length < 3) return { valid: false, points: 0, reason: '최소 3장 이상 필요' };
-    const nonJokers = tiles.filter(t => !t.isJoker);
-    if (!nonJokers.length) return { valid: false, points: 0, reason: '조커만 등록 불가' };
+    if (!tiles || tiles.length < 3) return { valid: false, points: 0 };
+    const jokers = tiles.filter(t => t.isJoker);
+    const normals = tiles.filter(t => !t.isJoker);
+    if (normals.length === 0) return { valid: false, points: 0 };
+
     if (tiles.length <= 4) {
-      const targetNum = nonJokers[0].num;
-      if (nonJokers.every(t => t.num === targetNum) && new Set(nonJokers.map(t => t.color)).size === nonJokers.length) {
-        return { valid: true, type: 'group', points: targetNum * tiles.length };
+      const targetNum = normals[0].num;
+      if (normals.every(t => t.num === targetNum) && new Set(normals.map(t => t.color)).size === normals.length) {
+        return { valid: true, points: targetNum * tiles.length };
       }
     }
-    const targetColor = nonJokers[0].color;
-    if (nonJokers.every(t => t.color === targetColor) && tiles.length <= 13) {
-      const nums = nonJokers.map(t => t.num).sort((a, b) => a - b);
-      if (new Set(nums).size === nums.length) {
-        const span = nums[nums.length - 1] - nums[0] + 1;
-        if (span <= tiles.length) {
-          let start = nums[0], end = nums[nums.length - 1], rem = tiles.length - span;
-          while (rem > 0 && end < 13) { end++; rem--; }
-          while (rem > 0 && start > 1) { start--; rem--; }
-          if (rem === 0) {
-            let sum = 0;
-            for (let n = start; n <= end; n++) sum += n;
-            return { valid: true, type: 'run', points: sum, start, end };
-          }
+    const targetColor = normals[0].color;
+    if (normals.every(t => t.color === targetColor)) {
+      const sorted = [...normals].sort((a, b) => a.num - b.num);
+      for (let i = 1; i < sorted.length; i++) if (sorted[i].num === sorted[i - 1].num) return { valid: false, points: 0 };
+      let neededJokers = 0;
+      for (let i = 1; i < sorted.length; i++) neededJokers += (sorted[i].num - sorted[i - 1].num - 1);
+      if (neededJokers <= jokers.length) {
+        let extra = jokers.length - neededJokers;
+        let startNum = sorted[0].num, endNum = sorted[sorted.length - 1].num;
+        while (extra > 0 && endNum < 13) { endNum++; extra--; }
+        while (extra > 0 && startNum > 1) { startNum--; extra--; }
+        if (endNum - startNum + 1 === tiles.length) {
+          let sum = 0;
+          for (let n = startNum; n <= endNum; n++) sum += n;
+          return { valid: true, points: sum };
         }
       }
     }
-    return { valid: false, points: 0, reason: '같은 숫자(다른 색) 또는 같은 색 연속 숫자 3장 이상 필요' };
+    return { valid: false, points: 0 };
   }
 
-  function arrangeRummiSetDisplay(tiles) {
-    const ev = evaluateRummiSet(tiles);
-    if (!ev.valid) return tiles;
-    if (ev.type === 'group') return sortRummiTiles(tiles);
-    const nonJokers = [...tiles.filter(t => !t.isJoker)].sort((a, b) => a.num - b.num);
-    const jokers = [...tiles.filter(t => t.isJoker)];
-    const ordered = [];
-    for (let n = ev.start; n <= ev.end; n++) {
-      const found = nonJokers.find(t => t.num === n);
-      if (found) ordered.push(found);
-      else if (jokers.length) ordered.push(jokers.shift());
+  function findAllValidRummiSets(hand) {
+    const validCandidates = [];
+    const jokers = hand.filter(t => t.isJoker);
+    const normals = hand.filter(t => !t.isJoker);
+    const byNum = {};
+    normals.forEach(t => {
+      if (!byNum[t.num]) byNum[t.num] = [];
+      if (!byNum[t.num].some(x => x.color === t.color)) byNum[t.num].push(t);
+    });
+    Object.values(byNum).forEach(groupTiles => {
+      if (groupTiles.length >= 3) {
+        for (let i = 0; i < groupTiles.length; i++)
+          for (let j = i + 1; j < groupTiles.length; j++)
+            for (let k = j + 1; k < groupTiles.length; k++) {
+              const sub = [groupTiles[i], groupTiles[j], groupTiles[k]];
+              const ev = evaluateRummiSet(sub);
+              if (ev.valid) validCandidates.push({ tiles: sub, points: ev.points });
+            }
+      }
+      if (jokers.length >= 1 && groupTiles.length >= 2) {
+        for (let i = 0; i < groupTiles.length; i++)
+          for (let j = i + 1; j < groupTiles.length; j++) {
+            const sub = [groupTiles[i], groupTiles[j], jokers[0]];
+            const ev = evaluateRummiSet(sub);
+            if (ev.valid) validCandidates.push({ tiles: sub, points: ev.points });
+          }
+      }
+    });
+    const byColor = {};
+    normals.forEach(t => {
+      if (!byColor[t.color]) byColor[t.color] = [];
+      if (!byColor[t.color].some(x => x.num === t.num)) byColor[t.color].push(t);
+    });
+    Object.values(byColor).forEach(colorTiles => {
+      const sorted = [...colorTiles].sort((a, b) => a.num - b.num);
+      for (let i = 0; i < sorted.length; i++) {
+        const run = [sorted[i]];
+        for (let j = i + 1; j < sorted.length; j++) {
+          if (sorted[j].num === run[run.length - 1].num + 1) {
+            run.push(sorted[j]);
+            if (run.length >= 3) {
+              const ev = evaluateRummiSet(run);
+              if (ev.valid) validCandidates.push({ tiles: [...run], points: ev.points });
+            }
+          } else break;
+        }
+      }
+    });
+    return validCandidates.sort((a, b) => b.points - a.points);
+  }
+
+  function findBestRummiMeldPlan(hand, minPoints = 30) {
+    const candidates = findAllValidRummiSets(hand);
+    let bestPlan = null, bestScore = 0;
+    function backtrack(idx, usedIds, currentSets, currentScore) {
+      if (currentScore >= minPoints && currentScore > bestScore) {
+        bestScore = currentScore;
+        bestPlan = currentSets.map(s => [...s]);
+      }
+      if (bestPlan && idx > 45) return;
+      for (let i = idx; i < candidates.length; i++) {
+        const { tiles, points } = candidates[i];
+        if (tiles.some(t => usedIds.has(t.id))) continue;
+        tiles.forEach(t => usedIds.add(t.id));
+        currentSets.push(tiles);
+        backtrack(i + 1, usedIds, currentSets, currentScore + points);
+        currentSets.pop();
+        tiles.forEach(t => usedIds.delete(t.id));
+      }
     }
-    return ordered;
-  }
-
-  function captureRummiTurnSnapshot() {
-    state.rummikub.turnStartSnapshot = JSON.stringify({
-      tableSets: state.rummikub.tableSets,
-      hands: state.rummikub.hands,
-      initialMelded: state.rummikub.initialMelded
-    });
-    state.rummikub.playedThisTurn = false;
-    selectedRummiTileIds.clear();
-  }
-
-  function initRummikubRound() {
-    const pool = buildRummikubPool();
-    const hands = {}, initialMelded = {};
-    state.players.forEach(p => {
-      hands[p.id] = sortRummiTiles(pool.splice(0, 14));
-      initialMelded[p.id] = false;
-    });
-    state.rummikub = { pool, tableSets: [], hands, initialMelded, turnStartSnapshot: null, playedThisTurn: false };
-    captureRummiTurnSnapshot();
+    backtrack(0, new Set(), [], 0);
+    return bestPlan;
   }
 
   function handleRummiMeldNew(playerId, tileIds) {
-    const cur = getCurrentTurnPlayer();
-    if (!cur || cur.id !== playerId) return false;
-    const hand = state.rummikub.hands[playerId] || [];
-    const picked = hand.filter(t => tileIds.includes(t.id));
-    if (picked.length < 3) return false;
-    const check = evaluateRummiSet(picked);
-    if (!check.valid) { addLog(`❌ ${check.reason}`); return false; }
-    if (!state.rummikub.initialMelded[playerId] && check.points < 30) {
-      addLog(`❌ 첫 등록은 합계 30점 이상이어야 합니다! (현재 ${check.points}점)`);
-      return false;
-    }
-    state.rummikub.hands[playerId] = hand.filter(t => !tileIds.includes(t.id));
-    state.rummikub.tableSets.push(arrangeRummiSetDisplay(picked));
-    state.rummikub.initialMelded[playerId] = true;
-    state.rummikub.playedThisTurn = true;
-    selectedRummiTileIds.clear();
-    addLog(`🧩 ${getPlayerName(playerId)} 새 세트 등록 (${check.points}점)`);
-    if (state.rummikub.hands[playerId].length === 0) {
-      state.scores[playerId] = (state.scores[playerId] || 0) + 40;
-      addLog(`🏆 ${getPlayerName(playerId)} 루미큐브 승리! (+40점)`);
-      initRummikubRound();
-    }
-    syncStateToPeers();
-    renderAll();
+    const rk = state.rummikub;
+    const hand = rk.hands[playerId] || [];
+    const chosen = hand.filter(t => tileIds.includes(t.id));
+    const ev = evaluateRummiSet(chosen);
+    if (!ev.valid) return false;
+    rk.hands[playerId] = hand.filter(t => !tileIds.includes(t.id));
+    rk.tableSets.push(chosen);
+    rk.playedThisTurn = true;
+    rk.selectedTileIds.clear();
+    SoundFX.item();
+    addScore(playerId, ev.points);
+    const pName = state.players.find(p => p.id === playerId)?.name || playerId;
+    addLog(`🀄 [${pName}] 새 세트 등록 (+${ev.points}점)`, 'win');
     return true;
   }
 
   function handleRummiAppendToSet(playerId, setIdx, tileIds) {
-    const cur = getCurrentTurnPlayer();
-    if (!cur || cur.id !== playerId || !state.rummikub.initialMelded[playerId]) return false;
-    const targetSet = state.rummikub.tableSets[setIdx];
-    const hand = state.rummikub.hands[playerId] || [];
-    const picked = hand.filter(t => tileIds.includes(t.id));
-    if (!targetSet || !picked.length) return false;
-    const merged = [...targetSet, ...picked];
+    const rk = state.rummikub;
+    const hand = rk.hands[playerId] || [];
+    const chosen = hand.filter(t => tileIds.includes(t.id));
+    if (!chosen.length || !rk.tableSets[setIdx]) return false;
+    const merged = [...rk.tableSets[setIdx], ...chosen];
     if (!evaluateRummiSet(merged).valid) return false;
-    state.rummikub.hands[playerId] = hand.filter(t => !tileIds.includes(t.id));
-    state.rummikub.tableSets[setIdx] = arrangeRummiSetDisplay(merged);
-    state.rummikub.playedThisTurn = true;
-    selectedRummiTileIds.clear();
-    addLog(`🔗 ${getPlayerName(playerId)} 테이블 세트에 연결!`);
-    syncStateToPeers();
-    renderAll();
+    rk.hands[playerId] = hand.filter(t => !tileIds.includes(t.id));
+    rk.tableSets[setIdx] = merged;
+    rk.playedThisTurn = true;
+    rk.selectedTileIds.clear();
+    SoundFX.item();
+    addScore(playerId, chosen.reduce((acc, t) => acc + (t.num || 10), 0));
+    const pName = state.players.find(p => p.id === playerId)?.name || playerId;
+    addLog(`🀄 [${pName}] 기존 세트에 타일 이어 붙이기 성공!`, 'win');
     return true;
   }
 
-  function handleRummiResetTurn(playerId) {
-    if (!state.rummikub.turnStartSnapshot) return;
-    const snap = JSON.parse(state.rummikub.turnStartSnapshot);
-    state.rummikub.tableSets = snap.tableSets;
-    state.rummikub.hands = snap.hands;
-    state.rummikub.initialMelded = snap.initialMelded;
-    state.rummikub.playedThisTurn = false;
-    selectedRummiTileIds.clear();
-    syncStateToPeers();
-    renderAll();
-  }
-
-  function handleRummiEndTurn(playerId, drawTile = false) {
-    if (drawTile || !state.rummikub.playedThisTurn) {
-      if (state.rummikub.turnStartSnapshot) {
-        const snap = JSON.parse(state.rummikub.turnStartSnapshot);
-        state.rummikub.tableSets = snap.tableSets;
-        state.rummikub.hands = snap.hands;
-        state.rummikub.initialMelded = snap.initialMelded;
-      }
-      if (state.rummikub.pool.length > 0) {
-        state.rummikub.hands[playerId].push(state.rummikub.pool.pop());
-        state.rummikub.hands[playerId] = sortRummiTiles(state.rummikub.hands[playerId]);
-        addLog(`📥 ${getPlayerName(playerId)} 타일 1장 드로우`);
-      }
+  function handleRummiEndTurn(playerId, drawCard = false) {
+    const rk = state.rummikub;
+    if (drawCard && rk.deck.length > 0) rk.hands[playerId].push(rk.deck.pop());
+    if ((rk.hands[playerId] || []).length === 0) {
+      const pName = state.players.find(p => p.id === playerId)?.name || playerId;
+      addLog(`🏆 [${pName}] 루미큐브 우승! (+100점)`, 'win');
+      SoundFX.win();
+      addScore(playerId, 100);
+      if (state.activeGame) { stopAllLoops(); state.activeGame = false; renderStage(); }
+      return;
     }
-    selectedRummiTileIds.clear();
+    rk.playedThisTurn = false;
+    rk.selectedTileIds.clear();
     advanceTurn();
   }
 
-  /* ================= 데이터 수신 & 공용 게임 로직 ================= */
-  function handleIncomingData(fromId, raw) {
-    let msg;
-    try { msg = typeof raw === 'string' ? JSON.parse(raw) : raw; } catch { return; }
+  let botQuizTimers = [];
+  function clearBotQuizTimers() { botQuizTimers.forEach(id => clearTimeout(id)); botQuizTimers = []; }
+  function sendBotChat(bot, text, checkAnswer = false) {
+    if (!state.activeGame) return;
+    const label = `${bot.char} ${bot.name}`;
+    addLog(`[${label}] ${text}`);
+    if (checkAnswer) evaluateChatAnswer(bot.id, label, text);
+  }
 
-    if (msg.type === 'TIMER_TICK') { state.timeLeft = msg.timeLeft; updateTimerPillUI(); return; }
-    if (msg.type === 'SYNC_STATE') {
-      const localIdentity = {
-        myId: state.myId, myName: state.myName, myChar: state.myChar,
-        roomCode: state.roomCode, isHost: state.isHost, soloIsland: state.soloIsland, modeDrawerOpen: state.modeDrawerOpen
-      };
-      Object.assign(state, msg.state, localIdentity);
-      if (state.players.some(p => p.id === state.myId)) {
-        stopHelloRetry();
-      }
-      if (state.mode === 'yutnori' && state.yutnori?.rollAnimId) {
-        triggerLocalYut3DAnim(state.yutnori.rollAnimId);
-      }
-      renderAll();
-      if (state.mode === 'catchmind') redrawCatchmindCanvas();
-      return;
-    }
-    if (msg.type === 'CHAT') {
-      addLog(`[${msg.sender}] ${msg.text}`);
-      if (state.isHost && state.activeGame) evaluateChatAnswer(msg.senderId, msg.sender, msg.text);
-      return;
-    }
-    if (msg.type === 'DRAW_STROKE') {
-      state.catchmind.strokes.push(msg.stroke);
-      if (state.mode === 'catchmind') appendStrokeToCanvas(msg.stroke);
-      if (state.isHost) broadcast(msg);
-      return;
-    }
-    if (msg.type === 'DRAW_SEGMENT_LIVE') {
-      if (state.mode === 'catchmind') {
-        const c = $('catchCanvas');
-        if (c && msg.a && msg.b) drawSegment(c.getContext('2d'), msg.a, msg.b, msg.color, msg.width);
-      }
-      if (state.isHost) broadcast(msg);
-      return;
-    }
-    if (msg.type === 'CLEAR_CANVAS') {
-      state.catchmind.strokes = [];
-      if (state.mode === 'catchmind') redrawCatchmindCanvas();
-      if (state.isHost) broadcast(msg);
-      return;
-    }
-    if (!state.isHost) return;
+  function scheduleBotQuizEvents() {
+    clearBotQuizTimers();
+    if (!state.activeGame) return;
+    const bots = state.players.filter(p => p.isBot);
+    if (!bots.length) return;
+    const pickBot = (idx = 0) => bots[idx % bots.length];
 
-    if (msg.type === 'HELLO') {
-      const isNew = !state.players.some(p => p.id === msg.playerId);
-      ensurePlayer(msg.playerId, msg.playerName, false, msg.char || '🐱');
-      if (isNew) {
-        addLog(`👋 ${msg.char || '🐱'} <strong>${msg.playerName}</strong> 입장!`);
+    const quizModes = ['chosung', 'fourchar', 'emojiquiz', 'wordassoc', 'proverb'];
+    if (quizModes.includes(state.mode)) {
+      const pools = { chosung: CHOSUNG_POOL, fourchar: FOURCHAR_POOL, emojiquiz: EMOJI_POOL, wordassoc: WORDASSOC_POOL, proverb: PROVERB_POOL };
+      const cur = pools[state.mode][state[state.mode].index];
+      const answer = cur.a;
+      const wrongCandidates = pools[state.mode].filter(x => x.a !== answer).map(x => x.a);
+      const isSolved = () => state[state.mode]?.solved;
+
+      botQuizTimers.push(setTimeout(() => { if (!isSolved()) sendBotChat(pickBot(0), `💡 [AI 힌트] 초성 [${getChosung(answer)}] (${answer.length}글자)`, false); }, 9000));
+      botQuizTimers.push(setTimeout(() => {
+        if (!isSolved() && wrongCandidates.length) sendBotChat(pickBot(1), wrongCandidates[Math.floor(Math.random() * wrongCandidates.length)], true);
+      }, 15000));
+      botQuizTimers.push(setTimeout(() => { if (!isSolved()) sendBotChat(pickBot(bots.length - 1), answer, true); }, 23000));
+    }
+
+    if (state.mode === 'catchmind') {
+      const promptObj = state.catchmind.prompt;
+      const drawerBot = bots.find(b => b.id === state.catchmind.drawerId) || bots[0];
+      const guesserBot = bots.find(b => b.id !== state.catchmind.drawerId) || bots[0];
+      botQuizTimers.push(setTimeout(() => {
+        if (state.mode === 'catchmind' && !state.catchmind.guessed) {
+          sendBotChat(drawerBot, `💡 [초성 힌트] '${getChosung(promptObj.word)}' (${promptObj.word.length}글자)`, false);
+        }
+      }, 10000));
+      botQuizTimers.push(setTimeout(() => {
+        if (state.mode === 'catchmind' && !state.catchmind.guessed) sendBotChat(guesserBot, promptObj.word, true);
+      }, 24000));
+    }
+  }
+
+  /* =========================================================================
+     7. 천국의 계단 (장착 스킨 아이콘 반영 + 20콤보 피버)
+     ========================================================================= */
+  function initStairsGame() {
+    const st = state.stairs;
+    st.running = true;
+    st.steps = [{ x: 0, y: 0 }];
+    let curX = 0, curDir = 1;
+    for (let i = 1; i <= 700; i++) {
+      if (i > 2 && Math.random() < 0.43) curDir *= -1;
+      curX += curDir;
+      st.steps.push({ x: curX, y: i });
+    }
+    st.playerStep = 0; st.playerX = 0; st.playerDir = 1;
+    st.energy = 100; st.combo = 0; st.feverTimer = 0;
+    st.botProgress = {};
+    state.players.filter(p => p.isBot).forEach((b, idx) => {
+      st.botProgress[b.id] = { step: 0, alive: true, speed: 2.5 + idx * 0.45 };
+    });
+    renderStage();
+    startStairsLoop();
+  }
+
+  function stepStairs(turnFirst) {
+    const st = state.stairs;
+    if (!st.running) return;
+    const nextIdx = st.playerStep + 1;
+    const targetStep = st.steps[nextIdx];
+    if (!targetStep) return;
+
+    if (st.feverTimer > 0) st.playerDir = targetStep.x - st.playerX;
+    else if (turnFirst) st.playerDir *= -1;
+
+    const expectedX = st.playerX + st.playerDir;
+    if (targetStep.x !== expectedX) {
+      st.running = false;
+      SoundFX.crash();
+      if (st.playerStep > hallOfFame.maxStairs) { hallOfFame.maxStairs = st.playerStep; saveHof(); }
+      addLog(`💥 발을 헛디뎌 ${st.playerStep}층에서 추락! (+${st.playerStep * 5}점)`, 'danger');
+      addScore(state.myId, st.playerStep * 5);
+      renderStage();
+      return;
+    }
+
+    st.playerStep = nextIdx;
+    st.playerX = expectedX;
+    st.combo++;
+    SoundFX.step(st.combo);
+
+    if (st.combo > 0 && st.combo % 20 === 0 && st.feverTimer <= 0) {
+      st.feverTimer = 3.0;
+      SoundFX.fever();
+      addLog(`🔥 [FEVER 발동!] ${st.combo}콤보 달성! 3초간 무적 자동 회전 질주!`, 'win');
+    }
+
+    st.energy = Math.min(100, st.energy + Math.max(4, 11 - Math.floor(st.playerStep / 30)));
+    if (st.playerStep % 10 === 0) addScore(state.myId, 15);
+  }
+
+  function startStairsLoop() {
+    cancelAnimationFrame(state.stairs.animId);
+    let lastTs = performance.now();
+
+    function loop(now) {
+      const dt = (now - lastTs) / 1000;
+      lastTs = now;
+      const st = state.stairs;
+      const canvas = document.getElementById('stairsCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const skin = getEquippedSkin();
+
+      if (st.running) {
+        if (st.feverTimer > 0) st.feverTimer = Math.max(0, st.feverTimer - dt);
+        const drainRate = st.feverTimer > 0 ? 4 : (16 + Math.min(34, st.playerStep * 0.22));
+        st.energy -= drainRate * dt;
+        if (st.energy <= 0) {
+          st.energy = 0; st.running = false;
+          SoundFX.crash();
+          if (st.playerStep > hallOfFame.maxStairs) { hallOfFame.maxStairs = st.playerStep; saveHof(); }
+          addLog(`⏰ 체력 게이지 소진! 최종 기록: ${st.playerStep}층`, 'sys');
+          addScore(state.myId, st.playerStep * 5);
+        }
+        state.players.filter(p => p.isBot).forEach(b => {
+          const bp = st.botProgress[b.id];
+          if (bp && bp.alive) {
+            bp.step += bp.speed * dt;
+            if (Math.random() < 0.004) {
+              bp.alive = false;
+              const finalF = Math.floor(bp.step);
+              addLog(`🤖 [${b.name}] ${finalF}층에서 탈락! (+${finalF * 5}점)`);
+              addScore(b.id, finalF * 5);
+            }
+          }
+        });
       }
-      syncStateToPeers();
-      renderAll();
-    } else if (msg.type === 'REQUEST_SYNC') {
-      syncStateToPeers();
-    } else if (msg.type === 'ACTION_YUT_TEAM_MODE') setYutTeamMode(msg.enabled);
-    else if (msg.type === 'ACTION_YUT_SWITCH_TEAM') togglePlayerYutTeam(msg.targetPlayerId);
-    else if (msg.type === 'ACTION_YUT_THROW') handleYutThrow(msg.playerId);
-    else if (msg.type === 'ACTION_YUT_MOVE') handleYutMove(msg.playerId, msg.rollIdx, msg.pieceIdx);
-    else if (msg.type === 'ACTION_RUMMI_MELD') handleRummiMeldNew(msg.playerId, msg.tileIds);
-    else if (msg.type === 'ACTION_RUMMI_APPEND') handleRummiAppendToSet(msg.playerId, msg.setIdx, msg.tileIds);
-    else if (msg.type === 'ACTION_RUMMI_RESET') handleRummiResetTurn(msg.playerId);
-    else if (msg.type === 'ACTION_RUMMI_END') handleRummiEndTurn(msg.playerId, msg.drawTile);
-    else if (msg.type === 'ACTION_WORDCHAIN') handleWordchainSubmit(msg.playerId, msg.word);
-    else if (msg.type === 'ACTION_HUNMIN') handleHunminSubmit(msg.playerId, msg.word);
-    else if (msg.type === 'ACTION_CARDFLIP') handleCardFlip(msg.playerId, msg.index);
-    else if (msg.type === 'ACTION_CARDFLIP_SIZE') handleCardFlipSizeChange(msg.playerId, msg.size);
-    else if (msg.type === 'ACTION_LIAR_HINT') { state.liar.hints[msg.playerId] = msg.hint; advanceTurn(); }
-    else if (msg.type === 'ACTION_LIAR_VOTE') {
-      state.liar.votes[msg.playerId] = msg.targetId;
-      if (Object.keys(state.liar.votes).length >= state.players.length) resolveLiarVote();
-      else { syncStateToPeers(); renderAll(); }
-    } else if (msg.type === 'ACTION_ISLAND_GATHER') applyIslandGather(msg.playerId, msg.resource, msg.amount, msg.label);
-    else if (msg.type === 'ACTION_ISLAND_SELL') applyIslandSell(msg.playerId);
-    else if (msg.type === 'ACTION_GOSTOP_PLAY') handleGostopPlay(msg.playerId, msg.cardId);
-    else if (msg.type === 'ACTION_GOSTOP_SHAKE') handleGostopShake(msg.playerId);
-    else if (msg.type === 'ACTION_GOSTOP_GO_STOP') handleGostopGoStop(msg.playerId, msg.choice);
-    else if (msg.type === 'ACTION_CATCHMIND_PASS') advanceTurn();
+
+      const ratio = Math.min(1, st.playerStep / 150);
+      const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+      if (st.feverTimer > 0) { grad.addColorStop(0, '#b45309'); grad.addColorStop(1, '#fef08a'); }
+      else { grad.addColorStop(0, ratio > 0.5 ? '#1e1b4b' : '#0284c7'); grad.addColorStop(1, ratio > 0.5 ? '#4c1d95' : '#bae6fd'); }
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      const centerX = canvas.width / 2, baseY = canvas.height - 95, stepW = 54, stepH = 26;
+      for (let i = Math.max(0, st.playerStep - 4); i < Math.min(st.steps.length, st.playerStep + 16); i++) {
+        const s = st.steps[i];
+        const drawX = centerX + (s.x - st.playerX) * stepW - stepW / 2;
+        const drawY = baseY - (s.y - st.playerStep) * stepH;
+        ctx.fillStyle = i === st.playerStep ? '#fbbf24' : (st.feverTimer > 0 ? '#fde047' : '#f8fafc');
+        ctx.fillRect(drawX, drawY, stepW - 4, 12);
+        ctx.fillStyle = '#94a3b8';
+        ctx.fillRect(drawX, drawY + 12, stepW - 4, 5);
+      }
+
+      ctx.font = '32px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(st.feverTimer > 0 ? `⚡${skin.icon}⚡` : skin.icon, centerX, baseY - 6);
+
+      ctx.fillStyle = 'rgba(15,23,42,0.75)';
+      ctx.fillRect(20, 14, canvas.width - 40, 22);
+      ctx.fillStyle = st.feverTimer > 0 ? '#f59e0b' : (st.energy > 30 ? '#10b981' : '#ef4444');
+      ctx.fillRect(22, 16, (canvas.width - 44) * (st.energy / 100), 18);
+
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 14px sans-serif';
+      ctx.textAlign = 'left';
+      const feverTxt = st.feverTimer > 0 ? ` 🔥피버 ${st.feverTimer.toFixed(1)}s!` : ` (${st.combo}콤보)`;
+      ctx.fillText(`고도: ${st.playerStep}층${feverTxt} · 스킨: ${skin.name}`, 24, 55);
+
+      if (!st.running) {
+        ctx.fillStyle = 'rgba(2,6,23,0.74)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#fbbf24';
+        ctx.font = 'bold 25px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(`추락 종료! 최종 기록: ${st.playerStep}층`, canvas.width / 2, canvas.height / 2 - 10);
+        ctx.fillStyle = '#e2e8f0';
+        ctx.font = '14px sans-serif';
+        ctx.fillText('상단 [게임 시작] 버튼을 눌러 다시 도전하세요!', canvas.width / 2, canvas.height / 2 + 24);
+        return;
+      }
+      state.stairs.animId = requestAnimationFrame(loop);
+    }
+    state.stairs.animId = requestAnimationFrame(loop);
+  }
+
+  /* =========================================================================
+     8. 총알 피하기 (장착 스킨 코어 컬러 & 아이콘 반영)
+     ========================================================================= */
+  function initDodgeGame() {
+    const dg = state.dodge;
+    dg.running = true;
+    dg.player = { x: 270, y: 200, r: 9 };
+    dg.bullets = []; dg.items = [];
+    dg.shield = 0; dg.slowTimer = 0; dg.elapsed = 0;
+    dg.botAlive = {};
+    state.players.filter(p => p.isBot).forEach((b, idx) => {
+      dg.botAlive[b.id] = { alive: true, maxTime: 11 + Math.random() * 20 + idx * 4 };
+    });
+    for (let i = 0; i < 24; i++) spawnDodgeBullet(540, 400, 1);
+    renderStage();
+    startDodgeLoop();
+  }
+
+  function spawnDodgeBullet(w, h, level) {
+    const dg = state.dodge;
+    const side = Math.floor(Math.random() * 4);
+    let x = 0, y = 0;
+    if (side === 0) { x = Math.random() * w; y = 0; }
+    else if (side === 1) { x = w; y = Math.random() * h; }
+    else if (side === 2) { x = Math.random() * w; y = h; }
+    else { x = 0; y = Math.random() * h; }
+    const aim = Math.random() < 0.65;
+    const targetX = aim ? dg.player.x + (Math.random() * 60 - 30) : Math.random() * w;
+    const targetY = aim ? dg.player.y + (Math.random() * 60 - 30) : Math.random() * h;
+    const angle = Math.atan2(targetY - y, targetX - x);
+    const speed = (110 + Math.random() * 90) * (1 + level * 0.08);
+    dg.bullets.push({ x, y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed, r: aim ? 4.5 : 3.8, color: aim ? '#f43f5e' : '#facc15' });
+  }
+
+  function startDodgeLoop() {
+    cancelAnimationFrame(state.dodge.animId);
+    let lastTs = performance.now(), spawnAcc = 0, itemAcc = 0;
+
+    function loop(now) {
+      const dt = Math.min(0.05, (now - lastTs) / 1000);
+      lastTs = now;
+      const dg = state.dodge;
+      const canvas = document.getElementById('dodgeCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width, H = canvas.height;
+      const skin = getEquippedSkin();
+
+      if (dg.running) {
+        dg.elapsed += dt;
+        if (dg.slowTimer > 0) dg.slowTimer = Math.max(0, dg.slowTimer - dt);
+        const level = 1 + Math.floor(dg.elapsed / 5);
+        const spd = 245;
+        if (dg.keys['ArrowLeft'] || dg.keys['a'] || dg.keys['A']) dg.player.x -= spd * dt;
+        if (dg.keys['ArrowRight'] || dg.keys['d'] || dg.keys['D']) dg.player.x += spd * dt;
+        if (dg.keys['ArrowUp'] || dg.keys['w'] || dg.keys['W']) dg.player.y -= spd * dt;
+        if (dg.keys['ArrowDown'] || dg.keys['s'] || dg.keys['S']) dg.player.y += spd * dt;
+        dg.player.x = Math.max(dg.player.r, Math.min(W - dg.player.r, dg.player.x));
+        dg.player.y = Math.max(dg.player.r, Math.min(H - dg.player.r, dg.player.y));
+
+        spawnAcc += dt;
+        const interval = Math.max(0.09, 0.28 - dg.elapsed * 0.006);
+        while (spawnAcc >= interval) { spawnAcc -= interval; spawnDodgeBullet(W, H, level); }
+
+        itemAcc += dt;
+        if (itemAcc >= 7.0) {
+          itemAcc = 0;
+          dg.items.push({ x: 50 + Math.random() * (W - 100), y: 50 + Math.random() * (H - 100), type: Math.random() < 0.5 ? 'shield' : 'slow', r: 13 });
+        }
+
+        for (let i = dg.items.length - 1; i >= 0; i--) {
+          const it = dg.items[i];
+          if (Math.hypot(it.x - dg.player.x, it.y - dg.player.y) < it.r + dg.player.r + 4) {
+            SoundFX.item();
+            if (it.type === 'shield') { dg.shield = Math.min(2, dg.shield + 1); addLog(`🛡️ 보호막 획득! (${dg.shield}중첩)`, 'sys'); }
+            else { dg.slowTimer = 3.5; addLog('❄️ 슬로우 모션 발동!', 'sys'); }
+            dg.items.splice(i, 1);
+          }
+        }
+
+        const speedMult = dg.slowTimer > 0 ? 0.45 : 1.0;
+        for (let i = dg.bullets.length - 1; i >= 0; i--) {
+          const b = dg.bullets[i];
+          b.x += b.vx * speedMult * dt; b.y += b.vy * speedMult * dt;
+          if (b.x < -20 || b.x > W + 20 || b.y < -20 || b.y > H + 20) { dg.bullets.splice(i, 1); continue; }
+          if (Math.hypot(b.x - dg.player.x, b.y - dg.player.y) < b.r + dg.player.r - 2) {
+            dg.bullets.splice(i, 1);
+            if (dg.shield > 0) { dg.shield--; SoundFX.shieldBreak(); addLog(`🛡️ 보호막 방어! (남은 보호막: ${dg.shield})`, 'sys'); continue; }
+            dg.running = false;
+            SoundFX.crash();
+            const pts = Math.floor(dg.elapsed * 10);
+            if (dg.elapsed > hallOfFame.maxDodgeSec) { hallOfFame.maxDodgeSec = dg.elapsed; saveHof(); }
+            addLog(`💥 피격 종료! 생존: ${dg.elapsed.toFixed(2)}초 (+${pts}점)`, 'danger');
+            addScore(state.myId, pts);
+            break;
+          }
+        }
+      }
+
+      ctx.fillStyle = dg.slowTimer > 0 ? '#082f49' : '#020617';
+      ctx.fillRect(0, 0, W, H);
+      ctx.strokeStyle = '#1e293b';
+      for (let gx = 0; gx < W; gx += 40) { ctx.beginPath(); ctx.moveTo(gx, 0); ctx.lineTo(gx, H); ctx.stroke(); }
+      for (let gy = 0; gy < H; gy += 40) { ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(W, gy); ctx.stroke(); }
+
+      dg.items.forEach(it => {
+        ctx.fillStyle = it.type === 'shield' ? '#10b981' : '#38bdf8';
+        ctx.beginPath(); ctx.arc(it.x, it.y, it.r, 0, Math.PI * 2); ctx.fill();
+        ctx.font = '14px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText(it.type === 'shield' ? '🛡️' : '❄️', it.x, it.y);
+      });
+      ctx.textBaseline = 'alphabetic';
+
+      dg.bullets.forEach(b => {
+        ctx.fillStyle = dg.slowTimer > 0 ? '#7dd3fc' : b.color;
+        ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2); ctx.fill();
+      });
+
+      if (dg.shield > 0) {
+        ctx.strokeStyle = '#10b981'; ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.arc(dg.player.x, dg.player.y, dg.player.r + 7, 0, Math.PI * 2); ctx.stroke();
+      }
+      ctx.fillStyle = skin.coreColor;
+      ctx.beginPath(); ctx.arc(dg.player.x, dg.player.y, dg.player.r + 2, 0, Math.PI * 2); ctx.fill();
+      ctx.font = '15px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(skin.icon, dg.player.x, dg.player.y);
+      ctx.textBaseline = 'alphabetic';
+
+      ctx.fillStyle = '#f8fafc';
+      ctx.font = 'bold 14px sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(`⏱ 생존: ${dg.elapsed.toFixed(2)}초 | ${skin.icon} ${skin.name} | 🛡️:${dg.shield}`, 14, 25);
+
+      if (!dg.running) {
+        ctx.fillStyle = 'rgba(2,6,23,0.75)'; ctx.fillRect(0, 0, W, H);
+        ctx.fillStyle = '#f43f5e'; ctx.font = 'bold 25px sans-serif'; ctx.textAlign = 'center';
+        ctx.fillText(`피격 종료! 생존 기록: ${dg.elapsed.toFixed(2)}초`, W / 2, H / 2 - 10);
+        return;
+      }
+      state.dodge.animId = requestAnimationFrame(loop);
+    }
+    state.dodge.animId = requestAnimationFrame(loop);
+  }
+
+  /* =========================================================================
+     9. 우승 시상식 & 벌칙 룰렛
+     ========================================================================= */
+  let rouletteAngle = 0, rouletteSpinning = false;
+  function drawRouletteWheel() {
+    const canvas = document.getElementById('rouletteCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const items = state.penalties, count = Math.max(1, items.length), arc = (Math.PI * 2) / count;
+    const colors = ['#ef4444', '#f59e0b', '#10b981', '#3b82f6', '#8b5cf6', '#ec4899'];
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const cx = canvas.width / 2, cy = canvas.height / 2, r = 114;
+    items.forEach((label, i) => {
+      const start = rouletteAngle + i * arc, end = start + arc;
+      ctx.beginPath(); ctx.moveTo(cx, cy); ctx.arc(cx, cy, r, start, end);
+      ctx.fillStyle = colors[i % colors.length]; ctx.fill();
+      ctx.strokeStyle = '#0f172a'; ctx.lineWidth = 2; ctx.stroke();
+      ctx.save(); ctx.translate(cx, cy); ctx.rotate(start + arc / 2); ctx.textAlign = 'right';
+      ctx.fillStyle = '#ffffff'; ctx.font = 'bold 11px sans-serif';
+      ctx.fillText(label.length > 11 ? label.slice(0, 11) + '..' : label, r - 10, 4);
+      ctx.restore();
+    });
+  }
+
+  function openCeremonyModal(winner = null) {
+    const sorted = [...state.players].sort((a, b) => b.score - a.score);
+    const first = winner || sorted[0], last = sorted[sorted.length - 1];
+    document.getElementById('ceremonyHeader').textContent = winner ? `👑 [${first.name}] 목표 점수 달성 우승!` : '🎡 미니게임 벌칙 룰렛';
+    document.getElementById('ceremonyRankText').innerHTML = sorted
+      .map((p, idx) => `${idx === 0 ? '🥇' : idx === sorted.length - 1 ? '💀' : '🏅'} <b>${idx + 1}위: ${p.char} ${p.name}</b> (${p.score}점)`)
+      .join(' &nbsp;|&nbsp; ') + `<br/><span style="color:#fbbf24;">👉 현재 벌칙 대상(꼴찌): <b>${last.char} ${last.name}</b></span>`;
+    drawRouletteWheel();
+    document.getElementById('ceremonyModal').classList.add('open');
+  }
+
+  function spinRoulette() {
+    if (rouletteSpinning || state.penalties.length === 0) return;
+    rouletteSpinning = true;
+    document.getElementById('rouletteResult').textContent = '두구두구두구... 돌아가는 중!';
+    let velocity = 0.42 + Math.random() * 0.25, tickAccum = 0;
+    function step() {
+      rouletteAngle = (rouletteAngle + velocity) % (Math.PI * 2);
+      tickAccum += velocity;
+      if (tickAccum >= 0.45) { tickAccum = 0; SoundFX.tick(); }
+      velocity *= 0.985;
+      drawRouletteWheel();
+      if (velocity < 0.003) {
+        rouletteSpinning = false;
+        const count = state.penalties.length, arc = (Math.PI * 2) / count;
+        const pointerAngle = (Math.PI * 1.5 - rouletteAngle + Math.PI * 4) % (Math.PI * 2);
+        const chosen = state.penalties[Math.floor(pointerAngle / arc) % count];
+        SoundFX.win();
+        document.getElementById('rouletteResult').textContent = `🎯 당첨 벌칙: 【 ${chosen} 】`;
+        addLog(`🎡 벌칙 룰렛 당첨 → 【 ${chosen} 】`, 'win');
+        return;
+      }
+      requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  /* =========================================================================
+     10. 채팅 판정 & 게임 루프 제어
+     ========================================================================= */
+  function evaluateChatAnswer(senderId, senderLabel, text) {
+    if (!state.activeGame) return;
+    const clean = normText(text);
+    if (!clean) return;
+
+    const checkQuizMatch = (poolKey, poolArr, pts = 30) => {
+      const obj = state[poolKey];
+      if (obj.solved) return;
+      const cur = poolArr[obj.index];
+      if (clean === normText(cur.a)) {
+        obj.solved = true; clearBotQuizTimers(); SoundFX.win();
+        addLog(`🎉 [${senderLabel}] 정답! 「${cur.a}」 (+${pts}점)`, 'win');
+        addScore(senderId, pts);
+        renderStage();
+        if (state.activeGame) setTimeout(() => advanceTurn(), 1600);
+      }
+    };
+
+    if (state.mode === 'chosung') return checkQuizMatch('chosung', CHOSUNG_POOL, 30);
+    if (state.mode === 'fourchar') return checkQuizMatch('fourchar', FOURCHAR_POOL, 30);
+    if (state.mode === 'emojiquiz') return checkQuizMatch('emojiquiz', EMOJI_POOL, 30);
+    if (state.mode === 'wordassoc') return checkQuizMatch('wordassoc', WORDASSOC_POOL, 30);
+    if (state.mode === 'proverb') return checkQuizMatch('proverb', PROVERB_POOL, 30);
+
+    if (state.mode === 'catchmind') {
+      if (state.catchmind.guessed || senderId === state.catchmind.drawerId) return;
+      if (clean === normText(state.catchmind.prompt.word)) {
+        state.catchmind.guessed = true; clearBotQuizTimers(); SoundFX.win();
+        addLog(`🎨 [${senderLabel}] 캐치마인드 정답! 「${state.catchmind.prompt.word}」 (+40점)`, 'win');
+        addScore(senderId, 40); addScore(state.catchmind.drawerId, 20);
+        renderStage();
+        if (state.activeGame) setTimeout(() => advanceTurn(), 1800);
+      }
+      return;
+    }
+
+    if (state.mode === 'wordchain') {
+      const curTurn = getCurrentTurnPlayer();
+      if (!curTurn || curTurn.id !== senderId) return;
+      const rawWord = text.trim();
+      const lastChar = state.wordchain.lastWord.slice(-1);
+      if (rawWord.length >= 2 && rawWord[0] === lastChar && !state.wordchain.used.has(rawWord)) {
+        state.wordchain.lastWord = rawWord; state.wordchain.used.add(rawWord); SoundFX.item();
+        addLog(`🔗 [${senderLabel}] "${rawWord}" 성공! (+20점) → 다음 글자: '${rawWord.slice(-1)}'`, 'win');
+        addScore(senderId, 20);
+        if (state.activeGame) advanceTurn();
+      } else addLog(`❌ '${lastChar}'(으)로 시작하는 중복되지 않은 2글자 이상 단어를 입력하세요!`);
+      return;
+    }
+
+    if (state.mode === 'hunmin') {
+      const curTurn = getCurrentTurnPlayer();
+      if (!curTurn || curTurn.id !== senderId) return;
+      const rawWord = text.trim(), target = state.hunmin.targetChosung;
+      if (rawWord.length === target.length && getChosung(rawWord) === target && !state.hunmin.used.has(rawWord)) {
+        state.hunmin.used.add(rawWord); SoundFX.item();
+        addLog(`🇰🇷 [${senderLabel}] "${rawWord}" (${target}) 성공! (+25점)`, 'win');
+        addScore(senderId, 25);
+        if (state.activeGame) advanceTurn();
+      } else addLog(`❌ 초성 [${target}]에 맞는 중복되지 않은 단어를 입력하세요!`);
+    }
+  }
+
+  function stopAllLoops() {
+    clearInterval(state.mainTimerId); clearBotQuizTimers();
+    cancelAnimationFrame(state.stairs.animId); cancelAnimationFrame(state.dodge.animId);
+    state.stairs.running = false; state.dodge.running = false;
   }
 
   function startGame() {
-    if (!state.isHost && !state.soloIsland) return;
-    applyMyProfile(false);
-    if (state.players.length === 1 && state.mode !== 'island') {
-      ensurePlayer('bot_1', '봇_알파', true, '🤖');
+    state.shopOpen = false;
+    stopAllLoops();
+    state.mode = document.getElementById('modeSelect').value;
+    state.quizDifficulty = document.getElementById('diffSelect').value;
+    state.goalScore = Number(document.getElementById('goalSelect').value);
+    state.activeGame = true; state.turnIndex = 0;
+
+    if (state.mode === 'stairs') { addLog('🪜 [천국의 계단] 시작!', 'sys'); initStairsGame(); return; }
+    if (state.mode === 'dodge') { addLog('🚀 [총알 피하기] 시작!', 'sys'); initDodgeGame(); return; }
+    if (state.mode === 'rummikub') {
+      const deck = createRummiDeck();
+      state.rummikub = { deck, tableSets: [], hands: {}, initialMelded: {}, selectedTileIds: new Set(), playedThisTurn: false };
+      state.players.forEach(p => { state.rummikub.hands[p.id] = deck.splice(0, 14); state.rummikub.initialMelded[p.id] = false; });
+      addLog('🀄 [루미큐브] 시작!', 'sys');
+    } else if (state.mode === 'wordchain') {
+      const first = ['사과', '바나나', '기차', '하늘', '우산', '비행기'][Math.floor(Math.random() * 6)];
+      state.wordchain = { lastWord: first, used: new Set([first]) };
+      addLog(`🔗 [끝말잇기] 시작 단어: 「${first}」`, 'sys');
+    } else if (state.mode === 'hunmin') {
+      const pairs = ['ㄱㅈ', 'ㅅㄱ', 'ㅂㅎ', 'ㅇㅅ', 'ㅎㄴ', 'ㅁㅈ', 'ㅋㅍ', 'ㅈㄷ'];
+      state.hunmin = { targetChosung: pairs[Math.floor(Math.random() * pairs.length)], used: new Set() };
+      addLog(`🇰🇷 [훈민정음] 제시 초성: [${state.hunmin.targetChosung}]`, 'sys');
+    } else {
+      prepareQuizRound();
     }
-    state.activeGame = true;
-    state.modeDrawerOpen = false;
-    state.turnIndex = 0;
-    initModeState(state.mode);
-    state.timeLeft = getTurnSecondsForCurrentState();
-    addLog(`🚀 [${MODES.find(m => m.id === state.mode)?.name}] 게임 시작!`);
-    syncStateToPeers();
+
+    state.timeLeft = 30;
+    state.mainTimerId = setInterval(() => {
+      if (!state.activeGame) return;
+      state.timeLeft--;
+      if (state.timeLeft <= 5 && state.timeLeft > 0) SoundFX.tick();
+      updateTimerUI();
+      if (state.timeLeft <= 0) { revealTimeoutAnswer(); advanceTurn('⏰ 시간 초과!'); }
+    }, 1000);
+
     renderAll();
+    scheduleBotQuizEvents();
+    const cur = getCurrentTurnPlayer();
+    if (cur && cur.isBot) setTimeout(() => runBotTurn(cur.id), 900);
   }
 
-  function initModeState(mode) {
-    if (mode === 'yutnori') initYutnoriRound();
-    else if (mode === 'rummikub') initRummikubRound();
-    else if (mode === 'wordchain') {
-      const first = pickRandomItem(['사과','바다','코끼리','하늘','기차','별빛','고양이','우주'], state.wordchain.lastWord);
-      state.wordchain = { used: [first], lastWord: first, combo: 0 };
-    } else if (mode === 'hunmin') state.hunmin = { prompt: pickRandomItem(HUNMIN_PROMPTS, state.hunmin.prompt), used: [] };
-    else if (mode === 'catchmind') {
-      const drawer = state.players[state.turnIndex % state.players.length];
-      state.catchmind = { drawerId: drawer.id, prompt: pickRandomItem(CATCHMIND_PROMPTS, state.catchmind.prompt), strokes: [], guessed: false };
-    } else if (mode === 'cardflip') {
-      const sz = [4, 8, 16].includes(state.cardflip.size) ? state.cardflip.size : 4;
-      state.cardflip = { size: sz, cards: buildCardDeck(sz), flipped: [], matched: [] };
-    } else if (mode === 'emojiquiz') state.emojiquiz = { index: pickRandomIndex(EMOJI_POOL.length, state.emojiquiz.index), solved: false };
-    else if (mode === 'chosung') state.chosung = { index: pickRandomIndex(CHOSUNG_POOL.length, state.chosung.index), solved: false };
-    else if (mode === 'wordassoc') state.wordassoc = { index: pickRandomIndex(WORDASSOC_POOL.length, state.wordassoc.index), solved: false };
-    else if (mode === 'proverb') state.proverb = { index: pickRandomIndex(PROVERB_POOL.length, state.proverb.index), solved: false };
-    else if (mode === 'liar') {
-      const topic = pickRandomItem(LIAR_TOPICS, state.liar.topic);
-      const liar = state.players[Math.floor(Math.random() * state.players.length)];
-      state.liar = { topic, liarId: liar.id, phase: 'hint', hints: {}, votes: {}, revealed: false };
-    } else if (mode === 'island') {
-      state.island.weather = pickRandomItem(['☀️ 맑음 (채집 +1)', '🌊 잔잔한 파도', '🌴 산들바람'], state.island.weather);
-    } else if (mode === 'gostop') initGostopRound();
+  function prepareQuizRound() {
+    const d = state.quizDifficulty;
+    if (state.mode === 'chosung') state.chosung = { index: nextFilteredDeckIndex('chosung', CHOSUNG_POOL, d), solved: false };
+    if (state.mode === 'fourchar') state.fourchar = { index: nextFilteredDeckIndex('fourchar', FOURCHAR_POOL, d), solved: false };
+    if (state.mode === 'emojiquiz') state.emojiquiz = { index: nextFilteredDeckIndex('emojiquiz', EMOJI_POOL, d), solved: false };
+    if (state.mode === 'wordassoc') state.wordassoc = { index: nextFilteredDeckIndex('wordassoc', WORDASSOC_POOL, d), solved: false };
+    if (state.mode === 'proverb') state.proverb = { index: nextFilteredDeckIndex('proverb', PROVERB_POOL, d), solved: false };
+    if (state.mode === 'catchmind') {
+      const drawer = getCurrentTurnPlayer();
+      const idx = nextFilteredDeckIndex('catchmind', CATCHMIND_PROMPTS, d);
+      state.catchmind = { drawerId: drawer.id, prompt: CATCHMIND_PROMPTS[idx], guessed: false };
+    }
+  }
+
+  function revealTimeoutAnswer() {
+    const map = { chosung: CHOSUNG_POOL, fourchar: FOURCHAR_POOL, emojiquiz: EMOJI_POOL, wordassoc: WORDASSOC_POOL, proverb: PROVERB_POOL };
+    if (map[state.mode] && !state[state.mode].solved) {
+      addLog(`📢 정답 공개: 「${map[state.mode][state[state.mode].index].a}」`, 'sys');
+    }
   }
 
   function advanceTurn(reason = '') {
-    if (!state.isHost) return;
-    if (reason) addLog(reason);
-    state.turnIndex = (state.turnIndex + 1) % Math.max(1, state.players.length);
-    state.timeLeft = getTurnSecondsForCurrentState();
-
-    if (state.mode === 'yutnori') {
-      state.yutnori.pendingRolls = [];
-      state.yutnori.canThrow = true;
-      state.yutnori.lastRollLabel = '윷을 던져주세요!';
-      selectedYutRollIdx = 0;
-    } else if (state.mode === 'rummikub') captureRummiTurnSnapshot();
-    else if (state.mode === 'catchmind') {
-      const drawer = getCurrentTurnPlayer();
-      state.catchmind = { drawerId: drawer.id, prompt: pickRandomItem(CATCHMIND_PROMPTS, state.catchmind.prompt), strokes: [], guessed: false };
-    } else if (state.mode === 'emojiquiz') { state.emojiquiz.index = pickRandomIndex(EMOJI_POOL.length, state.emojiquiz.index); state.emojiquiz.solved = false; }
-    else if (state.mode === 'chosung') { state.chosung.index = pickRandomIndex(CHOSUNG_POOL.length, state.chosung.index); state.chosung.solved = false; }
-    else if (state.mode === 'wordassoc') { state.wordassoc.index = pickRandomIndex(WORDASSOC_POOL.length, state.wordassoc.index); state.wordassoc.solved = false; }
-    else if (state.mode === 'proverb') { state.proverb.index = pickRandomIndex(PROVERB_POOL.length, state.proverb.index); state.proverb.solved = false; }
-    else if (state.mode === 'gostop') state.gostop.turnId = getCurrentTurnPlayer()?.id || state.myId;
-
-    syncStateToPeers();
+    clearBotQuizTimers();
+    if (reason) addLog(reason, 'sys');
+    state.turnIndex = (state.turnIndex + 1) % state.players.length;
+    state.timeLeft = 30;
+    if (state.mode === 'hunmin') {
+      const pairs = ['ㄱㅈ', 'ㅅㄱ', 'ㅂㅎ', 'ㅇㅅ', 'ㅎㄴ', 'ㅁㅈ', 'ㅋㅍ', 'ㅈㄷ'];
+      state.hunmin.targetChosung = pairs[Math.floor(Math.random() * pairs.length)];
+    } else prepareQuizRound();
     renderAll();
-
+    scheduleBotQuizEvents();
     const cur = getCurrentTurnPlayer();
     if (cur && cur.isBot && state.activeGame) setTimeout(() => runBotTurn(cur.id), 900);
   }
 
   function runBotTurn(botId) {
-    if (!state.isHost || !state.activeGame || getCurrentTurnPlayer()?.id !== botId) return;
-    if (state.mode === 'yutnori') {
-      const yn = state.yutnori;
-      if (yn.canThrow) { handleYutThrow(botId); setTimeout(() => runBotTurn(botId), 850); return; }
-      if (yn.pendingRolls.length > 0) {
-        const ownerKey = getYutOwnerKey(botId);
-        const myPieces = yn.pieces[ownerKey] || [-1, -1, -1];
-        const roll = yn.pendingRolls[0];
-        let idx = myPieces.findIndex(pos => pos >= 0 && pos < 99);
-        if (idx === -1 && roll.steps > 0) idx = myPieces.findIndex(pos => pos === -1);
-        if (idx !== -1) { handleYutMove(botId, 0, idx); setTimeout(() => runBotTurn(botId), 750); return; }
+    if (!state.activeGame || getCurrentTurnPlayer()?.id !== botId) return;
+    const bot = state.players.find(p => p.id === botId);
+    if (!bot) return;
+    if (state.mode === 'rummikub') {
+      const rk = state.rummikub;
+      const plan = findBestRummiMeldPlan(rk.hands[botId] || [], rk.initialMelded[botId] ? 1 : 30);
+      if (plan && plan.length > 0) {
+        for (const tileSet of plan) handleRummiMeldNew(botId, tileSet.map(t => t.id));
+        rk.initialMelded[botId] = true;
       }
-      advanceTurn();
+      handleRummiEndTurn(botId, !rk.playedThisTurn);
       return;
     }
-    if (state.mode === 'gostop') {
-      const hand = state.gostop.hands[botId] || [];
-      if (hand.length) {
-        const m = hand.find(c => state.gostop.floor.some(f => f.month === c.month));
-        handleGostopPlay(botId, (m || hand[0]).id);
-        return;
-      }
-    }
-    if (state.mode === 'rummikub') { handleRummiEndTurn(botId, true); return; }
-    advanceTurn(`🤖 ${getPlayerName(botId)} 턴 진행`);
-  }
-
-  function handleWordchainSubmit(playerId, rawWord) {
-    const word = (rawWord || '').trim();
-    if (getCurrentTurnPlayer()?.id !== playerId || word.length < 2) return;
-    const need = state.wordchain.lastWord.slice(-1);
-    if (word[0] !== need || state.wordchain.used.includes(word)) return;
-    state.wordchain.used.push(word);
-    state.wordchain.lastWord = word;
-    state.wordchain.combo += 1;
-    state.scores[playerId] = (state.scores[playerId] || 0) + 10;
-    addLog(`✅ ${getPlayerName(playerId)}: "${word}" (+10점)`);
-    advanceTurn();
-  }
-
-  function handleHunminSubmit(playerId, rawWord) {
-    const word = (rawWord || '').trim();
-    if (getCurrentTurnPlayer()?.id !== playerId || word.length !== 2) return;
-    if (getChosung(word) !== state.hunmin.prompt || state.hunmin.used.includes(word)) return;
-    state.hunmin.used.push(word);
-    state.scores[playerId] = (state.scores[playerId] || 0) + 15;
-    addLog(`🎯 ${getPlayerName(playerId)}: "${word}" 정답! (+15점)`);
-    state.hunmin.prompt = pickRandomItem(HUNMIN_PROMPTS, state.hunmin.prompt);
-    advanceTurn();
-  }
-
-  function evaluateChatAnswer(senderId, senderName, text) {
-    const clean = (text || '').trim();
-    if (!clean) return;
-    if (state.mode === 'catchmind' && !state.catchmind.guessed && senderId !== state.catchmind.drawerId && clean === state.catchmind.prompt.word) {
-      state.catchmind.guessed = true;
-      state.scores[senderId] = (state.scores[senderId] || 0) + 20;
-      addLog(`🎉 ${senderName} 정답! [${clean}] (+20점)`);
-      setTimeout(() => advanceTurn(), 700);
-    } else if (state.mode === 'chosung' && !state.chosung.solved && clean === CHOSUNG_POOL[state.chosung.index].a) {
-      state.chosung.solved = true; state.scores[senderId] = (state.scores[senderId] || 0) + 15;
-      addLog(`⚡ ${senderName} 초성 정답! [${clean}]`); setTimeout(() => advanceTurn(), 700);
-    } else if (state.mode === 'emojiquiz' && !state.emojiquiz.solved && clean === EMOJI_POOL[state.emojiquiz.index].a) {
-      state.emojiquiz.solved = true; state.scores[senderId] = (state.scores[senderId] || 0) + 15;
-      addLog(`😄 ${senderName} 이모지 정답! [${clean}]`); setTimeout(() => advanceTurn(), 700);
-    } else if (state.mode === 'wordassoc' && !state.wordassoc.solved && clean === WORDASSOC_POOL[state.wordassoc.index].a) {
-      state.wordassoc.solved = true; state.scores[senderId] = (state.scores[senderId] || 0) + 15;
-      addLog(`💡 ${senderName} 연상 정답! [${clean}]`); setTimeout(() => advanceTurn(), 700);
-    } else if (state.mode === 'proverb' && !state.proverb.solved && clean === PROVERB_POOL[state.proverb.index].a) {
-      state.proverb.solved = true; state.scores[senderId] = (state.scores[senderId] || 0) + 15;
-      addLog(`📜 ${senderName} 속담 정답! [${clean}]`); setTimeout(() => advanceTurn(), 700);
+    if (state.mode === 'wordchain') {
+      const lastChar = state.wordchain.lastWord.slice(-1);
+      const found = BOT_KOREAN_WORDS.find(w => w[0] === lastChar && !state.wordchain.used.has(w));
+      if (found) sendBotChat(bot, found, true);
+      else advanceTurn(`🤖 [${bot.name}] 패스!`);
+    } else if (state.mode === 'hunmin') {
+      const target = state.hunmin.targetChosung;
+      const found = BOT_KOREAN_WORDS.find(w => w.length === target.length && getChosung(w) === target && !state.hunmin.used.has(w));
+      if (found) sendBotChat(bot, found, true);
+      else advanceTurn(`🤖 [${bot.name}] 패스!`);
     }
   }
 
-  function handleCardFlipSizeChange(playerId, newSize) {
-    const sz = [4, 8, 16].includes(Number(newSize)) ? Number(newSize) : 4;
-    state.cardflip = { size: sz, cards: buildCardDeck(sz), flipped: [], matched: [] };
-    state.timeLeft = GAME_CONFIG.cardFlipSeconds[sz] || 45;
-    syncStateToPeers(); renderAll();
+  /* =========================================================================
+     11. 렌더링 & 스킨 상점 탭 뷰
+     ========================================================================= */
+  function renderAll() {
+    renderPlayers();
+    renderHof();
+    renderStage();
+    updateTimerUI();
   }
 
-  function handleCardFlip(playerId, index) {
-    if (getCurrentTurnPlayer()?.id !== playerId) return;
-    const cf = state.cardflip;
-    if (cf.matched.includes(index) || cf.flipped.includes(index) || cf.flipped.length >= 2) return;
-    cf.flipped.push(index);
-    if (cf.flipped.length === 2) {
-      const [a, b] = cf.flipped;
-      if (cf.cards[a].icon === cf.cards[b].icon) {
-        cf.matched.push(a, b); cf.flipped = [];
-        state.scores[playerId] = (state.scores[playerId] || 0) + 10;
-        if (cf.matched.length === cf.cards.length) {
-          state.cardflip = { size: cf.size, cards: buildCardDeck(cf.size), flipped: [], matched: [] };
-          advanceTurn(); return;
-        }
-        syncStateToPeers(); renderAll();
-      } else {
-        syncStateToPeers(); renderAll();
-        setTimeout(() => { state.cardflip.flipped = []; advanceTurn(); }, 650);
-      }
-      return;
-    }
-    syncStateToPeers(); renderAll();
-  }
-
-  function resolveLiarVote() {
-    state.liar.revealed = true;
-    addLog(`🎭 라이어는 [${getPlayerName(state.liar.liarId)}] 였습니다!`);
-    syncStateToPeers(); renderAll();
-  }
-
-  function applyIslandGather(playerId, resource, amount, label) {
-    state.island[resource] = (state.island[resource] || 0) + amount;
-    state.scores[playerId] = (state.scores[playerId] || 0) + amount * 5;
-    addLog(`🏝️ ${getPlayerName(playerId)} ${label} (+${amount})`);
-    syncStateToPeers(); renderAll();
-  }
-
-  function applyIslandSell(playerId) {
-    const earned = (state.island.wood || 0) * 250 + (state.island.fish || 0) * 400 + (state.island.coconut || 0) * 350;
-    if (earned <= 0) return;
-    state.island.wood = 0; state.island.fish = 0; state.island.coconut = 0;
-    state.sharedMoney += earned;
-    addLog(`💵 자원 판매 +${earned.toLocaleString()}원!`);
-    syncStateToPeers(); renderAll();
-  }
-
-  const HWATU_DECK = [
-    { id: '1광', month: 1, name: '송학광', type: '광' }, { id: '1띠', month: 1, name: '송학홍단', type: '띠' },
-    { id: '2열', month: 2, name: '매조새', type: '열끗' }, { id: '2피', month: 2, name: '매조피', type: '피' },
-    { id: '3광', month: 3, name: '벚꽃광', type: '광' }, { id: '3피', month: 3, name: '벚꽃피', type: '피' },
-    { id: '4열', month: 4, name: '흑싸리새', type: '열끗' }, { id: '5띠', month: 5, name: '난초초단', type: '띠' },
-    { id: '6열', month: 6, name: '모란나비', type: '열끗' }, { id: '7열', month: 7, name: '멧돼지', type: '열끗' },
-    { id: '8광', month: 8, name: '공산명월', type: '광' }, { id: '8피', month: 8, name: '공산피', type: '피' },
-    { id: '9술', month: 9, name: '국진술잔', type: '열끗' }, { id: '10열', month: 10, name: '단풍사슴', type: '열끗' },
-    { id: '11광', month: 11, name: '오동광', type: '광' }, { id: '12비', month: 12, name: '비광', type: '광' }
-  ];
-
-  function renderHwatuArtSvg(card) {
-    const bg = card.type === '광' ? '#fef2f2' : card.type === '열끗' ? '#faf5ff' : card.type === '띠' ? '#f0f9ff' : '#f8fafc';
-    const badge = card.type === '광' ? '#dc2626' : card.type === '열끗' ? '#7e22ce' : card.type === '띠' ? '#0284c7' : '#475569';
-    return `
-      <svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
-        <rect width="120" height="140" rx="8" fill="${bg}"/>
-        <circle cx="60" cy="74" r="32" fill="${badge}" opacity="0.16"/>
-        <rect x="8" y="8" width="38" height="22" rx="6" fill="#0f172a"/>
-        <text x="27" y="23" text-anchor="middle" fill="#fde047" font-size="12" font-weight="800">${card.month}월</text>
-        <text x="60" y="82" text-anchor="middle" fill="${badge}" font-size="22" font-weight="900">${card.type}</text>
-      </svg>
-    `;
-  }
-
-  function initGostopRound() {
-    const shuffled = [...HWATU_DECK].sort(() => Math.random() - 0.5);
-    state.gostop.floor = shuffled.splice(0, 4);
-    state.gostop.hands = {}; state.gostop.captured = {}; state.gostop.shaken = {}; state.gostop.goCount = 0;
-    state.players.forEach(p => {
-      state.gostop.hands[p.id] = shuffled.splice(0, 4);
-      state.gostop.captured[p.id] = [];
-      state.gostop.shaken[p.id] = false;
-    });
-    state.gostop.stock = shuffled;
-    state.gostop.turnId = getCurrentTurnPlayer()?.id || state.myId;
-  }
-
-  function handleGostopShake(playerId) {
-    state.gostop.shaken[playerId] = true;
-    addLog(`🌪️ ${getPlayerName(playerId)} 흔들기!`);
-    syncStateToPeers(); renderAll();
-  }
-
-  function handleGostopPlay(playerId, cardId) {
-    if (state.gostop.turnId !== playerId) return;
-    const hand = state.gostop.hands[playerId] || [];
-    const idx = hand.findIndex(c => c.id === cardId);
-    if (idx === -1) return;
-    const [played] = hand.splice(idx, 1);
-    const fIdx = state.gostop.floor.findIndex(f => f.month === played.month);
-    if (fIdx !== -1) {
-      const [taken] = state.gostop.floor.splice(fIdx, 1);
-      state.gostop.captured[playerId].push(played, taken);
-      addLog(`✨ ${getPlayerName(playerId)} [${played.id}] ↔ [${taken.id}] 먹기!`);
-    } else {
-      state.gostop.floor.push(played);
-    }
-    if (state.gostop.stock.length > 0) {
-      const drawn = state.gostop.stock.pop();
-      const dIdx = state.gostop.floor.findIndex(f => f.month === drawn.month);
-      if (dIdx !== -1) state.gostop.captured[playerId].push(drawn, ...state.gostop.floor.splice(dIdx, 1));
-      else state.gostop.floor.push(drawn);
-    }
-    if (state.gostop.captured[playerId].length >= 6) {
-      state.scores[playerId] = (state.scores[playerId] || 0) + 25;
-      addLog(`🏆 ${getPlayerName(playerId)} 고스톱 승리! (+25점)`);
-      initGostopRound();
-    }
-    advanceTurn();
-  }
-
-  function handleGostopGoStop(playerId, choice) {
-    if (choice === 'GO') { state.gostop.goCount += 1; addLog(`🔥 ${getPlayerName(playerId)} GO!`); }
-    else { state.scores[playerId] = (state.scores[playerId] || 0) + 20; addLog(`🛑 ${getPlayerName(playerId)} STOP!`); initGostopRound(); }
-    syncStateToPeers(); renderAll();
-  }
-
-  /* ================= 렌더링 로직 ================= */
-  function renderLobby() {
-    $('myProfilePreview').textContent = `${state.myChar} ${state.myName}`;
-    $('charPicker').innerHTML = CHARACTERS.map(ch => `
-      <div class="char-card ${state.myChar === ch.icon ? 'active' : ''}" data-char="${ch.icon}">
-        <div class="avatar">${ch.icon}</div>
-        <div class="cname">${ch.label}</div>
-      </div>
-    `).join('');
-
-    $('charPicker').querySelectorAll('.char-card').forEach(card => {
-      card.addEventListener('click', () => {
-        state.myChar = card.dataset.char;
-        applyMyProfile(false);
-      });
-    });
-  }
-
-  function renderModeGrid() {
-    const box = $('modeSelectorBox');
-    box.classList.toggle('hidden', !state.modeDrawerOpen && state.activeGame);
-    const grid = $('modeGrid');
-    const canPick = state.isHost && !state.soloIsland;
-    $('hostLockNote').textContent = state.soloIsland ? '(솔로 모드)' : state.isHost ? '(방장 선택 가능)' : '(방장 전용)';
-    $('btnStartGame').disabled = !state.isHost && !state.soloIsland;
-
-    grid.innerHTML = MODES.map(m => `
-      <button class="mode-btn ${state.mode === m.id ? 'active' : ''}" data-mode="${m.id}" ${!canPick ? 'disabled' : ''}>
-        <span>${m.name}</span>
-        <small>${m.desc}</small>
-      </button>
-    `).join('');
-
-    grid.querySelectorAll('.mode-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        if (!state.isHost) return;
-        state.mode = btn.dataset.mode;
-        initModeState(state.mode);
-        state.timeLeft = getTurnSecondsForCurrentState();
-        addLog(`🎛️ [${MODES.find(x => x.id === state.mode)?.name}] 모드 선택됨`);
-        syncStateToPeers();
-        renderAll();
-      });
-    });
+  function updateTimerUI() {
+    const box = document.getElementById('timerBox');
+    if (state.shopOpen) { box.textContent = '🛍️ 스킨 상점'; return; }
+    if (!state.activeGame) { box.textContent = '⏱ 대기 중'; return; }
+    if (state.mode === 'stairs' || state.mode === 'dodge') { box.textContent = '🔥 실시간 아케이드 진행 중'; return; }
+    box.textContent = `⏱ 남은 시간: ${state.timeLeft}초`;
   }
 
   function renderPlayers() {
+    const list = document.getElementById('playerList');
     const cur = getCurrentTurnPlayer();
-    const showTeamPill = state.mode === 'yutnori' && state.yutnori.teamMode;
-    $('playersBar').innerHTML = state.players.map(p => {
-      const isTurn = cur && cur.id === p.id && state.activeGame;
-      const t = state.yutnori.teams[p.id] || 'red';
-      return `<div class="player-chip ${isTurn ? 'turn' : ''}">
-        <span>${p.char || '👤'} <strong>${p.name}</strong></span>
-        ${showTeamPill ? `<span class="team-pill ${t}" data-team-pid="${p.id}" title="클릭해 팀 변경">${t === 'red' ? '🔴 홍팀' : '🔵 청팀'}</span>` : ''}
-        ${p.id === state.myId ? '<span style="color:#38bdf8; font-size:0.75rem;">(나)</span>' : ''}
-        ${isTurn ? '<span style="color:#facc15; font-size:0.75rem;">● 차례</span>' : ''}
-      </div>`;
-    }).join('');
-
-    $('playersBar').querySelectorAll('[data-team-pid]').forEach(el => {
-      el.addEventListener('click', () => {
-        const pid = el.dataset.teamPid;
-        if (state.isHost) togglePlayerYutTeam(pid);
-        else if (pid === state.myId) broadcast({ type: 'ACTION_YUT_SWITCH_TEAM', targetPlayerId: pid });
-      });
+    list.innerHTML = '';
+    state.players.forEach(p => {
+      const div = document.createElement('div');
+      div.className = `player-item ${state.activeGame && cur?.id === p.id ? 'active-turn' : ''}`;
+      div.innerHTML = `
+        <span>${p.char} <b>${p.name}</b> ${p.isBot ? '<small style="color:#94a3b8">(AI)</small>' : ''}</span>
+        <span class="score-pill">${p.score}점</span>
+      `;
+      list.appendChild(div);
     });
-
-    $('sharedMoneyLabel').textContent = state.sharedMoney.toLocaleString() + '원';
+    const totalCount = CHOSUNG_POOL.length + FOURCHAR_POOL.length + EMOJI_POOL.length + WORDASSOC_POOL.length + PROVERB_POOL.length + CATCHMIND_PROMPTS.length;
+    document.getElementById('poolCountBadge').textContent = `총 ${totalCount}문항`;
   }
 
-  function renderLogs() {
-    $('logBox').innerHTML = state.logs.map(l => `<div class="log-line"><span class="time">[${l.t}]</span>${l.text}</div>`).join('');
-    $('logBox').scrollTop = $('logBox').scrollHeight;
-    const sorted = [...state.players].sort((a, b) => (state.scores[b.id] || 0) - (state.scores[a.id] || 0));
-    $('scoreList').innerHTML = sorted.map((p, idx) =>
-      `<div class="log-line"><strong>${idx + 1}위</strong> ${p.char || '👤'} ${p.name} — <span style="color:#7dd3fc; font-weight:700;">${state.scores[p.id] || 0}점</span></div>`
-    ).join('');
-  }
+  function renderSkinShop(body) {
+    const me = state.players.find(p => p.id === state.myId);
+    const equipped = getEquippedSkin();
 
-  function updateTimerPillUI() {
-    const pill = document.querySelector('.timer-pill');
-    if (!pill) return;
-    const limit = getTurnSecondsForCurrentState();
-    if (limit === 0) { pill.textContent = '⏱ 무제한'; pill.classList.add('unlimited'); pill.classList.remove('urgent'); }
-    else { pill.textContent = `⏱ ${state.timeLeft}초`; pill.classList.remove('unlimited'); pill.classList.toggle('urgent', state.timeLeft <= 5); }
-  }
-
-  function renderYutModeSetupBanner() {
-    const yn = state.yutnori;
-    const redMembers = state.players.filter(p => (yn.teams[p.id] || 'red') === 'red');
-    const blueMembers = state.players.filter(p => yn.teams[p.id] === 'blue');
-
-    return `
-      <div class="yut-mode-banner">
-        <div class="row">
-          <span style="font-size:0.88rem; font-weight:800; color:#fde047;">🪵 윷놀이 대전 방식:</span>
-          <button id="btnYutSoloMode" class="${!yn.teamMode ? 'btn-primary' : 'btn-ghost'}" style="padding:6px 13px; font-size:0.83rem;" ${!state.isHost ? 'disabled' : ''}>👤 개인전</button>
-          <button id="btnYutTeamMode" class="${yn.teamMode ? 'btn-danger' : 'btn-ghost'}" style="padding:6px 13px; font-size:0.83rem;" ${!state.isHost ? 'disabled' : ''}>🤝 팀전 (🔴 홍팀 vs 🔵 청팀)</button>
-        </div>
-        ${yn.teamMode ? `
-          <div class="row" style="font-size:0.82rem;">
-            <span style="padding:4px 10px; border-radius:8px; background:rgba(239,68,68,0.18); border:1px solid #ef4444;">
-              🔴 홍팀: ${redMembers.map(m => `${m.char || '👤'}${m.name}`).join(', ') || '없음'}
-            </span>
-            <span style="padding:4px 10px; border-radius:8px; background:rgba(59,130,246,0.18); border:1px solid #3b82f6;">
-              🔵 청팀: ${blueMembers.map(m => `${m.char || '👤'}${m.name}`).join(', ') || '없음'}
-            </span>
-            <span style="color:var(--muted);">(플레이어 칩 클릭 시 팀 이동)</span>
+    body.innerHTML = `
+      <div class="shop-panel">
+        <div class="shop-top-bar">
+          <div>
+            <div style="font-weight:800;font-size:1.05rem;">🛍️ 캐릭터 스킨 상점</div>
+            <div style="font-size:0.82rem;color:var(--muted);">현재 장착 중: <b>${equipped.icon} ${equipped.name}</b></div>
           </div>
-        ` : `<span style="font-size:0.8rem; color:var(--muted);">개인전: 각 플레이어별 말 3개로 대결</span>`}
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span class="score-pill" style="font-size:0.9rem;padding:5px 12px;">보유 점수: ${me.score}점</span>
+            <button id="btnExitShop" class="primary">◀ 게임 화면으로</button>
+          </div>
+        </div>
+        <div id="skinGrid" class="skin-grid"></div>
       </div>
     `;
-  }
 
-  function bindYutModeSetupEvents(container) {
-    container.querySelector('#btnYutSoloMode')?.addEventListener('click', () => setYutTeamMode(false));
-    container.querySelector('#btnYutTeamMode')?.addEventListener('click', () => setYutTeamMode(true));
-  }
+    const grid = document.getElementById('skinGrid');
+    SKIN_CATALOG.forEach(skin => {
+      const isUnlocked = skinState.unlocked.includes(skin.id);
+      const isEquipped = skinState.equipped === skin.id;
+      const canAfford = me.score >= skin.cost;
 
-  function renderYutnoriBoardSvg(previewDest = -1) {
-    const segs = [[430,430,430,50],[430,50,50,50],[50,50,50,430],[50,430,430,430],[430,50,50,430],[50,50,430,430]];
-    const occMap = {};
-    const ownerKeys = getYutOwnerKeys();
-    ownerKeys.forEach(oKey => {
-      const color = getYutOwnerColor(oKey);
-      (state.yutnori.pieces[oKey] || []).forEach((pos, idx) => {
-        if (pos >= 0 && pos < 99) {
-          occMap[pos] = occMap[pos] || [];
-          occMap[pos].push({ ownerKey: oKey, color, pieceIdx: idx });
-        }
-      });
+      const card = document.createElement('div');
+      card.className = `skin-card ${isEquipped ? 'equipped' : ''}`;
+      card.innerHTML = `
+        <div class="skin-avatar">${skin.icon}</div>
+        <div class="skin-name">${skin.name}</div>
+        <div class="skin-desc">${skin.desc}</div>
+        <div class="skin-price">${skin.cost === 0 ? '기본 스킨' : `${skin.cost}점`}</div>
+      `;
+
+      const btn = document.createElement('button');
+      if (isEquipped) {
+        btn.className = 'success';
+        btn.textContent = '✅ 장착 중';
+        btn.disabled = true;
+      } else if (isUnlocked) {
+        btn.className = 'primary';
+        btn.textContent = '장착하기';
+        btn.onclick = () => buyOrEquipSkin(skin.id);
+      } else {
+        btn.className = 'warn';
+        btn.textContent = canAfford ? `🔓 해금 (${skin.cost}점)` : `🔒 ${skin.cost}점 필요`;
+        btn.disabled = !canAfford;
+        btn.onclick = () => buyOrEquipSkin(skin.id);
+      }
+
+      card.appendChild(btn);
+      grid.appendChild(card);
     });
 
-    const linesSvg = segs.map(([x1,y1,x2,y2]) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#78350f" stroke-width="5" stroke-linecap="round"/>`).join('');
-    const nodesSvg = YUT_NODES.map(n => {
-      const r = n.corner ? 21 : 14;
-      const fill = n.id === 0 ? '#dc2626' : n.corner ? '#f59e0b' : '#fffbeb';
-      const isDest = n.id === previewDest;
-      const stroke = isDest ? '#16a34a' : '#78350f';
-      const occ = occMap[n.id] || [];
-      let tokensSvg = '';
-      if (occ.length > 0) {
-        const first = occ[0];
-        const badge = occ.length > 1 ? `×${occ.length}` : `${first.pieceIdx + 1}`;
-        tokensSvg = `<g transform="translate(${n.x},${n.y})"><circle r="15" fill="${first.color}" stroke="#fff" stroke-width="2.5"/><text y="4" text-anchor="middle" fill="#fff" font-size="11" font-weight="900">${badge}</text></g>`;
-      }
-      return `
-        <g class="yut-node-circle" data-node="${n.id}" data-isdest="${isDest ? '1' : '0'}">
-          <circle cx="${n.x}" cy="${n.y}" r="${r}" fill="${fill}" stroke="${stroke}" stroke-width="${isDest ? 5 : 3}"/>
-          ${n.label ? `<text x="${n.x}" y="${n.id === 0 ? n.y + 34 : n.y - 25}" text-anchor="middle" fill="#78350f" font-size="11" font-weight="800">${n.label}</text>` : ''}
-          ${tokensSvg}
-        </g>
-      `;
-    }).join('');
-
-    return `<svg viewBox="0 0 480 480" xmlns="http://www.w3.org/2000/svg"><rect x="8" y="8" width="464" height="464" rx="18" fill="none" stroke="#b45309" stroke-width="2" stroke-dasharray="6 4"/>${linesSvg}${nodesSvg}</svg>`;
+    document.getElementById('btnExitShop').onclick = () => {
+      state.shopOpen = false;
+      renderAll();
+      if (state.mode === 'stairs' && state.stairs.running) startStairsLoop();
+      if (state.mode === 'dodge' && state.dodge.running) startDodgeLoop();
+    };
   }
 
-  function renderGameViewport() {
-    const vp = $('gameViewport');
-    const cur = getCurrentTurnPlayer();
-    const myTurn = isMyTurn();
-    const limit = getTurnSecondsForCurrentState();
+  function renderStage() {
+    const body = document.getElementById('stageBody');
+    const title = document.getElementById('stageTitle');
+
+    if (state.shopOpen) {
+      title.textContent = '🛍️ 캐릭터 스킨 상점 (우주비행사 · 닌자 · 로봇 · 황금왕관)';
+      renderSkinShop(body);
+      return;
+    }
+
+    const modeNames = {
+      stairs: '🪜 천국의 계단 (20콤보 자동회전 피버)',
+      dodge: '🚀 총알 피하기 (보호막·슬로우 아이템)',
+      rummikub: '🀄 루미큐브 (30점+ AI 대전)',
+      chosung: '🔤 초성 퀴즈 (신조어·예능·상식)',
+      fourchar: '4️⃣ 예능 네글자 이어말하기',
+      emojiquiz: '😎 이모지 퀴즈',
+      wordassoc: '🧠 연상 퀴즈',
+      proverb: '📜 속담·사자성어 퀴즈',
+      catchmind: '🎨 캐치마인드',
+      wordchain: '🔗 끝말잇기',
+      hunmin: '🇰🇷 훈민정음'
+    };
+    title.textContent = modeNames[state.mode] || '게임 스테이지';
 
     if (!state.activeGame) {
-      const yutPreSetup = state.mode === 'yutnori' ? renderYutModeSetupBanner() : '';
-      vp.innerHTML = yutPreSetup + `
-        <div style="text-align:center; padding:28px 16px; background:var(--panel-2); border:1px dashed var(--border); border-radius:14px;">
-          <div style="font-size:2.2rem; margin-bottom:8px;">🎲</div>
-          <h3 style="margin:0 0 6px;">대기실 준비 완료!</h3>
-          <p style="margin:0 0 14px; color:var(--muted); font-size:0.9rem;">
-            현재 선택된 종목: <strong style="color:#38bdf8;">[${MODES.find(m => m.id === state.mode)?.name}]</strong>
-            ${state.isHost ? ' — 준비가 끝나면 아래 버튼을 눌러 시작하세요!' : ' — 방장이 게임을 시작하면 자동으로 화면이 전환됩니다.'}
-          </p>
-          ${state.isHost ? `<button id="btnCenterStart" class="btn-green" style="padding:11px 22px; font-size:1rem;">▶ 지금 바로 게임 시작하기</button>` : ''}
+      const eq = getEquippedSkin();
+      body.innerHTML = `
+        <div class="quiz-box">
+          <div class="quiz-tag">READY TO PLAY · 장착 스킨 ${eq.icon} ${eq.name}</div>
+          <div class="quiz-main" style="font-size:1.4rem;">상단에서 종목을 고르고 <b>[게임 시작]</b>을 누르거나 <b>[🛍️ 스킨 상점]</b>을 열어보세요!</div>
+          <div class="quiz-sub">점수를 모아 우주비행사·닌자·로봇·황금왕관 스킨을 해금할 수 있습니다</div>
         </div>
       `;
-      bindYutModeSetupEvents(vp);
-      $('btnCenterStart')?.addEventListener('click', startGame);
       return;
     }
 
-    const hudHtml = `
-      <div class="hud-strip">
-        <div>
-          <strong>${MODES.find(m => m.id === state.mode)?.name || state.mode}</strong>
-          <span style="margin-left:10px; color:#facc15;">현재 턴: <strong>${cur ? getPlayerName(cur.id) : '-'}</strong> ${myTurn ? '(내 차례!)' : ''}</span>
-        </div>
-        <div class="row">
-          <span class="timer-pill ${limit === 0 ? 'unlimited' : state.timeLeft <= 5 ? 'urgent' : ''}">${limit === 0 ? '⏱ 무제한' : `⏱ ${state.timeLeft}초`}</span>
-          ${state.isHost ? `<button id="btnNextTurn" class="btn-ghost" style="padding:5px 10px; font-size:0.8rem;">턴 넘기기</button>` : ''}
-        </div>
-      </div>
-    `;
-
-    if (state.mode === 'yutnori') {
-      const yn = state.yutnori;
-      const myOwnerKey = getYutOwnerKey(state.myId);
-      const myPieces = yn.pieces[myOwnerKey] || [-1, -1, -1];
-      if (selectedYutRollIdx >= yn.pendingRolls.length) selectedYutRollIdx = 0;
-      const activeRoll = yn.pendingRolls[selectedYutRollIdx] || null;
-      const curPos = myPieces[selectedYutPieceIdx];
-      const previewDest = myTurn && activeRoll && typeof curPos === 'number' && curPos < 99 && !(activeRoll.steps === -1 && curPos === -1)
-        ? computeYutDestination(curPos, activeRoll.steps) : -1;
-
-      const sticksHtml = (yn.lastSticks || [false, true, true, true]).map((isFlat, idx) => `
-        <div class="yut-stick-3d ${yutRollingActive ? 'rolling' : ''}">
-          <div class="yut-face ${isFlat ? 'flat' : 'round'} ${idx === 0 && isFlat ? 'backdo' : ''}">
-            ${isFlat ? (idx === 0 ? '<span>✕</span><span>빽도</span><span>✕</span>' : '<span>✕</span><span>✕</span><span>✕</span>') : '<span>●</span><span>●</span><span>●</span>'}
-          </div>
-        </div>
-      `).join('');
-
-      const ownerKeys = getYutOwnerKeys();
-      const statusCardsHtml = ownerKeys.map(oKey => {
-        const color = getYutOwnerColor(oKey);
-        const pList = yn.pieces[oKey] || [-1, -1, -1];
-        const isCurrentOwnerTurn = cur && getYutOwnerKey(cur.id) === oKey;
-        const canControl = oKey === myOwnerKey;
-
-        let memberSubtitle = '';
-        if (yn.teamMode) {
-          const members = state.players.filter(p => getYutOwnerKey(p.id) === oKey);
-          memberSubtitle = `
-            <div class="row" style="margin-bottom:6px; gap:6px;">
-              ${members.map(m => `
-                <span style="font-size:0.78rem; padding:2px 8px; border-radius:8px; background:#1e293b; border:1px solid #334155;">
-                  ${m.char || '👤'} ${m.name}
-                  ${(state.isHost || m.id === state.myId) ? `<button data-swap-pid="${m.id}" style="padding:1px 5px; font-size:0.68rem; margin-left:4px;" title="팀 변경">⇄</button>` : ''}
-                </span>
-              `).join('') || '<span style="font-size:0.76rem; color:var(--muted);">팀원 없음</span>'}
-            </div>
-          `;
-        }
-
-        return `
-          <div class="yut-player-card ${isCurrentOwnerTurn ? 'active-turn' : ''}">
-            <div class="row" style="justify-content:space-between; margin-bottom:6px;">
-              <span style="font-size:0.9rem; font-weight:800;">
-                <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:${color}; margin-right:5px;"></span>
-                ${getYutOwnerLabel(oKey)} ${canControl ? '<span style="color:#38bdf8; font-size:0.75rem;">(내 진영)</span>' : ''}
-              </span>
-              <span style="font-size:0.78rem; color:var(--muted);">완주 ${pList.filter(x => x === 99).length}/3</span>
-            </div>
-            ${memberSubtitle}
-            <div class="row">
-              ${pList.map((pos, idx) => {
-                const statusTxt = pos === 99 ? '🏁 완주' : pos === -1 ? '🏠 대기석' : `${YUT_NODES.find(n => n.id === pos)?.label || pos + '번'}`;
-                const isSel = canControl && selectedYutPieceIdx === idx && pos < 99;
-                return `<button class="yut-piece-btn ${isSel ? 'selected' : ''}" data-pidx="${idx}" style="border-color:${color};" ${!canControl || pos === 99 ? 'disabled' : ''}>말 ${idx + 1}: ${statusTxt}</button>`;
-              }).join('')}
-            </div>
-          </div>
-        `;
-      }).join('');
-
-      vp.innerHTML = hudHtml + renderYutModeSetupBanner() + `
-        <div class="yut-layout">
-          <div class="yut-board-wrap">${renderYutnoriBoardSvg(previewDest)}</div>
-          <div class="yut-side-panel">
-            <div class="yut-sticks-box">
-              <div class="row" style="justify-content:space-between;">
-                <strong style="font-size:0.98rem; color:#fde047;">🪵 ${yn.lastRollLabel}</strong>
-                <button id="btnYutThrow" class="btn-amber" ${!myTurn || !yn.canThrow ? 'disabled' : ''}>🎲 3D 윷 던지기!</button>
-              </div>
-              <div class="yut-3d-stage">
-                <div class="yut-sticks-row">${sticksHtml}</div>
-              </div>
-              <div style="font-size:0.8rem; color:var(--muted); margin-bottom:6px;">사용 가능한 이동 패 (${yn.pendingRolls.length}개):</div>
-              <div class="row">
-                ${yn.pendingRolls.map((r, idx) => `<button class="yut-roll-chip ${idx === selectedYutRollIdx ? 'active' : ''}" data-ridx="${idx}" ${!myTurn ? 'disabled' : ''}>${r.name}</button>`).join('') || '<span style="font-size:0.8rem; color:var(--muted);">던진 패 없음</span>'}
-              </div>
-              <div class="row" style="margin-top:10px;">
-                <button id="btnYutMove" class="btn-green" style="flex:1;" ${!myTurn || !yn.pendingRolls.length ? 'disabled' : ''}>🏃 선택한 말(${selectedYutPieceIdx + 1}번) 이동 (또는 초록 칸 클릭)</button>
-              </div>
-            </div>
-            ${statusCardsHtml}
-          </div>
+    if (state.mode === 'stairs') {
+      body.innerHTML = `
+        <canvas id="stairsCanvas" class="game-canvas" width="540" height="390"></canvas>
+        <div class="stairs-btns">
+          <button id="btnStairClimb" class="primary">⬆️ 오르기 (← / A)</button>
+          <button id="btnStairTurn" class="warn">🔄 방향전환+오르기 (→ / D)</button>
         </div>
       `;
+      document.getElementById('btnStairClimb').onclick = () => stepStairs(false);
+      document.getElementById('btnStairTurn').onclick = () => stepStairs(true);
+      return;
+    }
 
-      bindYutModeSetupEvents(vp);
-
-      vp.querySelectorAll('[data-swap-pid]').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          const pid = btn.dataset.swapPid;
-          if (state.isHost) togglePlayerYutTeam(pid);
-          else broadcast({ type: 'ACTION_YUT_SWITCH_TEAM', targetPlayerId: pid });
-        });
-      });
-
-      const doMove = () => {
-        if (state.isHost) handleYutMove(state.myId, selectedYutRollIdx, selectedYutPieceIdx);
-        else broadcast({ type: 'ACTION_YUT_MOVE', playerId: state.myId, rollIdx: selectedYutRollIdx, pieceIdx: selectedYutPieceIdx });
+    if (state.mode === 'dodge') {
+      body.innerHTML = `
+        <canvas id="dodgeCanvas" class="game-canvas" width="540" height="400"></canvas>
+        <div style="margin-top:8px;font-size:0.84rem;color:#94a3b8;">마우스/손가락 드래그 또는 방향키(WASD)로 기체를 조종하세요!</div>
+      `;
+      const canvas = document.getElementById('dodgeCanvas');
+      const movePointer = (e) => {
+        if (!state.dodge.running) return;
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        state.dodge.player.x = (clientX - rect.left) * (canvas.width / rect.width);
+        state.dodge.player.y = (clientY - rect.top) * (canvas.height / rect.height);
       };
+      canvas.addEventListener('mousemove', movePointer);
+      canvas.addEventListener('touchmove', (e) => { e.preventDefault(); movePointer(e); }, { passive: false });
+      return;
+    }
 
-      $('btnYutThrow')?.addEventListener('click', () => {
-        if (state.isHost) handleYutThrow(state.myId);
-        else broadcast({ type: 'ACTION_YUT_THROW', playerId: state.myId });
-      });
-      vp.querySelectorAll('.yut-roll-chip').forEach(btn => btn.addEventListener('click', () => { selectedYutRollIdx = Number(btn.dataset.ridx); renderGameViewport(); }));
-      vp.querySelectorAll('.yut-piece-btn[data-pidx]').forEach(btn => btn.addEventListener('click', () => { selectedYutPieceIdx = Number(btn.dataset.pidx); renderGameViewport(); }));
-      vp.querySelectorAll('.yut-node-circle[data-isdest="1"]').forEach(node => node.addEventListener('click', doMove));
-      $('btnYutMove')?.addEventListener('click', doMove);
-
-    } else if (state.mode === 'rummikub') {
+    if (state.mode === 'rummikub') {
       const rk = state.rummikub;
       const myHand = rk.hands[state.myId] || [];
-      const melded = Boolean(rk.initialMelded[state.myId]);
-      const selectedTiles = myHand.filter(t => selectedRummiTileIds.has(t.id));
-      const selectedSum = selectedTiles.reduce((acc, t) => acc + (t.isJoker ? 0 : t.num), 0);
+      const curTurn = getCurrentTurnPlayer();
+      const isMyTurn = curTurn?.id === state.myId;
+      const selectedTiles = myHand.filter(t => rk.selectedTileIds.has(t.id));
+      const previewEval = evaluateRummiSet(selectedTiles);
 
-      vp.innerHTML = hudHtml + `
-        <div class="rummi-3d-scene">
-          <div id="rummiTableDrop" class="rummi-table-board">
-            <div class="row" style="justify-content:space-between; margin-bottom:10px;">
-              <span style="font-size:0.86rem; color:#a7f3d0; font-weight:800;">🟢 3D 루미큐브 테이블 (${rk.tableSets.length}세트) · 남은 더미 ${rk.pool.length}장</span>
-              <span style="font-size:0.8rem; color:${melded ? '#86efac' : '#fde047'}; font-weight:700;">
-                ${melded ? '✅ 첫 등록 완료 (기존 세트 연결 가능)' : `⚠️ 첫 등록 미완료 (합계 30점 이상 필요 · 현재 선택 ${selectedSum}점)`}
-              </span>
-            </div>
-            <div class="rummi-sets-wrap">
-              ${rk.tableSets.map((set, sIdx) => `
-                <div class="rummi-set-group ${myTurn && melded && selectedTiles.length ? 'appendable' : ''}" data-sidx="${sIdx}">
-                  ${set.map(t => `<div class="rummi-tile table-tile ${t.isJoker ? 'rummi-joker' : 'rummi-' + t.color}"><div class="num">${t.isJoker ? '🃏' : t.num}</div><div class="suit-dot"></div></div>`).join('')}
-                </div>
-              `).join('')}
-              <div class="rummi-new-dropzone">＋ 선택 타일 드롭 / 새 세트</div>
-            </div>
+      body.innerHTML = `
+        <div class="rummi-board">
+          <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.88rem;">
+            <span>현재 턴: <b style="color:#fbbf24;">${curTurn?.name}</b> | 남은 덱: ${rk.deck.length}장</span>
+            <span>내 첫 등록(30점+): <b>${rk.initialMelded[state.myId] ? '✅ 완료' : '❌ 미완료'}</b></span>
           </div>
-
-          <div class="rummi-rack">
-            <div class="row" style="justify-content:space-between;">
-              <span style="font-size:0.88rem; font-weight:800;">내 3D 타일 거치대 (${myHand.length}장 · 클릭 또는 드래그)</span>
-              <div class="row">
-                <button id="btnRummiMeld" class="btn-green" style="padding:6px 11px; font-size:0.82rem;" ${!myTurn || selectedTiles.length < 3 ? 'disabled' : ''}>🧩 새 세트 등록 (${selectedSum}점)</button>
-                <button id="btnRummiReset" class="btn-ghost" style="padding:6px 10px; font-size:0.82rem;" ${!myTurn ? 'disabled' : ''}>↩️ 복구</button>
-                <button id="btnRummiDone" class="btn-primary" style="padding:6px 11px; font-size:0.82rem;" ${!myTurn || !rk.playedThisTurn ? 'disabled' : ''}>✅ 턴 종료</button>
-                <button id="btnRummiDraw" class="btn-amber" style="padding:6px 11px; font-size:0.82rem;" ${!myTurn ? 'disabled' : ''}>📥 1장 뽑고 넘기기</button>
-              </div>
-            </div>
-            <div class="rummi-hand-row">
-              ${myHand.map(t => `<div class="rummi-tile ${t.isJoker ? 'rummi-joker' : 'rummi-' + t.color} ${selectedRummiTileIds.has(t.id) ? 'selected' : ''}" data-tid="${t.id}" draggable="${myTurn ? 'true' : 'false'}"><div class="num">${t.isJoker ? '🃏' : t.num}</div><div class="suit-dot"></div></div>`).join('')}
-            </div>
+          <div id="rummiTable" class="rummi-table"></div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
+            <button id="btnRummiMeld" class="success" ${!isMyTurn ? 'disabled' : ''}>➕ 새 세트 등록 (${previewEval.valid ? previewEval.points + '점' : '선택불가'})</button>
+            <button id="btnRummiEnd" class="primary" ${!isMyTurn ? 'disabled' : ''}>${rk.playedThisTurn ? '✔ 턴 종료' : '📥 1장 뽑고 턴 종료'}</button>
           </div>
+          <div id="rummiHand" class="rummi-hand"></div>
         </div>
       `;
 
-      const tableDrop = $('rummiTableDrop');
-      tableDrop?.addEventListener('dragover', (e) => { e.preventDefault(); tableDrop.classList.add('drag-over'); });
-      tableDrop?.addEventListener('dragleave', () => tableDrop.classList.remove('drag-over'));
-      tableDrop?.addEventListener('drop', (e) => {
-        e.preventDefault();
-        tableDrop.classList.remove('drag-over');
-        if (!myTurn) return;
-        const ids = selectedRummiTileIds.size >= 3 ? Array.from(selectedRummiTileIds) : (draggedRummiTileId ? [draggedRummiTileId] : []);
-        if (ids.length >= 3) {
-          if (state.isHost) handleRummiMeldNew(state.myId, ids);
-          else broadcast({ type: 'ACTION_RUMMI_MELD', playerId: state.myId, tileIds: ids });
-        }
-      });
-
-      vp.querySelectorAll('.rummi-hand-row .rummi-tile').forEach(el => {
-        el.addEventListener('click', () => {
-          const tid = el.dataset.tid;
-          if (selectedRummiTileIds.has(tid)) selectedRummiTileIds.delete(tid); else selectedRummiTileIds.add(tid);
-          renderGameViewport();
+      const tableEl = document.getElementById('rummiTable');
+      if (rk.tableSets.length === 0) tableEl.innerHTML = '<span style="color:#a7f3d0;font-size:0.85rem;">아직 테이블에 등록된 세트가 없습니다.</span>';
+      else {
+        rk.tableSets.forEach((setArr, sIdx) => {
+          const setDiv = document.createElement('div');
+          setDiv.className = 'rummi-set';
+          setArr.forEach(t => {
+            const td = document.createElement('div');
+            td.className = `tile ${t.color}`;
+            td.textContent = t.isJoker ? '🃏' : t.num;
+            setDiv.appendChild(td);
+          });
+          setDiv.onclick = () => {
+            if (!isMyTurn) return;
+            if (!rk.initialMelded[state.myId]) { addLog('⚠️ 첫 등록(30점 이상)을 먼저 완료하세요!'); return; }
+            handleRummiAppendToSet(state.myId, sIdx, [...rk.selectedTileIds]);
+            renderAll();
+          };
+          tableEl.appendChild(setDiv);
         });
-        el.addEventListener('dragstart', () => {
-          draggedRummiTileId = el.dataset.tid;
-          selectedRummiTileIds.add(draggedRummiTileId);
-        });
+      }
+
+      const handEl = document.getElementById('rummiHand');
+      myHand.sort((a, b) => a.color.localeCompare(b.color) || a.num - b.num).forEach(t => {
+        const td = document.createElement('div');
+        td.className = `tile ${t.color} ${rk.selectedTileIds.has(t.id) ? 'selected' : ''}`;
+        td.textContent = t.isJoker ? '🃏' : t.num;
+        td.onclick = () => {
+          if (rk.selectedTileIds.has(t.id)) rk.selectedTileIds.delete(t.id);
+          else rk.selectedTileIds.add(t.id);
+          renderStage();
+        };
+        handEl.appendChild(td);
       });
 
-      vp.querySelectorAll('.rummi-set-group').forEach(grp => {
-        grp.addEventListener('dragover', (e) => e.preventDefault());
-        grp.addEventListener('drop', (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          if (!myTurn) return;
-          const ids = selectedRummiTileIds.size ? Array.from(selectedRummiTileIds) : (draggedRummiTileId ? [draggedRummiTileId] : []);
-          if (!ids.length) return;
-          const sIdx = Number(grp.dataset.sidx);
-          if (state.isHost) handleRummiAppendToSet(state.myId, sIdx, ids);
-          else broadcast({ type: 'ACTION_RUMMI_APPEND', playerId: state.myId, setIdx: sIdx, tileIds: ids });
-        });
-        grp.addEventListener('click', () => {
-          const ids = Array.from(selectedRummiTileIds);
-          if (!ids.length) return;
-          const sIdx = Number(grp.dataset.sidx);
-          if (state.isHost) handleRummiAppendToSet(state.myId, sIdx, ids);
-          else broadcast({ type: 'ACTION_RUMMI_APPEND', playerId: state.myId, setIdx: sIdx, tileIds: ids });
-        });
-      });
-
-      $('btnRummiMeld')?.addEventListener('click', () => {
-        const ids = Array.from(selectedRummiTileIds);
-        if (state.isHost) handleRummiMeldNew(state.myId, ids);
-        else broadcast({ type: 'ACTION_RUMMI_MELD', playerId: state.myId, tileIds: ids });
-      });
-      $('btnRummiReset')?.addEventListener('click', () => { if (state.isHost) handleRummiResetTurn(state.myId); else broadcast({ type: 'ACTION_RUMMI_RESET', playerId: state.myId }); });
-      $('btnRummiDone')?.addEventListener('click', () => { if (state.isHost) handleRummiEndTurn(state.myId, false); else broadcast({ type: 'ACTION_RUMMI_END', playerId: state.myId, drawTile: false }); });
-      $('btnRummiDraw')?.addEventListener('click', () => { if (state.isHost) handleRummiEndTurn(state.myId, true); else broadcast({ type: 'ACTION_RUMMI_END', playerId: state.myId, drawTile: true }); });
-
-    } else if (state.mode === 'wordchain') {
-      vp.innerHTML = hudHtml + `
-        <p>마지막 단어: <strong style="font-size:1.25rem; color:#38bdf8;">${state.wordchain.lastWord}</strong> (다음 글자: <strong style="color:#4ade80;">'${state.wordchain.lastWord.slice(-1)}'</strong>)</p>
-        <div class="row"><input id="wcInput" type="text" placeholder="단어 입력..." ${myTurn ? '' : 'disabled'} /><button id="wcSubmit" class="btn-primary" ${myTurn ? '' : 'disabled'}>제출</button></div>
-      `;
-      const go = () => { const v = $('wcInput').value; $('wcInput').value = ''; if (state.isHost) handleWordchainSubmit(state.myId, v); else broadcast({ type: 'ACTION_WORDCHAIN', playerId: state.myId, word: v }); };
-      $('wcSubmit')?.addEventListener('click', go); $('wcInput')?.addEventListener('keydown', e => { if (e.key === 'Enter') go(); });
-
-    } else if (state.mode === 'hunmin') {
-      vp.innerHTML = hudHtml + `
-        <p>출제 초성: <strong style="font-size:1.5rem; color:#facc15; letter-spacing:4px;">${state.hunmin.prompt}</strong></p>
-        <div class="row"><input id="hmInput" type="text" maxlength="2" placeholder="2글자 단어" ${myTurn ? '' : 'disabled'} /><button id="hmSubmit" class="btn-green" ${myTurn ? '' : 'disabled'}>제출</button></div>
-      `;
-      const go = () => { const v = $('hmInput').value; $('hmInput').value = ''; if (state.isHost) handleHunminSubmit(state.myId, v); else broadcast({ type: 'ACTION_HUNMIN', playerId: state.myId, word: v }); };
-      $('hmSubmit')?.addEventListener('click', go); $('hmInput')?.addEventListener('keydown', e => { if (e.key === 'Enter') go(); });
-
-    } else if (state.mode === 'catchmind') {
-      const isDrawer = state.catchmind.drawerId === state.myId;
-      const colors = ['#0f172a','#ef4444','#f97316','#eab308','#22c55e','#3b82f6','#a855f7'];
-      vp.innerHTML = hudHtml + `
-        <div class="row" style="justify-content:space-between; margin-bottom:8px;">
-          <div>출제자: <strong>${getPlayerName(state.catchmind.drawerId)}</strong> · ${isDrawer ? `제시어: <strong style="color:#4ade80;">[${state.catchmind.prompt.cat}] ${state.catchmind.prompt.word}</strong>` : `힌트: [${state.catchmind.prompt.cat}] (${state.catchmind.prompt.word.length}글자)`}</div>
-          ${(isDrawer || state.isHost) ? `<button id="btnCmPass" class="btn-ghost" style="padding:5px 10px; font-size:0.8rem;">⏭️ 패스</button>` : ''}
-        </div>
-        ${isDrawer ? `<div class="palette-row">${colors.map(c => `<button class="swatch ${!brush.eraser && brush.color === c ? 'selected' : ''}" data-color="${c}" style="background:${c};"></button>`).join('')}<button id="btnEraser" class="btn-ghost" style="padding:5px 9px;">🧽 지우개</button><button id="btnClearCanvas" class="btn-danger" style="padding:5px 9px;">🗑️ 지우기</button></div>` : ''}
-        <canvas id="catchCanvas" class="draw-canvas" width="640" height="310"></canvas>
-      `;
-      bindCatchmindEvents(isDrawer); redrawCatchmindCanvas();
-      $('btnCmPass')?.addEventListener('click', () => { if (state.isHost) advanceTurn(); else broadcast({ type: 'ACTION_CATCHMIND_PASS' }); });
-
-    } else if (state.mode === 'cardflip') {
-      const cf = state.cardflip, sz = cf.size || 4;
-      vp.innerHTML = hudHtml + `
-        <div class="row" style="justify-content:space-between; margin-bottom:8px;">
-          <span>판 크기: <strong>${sz}×${sz}</strong></span>
-          <div class="row">${[4, 8, 16].map(n => `<button class="btn-size-pick ${sz === n ? 'btn-primary' : 'btn-ghost'}" data-sz="${n}" style="padding:5px 10px;">${n}×${n}</button>`).join('')}</div>
-        </div>
-        <div class="card-flip-board size-${sz}">
-          ${cf.cards.map((c, idx) => {
-            const open = cf.flipped.includes(idx) || cf.matched.includes(idx);
-            return `<button class="flip-btn ${open ? 'revealed' : ''}" data-idx="${idx}" ${!myTurn || open ? 'disabled' : ''}>${open ? c.icon : '❓'}</button>`;
-          }).join('')}
-        </div>
-      `;
-      vp.querySelectorAll('.btn-size-pick').forEach(b => b.addEventListener('click', () => handleCardFlipSizeChange(state.myId, b.dataset.sz)));
-      vp.querySelectorAll('.flip-btn').forEach(b => b.addEventListener('click', () => {
-        const i = Number(b.dataset.idx);
-        if (state.isHost) handleCardFlip(state.myId, i); else broadcast({ type: 'ACTION_CARDFLIP', playerId: state.myId, index: i });
-      }));
-
-    } else if (state.mode === 'emojiquiz' || state.mode === 'chosung' || state.mode === 'wordassoc' || state.mode === 'proverb') {
-      let body = '';
-      if (state.mode === 'emojiquiz') { const it = EMOJI_POOL[state.emojiquiz.index]; body = `<div style="font-size:2.2rem;">${it.e}</div><p>힌트: ${it.hint}</p>`; }
-      if (state.mode === 'chosung') { const it = CHOSUNG_POOL[state.chosung.index]; body = `<div style="font-size:2rem; letter-spacing:6px; color:#38bdf8; font-weight:800;">${it.q}</div><p>힌트: ${it.hint}</p>`; }
-      if (state.mode === 'wordassoc') { const it = WORDASSOC_POOL[state.wordassoc.index]; body = `<p>${it.clues.map(c => `<span class="nunchi-badge">#${c}</span>`).join('')}</p>`; }
-      if (state.mode === 'proverb') { const it = PROVERB_POOL[state.proverb.index]; body = `<div style="font-size:1.25rem; font-weight:700; color:#7dd3fc;">"${it.prompt}"</div>`; }
-      vp.innerHTML = hudHtml + body + `<p style="color:#fde047;"><strong>아래 채팅창에 정답을 입력하세요!</strong></p>`;
-
-    } else if (state.mode === 'liar') {
-      const isLiar = state.liar.liarId === state.myId;
-      vp.innerHTML = hudHtml + `
-        <p>카테고리: <strong>[${state.liar.topic.cat}]</strong> · ${isLiar ? '<span style="color:#f87171;">당신은 라이어입니다!</span>' : `제시어: <strong style="color:#4ade80;">${state.liar.topic.word}</strong>`}</p>
-        <div class="row"><input id="liarHintInput" type="text" placeholder="힌트 입력..." ${myTurn ? '' : 'disabled'} /><button id="btnLiarHint" class="btn-primary" ${myTurn ? '' : 'disabled'}>발언</button></div>
-        <div class="row" style="margin-top:8px;">
-          <select id="liarVoteSelect">${state.players.map(p => `<option value="${p.id}">${p.char || '👤'} ${p.name}</option>`).join('')}</select>
-          <button id="btnLiarVote" class="btn-amber">🗳️ 투표</button>
-        </div>
-      `;
-      $('btnLiarHint')?.addEventListener('click', () => {
-        const h = $('liarHintInput').value.trim(); if (!h) return;
-        if (state.isHost) { state.liar.hints[state.myId] = h; advanceTurn(); } else broadcast({ type: 'ACTION_LIAR_HINT', playerId: state.myId, hint: h });
-      });
-      $('btnLiarVote')?.addEventListener('click', () => {
-        const t = $('liarVoteSelect').value;
-        if (state.isHost) { state.liar.votes[state.myId] = t; if (Object.keys(state.liar.votes).length >= state.players.length) resolveLiarVote(); }
-        else broadcast({ type: 'ACTION_LIAR_VOTE', playerId: state.myId, targetId: t });
-      });
-
-    } else if (state.mode === 'island') {
-      const isl = state.island;
-      vp.innerHTML = hudHtml + `
-        <div class="island-stats">
-          <div class="stat-box">🪵 통나무<strong>${isl.wood}</strong></div>
-          <div class="stat-box">🐟 물고기<strong>${isl.fish}</strong></div>
-          <div class="stat-box">🥥 코코넛<strong>${isl.coconut}</strong></div>
-          <div class="stat-box">💰 공용 자금<strong>${state.sharedMoney.toLocaleString()}원</strong></div>
-        </div>
-        <div class="row">
-          <button id="btnGatherWood" class="btn-amber">🪓 통나무 채집 (+1)</button>
-          <button id="btnGatherFish" class="btn-primary">🎣 물고기 낚기 (+1)</button>
-          <button id="btnGatherCoco" class="btn-green">🌴 코코넛 수확 (+1)</button>
-          <button id="btnSellIsland" class="btn-purple">💵 자원 판매</button>
-        </div>
-      `;
-      $('btnGatherWood').onclick = () => applyIslandGather(state.myId, 'wood', 1, '통나무 채집');
-      $('btnGatherFish').onclick = () => applyIslandGather(state.myId, 'fish', 1, '물고기 낚시');
-      $('btnGatherCoco').onclick = () => applyIslandGather(state.myId, 'coconut', 1, '코코넛 수확');
-      $('btnSellIsland').onclick = () => applyIslandSell(state.myId);
-
-    } else if (state.mode === 'gostop') {
-      const gs = state.gostop;
-      const myHand = gs.hands[state.myId] || [];
-      const myCap = gs.captured[state.myId] || [];
-      vp.innerHTML = hudHtml + `
-        <div class="row" style="justify-content:space-between; margin-bottom:8px;">
-          <span>판돈: <strong>${gs.stake.toLocaleString()}원</strong> · ${gs.goCount}고</span>
-          <div class="row">
-            <button id="btnShake" class="btn-amber" style="padding:5px 10px;">🌪️ 흔들기</button>
-            <button id="btnGo" class="btn-green" style="padding:5px 10px;">GO</button>
-            <button id="btnStop" class="btn-danger" style="padding:5px 10px;">STOP</button>
-          </div>
-        </div>
-        <div class="gostop-felt-board">
-          <div style="font-size:0.82rem; color:#bbf7d0; margin-bottom:6px;">🟢 바닥패 (${gs.floor.length}장) · 남은 더미 ${gs.stock.length}장</div>
-          <div class="hwatu-row">${gs.floor.map(c => `<div class="hwatu-svg-card floor-card">${renderHwatuArtSvg(c)}<div class="hwatu-footer"><span>${c.name}</span><span>${c.type}</span></div></div>`).join('')}</div>
-        </div>
-        <div style="font-size:0.85rem; margin-bottom:6px;">내 손패 (클릭해서 내기):</div>
-        <div class="hwatu-row">${myHand.map(c => `<div class="hwatu-svg-card" data-cid="${c.id}">${renderHwatuArtSvg(c)}<div class="hwatu-footer"><span>${c.name}</span><span>${c.type}</span></div></div>`).join('')}</div>
-        <div style="font-size:0.82rem; color:var(--muted); margin-top:8px;">획득 패 (${myCap.length}장):</div>
-        <div class="captured-mini-row">${myCap.map(c => `<div class="captured-mini-card">${renderHwatuArtSvg(c)}<span>${c.id}</span></div>`).join('')}</div>
-      `;
-      $('btnShake')?.addEventListener('click', () => handleGostopShake(state.myId));
-      $('btnGo')?.addEventListener('click', () => handleGostopGoStop(state.myId, 'GO'));
-      $('btnStop')?.addEventListener('click', () => handleGostopGoStop(state.myId, 'STOP'));
-      vp.querySelectorAll('.hwatu-svg-card[data-cid]').forEach(el => el.addEventListener('click', () => handleGostopPlay(state.myId, el.dataset.cid)));
-    }
-
-    $('btnNextTurn')?.addEventListener('click', () => advanceTurn(`⏭️ 방장이 턴을 넘겼습니다.`));
-  }
-
-  function bindCatchmindEvents(isDrawer) {
-    const canvas = $('catchCanvas');
-    if (!canvas) return;
-    document.querySelectorAll('.swatch').forEach(b => b.onclick = () => { brush.eraser = false; brush.color = b.dataset.color; renderGameViewport(); });
-    $('btnEraser')?.addEventListener('click', () => { brush.eraser = !brush.eraser; renderGameViewport(); });
-    $('btnClearCanvas')?.addEventListener('click', () => { state.catchmind.strokes = []; redrawCatchmindCanvas(); broadcast({ type: 'CLEAR_CANVAS' }); });
-    if (!isDrawer) return;
-    const getPos = (e) => { const r = canvas.getBoundingClientRect(); return { x: (e.clientX - r.left) * (canvas.width / r.width), y: (e.clientY - r.top) * (canvas.height / r.height) }; };
-    canvas.onpointerdown = (e) => { brush.drawing = true; brush.currentStroke = { color: brush.eraser ? '#ffffff' : brush.color, width: brush.eraser ? 12 : 4, points: [getPos(e)] }; };
-    canvas.onpointermove = (e) => {
-      if (!brush.drawing || !brush.currentStroke) return;
-      const pt = getPos(e), prev = brush.currentStroke.points[brush.currentStroke.points.length - 1];
-      brush.currentStroke.points.push(pt);
-      drawSegment(canvas.getContext('2d'), prev, pt, brush.currentStroke.color, brush.currentStroke.width);
-      broadcast({ type: 'DRAW_SEGMENT_LIVE', a: prev, b: pt, color: brush.currentStroke.color, width: brush.currentStroke.width });
-    };
-    const finish = () => { if (!brush.drawing || !brush.currentStroke) return; brush.drawing = false; state.catchmind.strokes.push(brush.currentStroke); broadcast({ type: 'DRAW_STROKE', stroke: brush.currentStroke }); brush.currentStroke = null; };
-    canvas.onpointerup = finish; canvas.onpointerleave = finish;
-  }
-
-  function drawSegment(ctx, a, b, color, width) {
-    ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = width; ctx.lineCap = 'round';
-    ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); ctx.restore();
-  }
-  function appendStrokeToCanvas(st) {
-    const c = $('catchCanvas'); if (!c || !st?.points?.length) return;
-    const ctx = c.getContext('2d');
-    for (let i = 1; i < st.points.length; i++) drawSegment(ctx, st.points[i - 1], st.points[i], st.color, st.width);
-  }
-  function redrawCatchmindCanvas() {
-    const c = $('catchCanvas'); if (!c) return;
-    const ctx = c.getContext('2d'); ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, c.width, c.height);
-    state.catchmind.strokes.forEach(appendStrokeToCanvas);
-  }
-
-  function renderAll() {
-    const inRoom = Boolean(state.roomCode) || state.soloIsland;
-    $('lobbyScreen').classList.toggle('hidden', inRoom);
-    $('roomScreen').classList.toggle('hidden', !inRoom);
-
-    if (!inRoom) {
-      renderLobby();
+      document.getElementById('btnRummiMeld').onclick = () => {
+        if (!isMyTurn) return;
+        if (!rk.initialMelded[state.myId] && previewEval.points < 30) { addLog('⚠️ 첫 등록은 합계 30점 이상이어야 합니다!'); return; }
+        if (handleRummiMeldNew(state.myId, [...rk.selectedTileIds])) { rk.initialMelded[state.myId] = true; renderAll(); }
+      };
+      document.getElementById('btnRummiEnd').onclick = () => { if (isMyTurn) handleRummiEndTurn(state.myId, !rk.playedThisTurn); };
       return;
     }
 
-    $('activeRoomCode').textContent = state.roomCode || '-';
-    $('hostBadge').textContent = state.soloIsland ? '🏝️ 솔로 모드' : state.isHost ? '👑 방장' : '👥 참여자';
-    renderModeGrid();
-    renderPlayers();
-    renderGameViewport();
-    renderLogs();
+    if (state.mode === 'catchmind') {
+      const cm = state.catchmind, isDrawer = cm.drawerId === state.myId;
+      const drawerName = state.players.find(p => p.id === cm.drawerId)?.name || '출제자';
+      body.innerHTML = `
+        <div class="arcade-hud">
+          <span>출제자: <b>${drawerName}</b> | 카테고리: <b style="color:#38bdf8;">${cm.prompt.cat}</b></span>
+          <span>${isDrawer ? `제시어: <b style="color:#fbbf24;font-size:1.05rem;">${cm.prompt.word}</b>` : `글자 수: <b>${cm.prompt.word.length}글자</b>`}</span>
+        </div>
+        <canvas id="catchCanvas" class="game-canvas" width="560" height="350" style="background:#ffffff;"></canvas>
+      `;
+      const canvas = document.getElementById('catchCanvas'), ctx = canvas.getContext('2d');
+      let drawing = false;
+      canvas.addEventListener('pointerdown', (e) => {
+        if (!isDrawer) return;
+        drawing = true; const r = canvas.getBoundingClientRect();
+        ctx.beginPath(); ctx.moveTo((e.clientX - r.left) * (canvas.width / r.width), (e.clientY - r.top) * (canvas.height / r.height));
+      });
+      canvas.addEventListener('pointermove', (e) => {
+        if (!drawing || !isDrawer) return;
+        const r = canvas.getBoundingClientRect();
+        ctx.strokeStyle = '#0f172a'; ctx.lineWidth = 4; ctx.lineCap = 'round';
+        ctx.lineTo((e.clientX - r.left) * (canvas.width / r.width), (e.clientY - r.top) * (canvas.height / r.height));
+        ctx.stroke();
+      });
+      window.addEventListener('pointerup', () => { drawing = false; });
+      return;
+    }
+
+    if (state.mode === 'wordchain' || state.mode === 'hunmin') {
+      const curTurn = getCurrentTurnPlayer(), isChain = state.mode === 'wordchain';
+      body.innerHTML = `
+        <div class="quiz-box">
+          <div class="quiz-tag">현재 차례: ${curTurn?.char} ${curTurn?.name}</div>
+          <div class="quiz-main">${isChain ? `제시 단어: 「${state.wordchain.lastWord}」` : `제시 초성: [ ${state.hunmin.targetChosung} ]`}</div>
+          <div class="quiz-sub">${isChain ? `'${state.wordchain.lastWord.slice(-1)}'(으)로 시작하는 2글자 이상 단어를 입력하세요!` : `초성 [${state.hunmin.targetChosung}]에 맞는 단어를 입력하세요!`}</div>
+        </div>
+      `;
+      return;
+    }
+
+    const poolMap = { chosung: CHOSUNG_POOL, fourchar: FOURCHAR_POOL, emojiquiz: EMOJI_POOL, wordassoc: WORDASSOC_POOL, proverb: PROVERB_POOL };
+    const curObj = state[state.mode], item = poolMap[state.mode][curObj.index];
+    body.innerHTML = `
+      <div class="quiz-box">
+        <div class="quiz-tag">${modeNames[state.mode]} · ${(item.diff || 'normal').toUpperCase()}</div>
+        <div class="quiz-main">${item.q}</div>
+        <div class="quiz-sub">💡 힌트: ${item.hint || `${item.a.length}글자`}</div>
+        ${curObj.solved ? `<div style="color:#34d399;font-weight:800;font-size:1.2rem;">🎉 정답: 「${item.a}」</div>` : ''}
+      </div>
+    `;
   }
 
-  setInterval(() => {
-    if (!state.activeGame) return;
-    const limit = getTurnSecondsForCurrentState();
-    if (limit === 0 || !state.isHost) return;
-    state.timeLeft = Math.max(0, state.timeLeft - 1);
-    updateTimerPillUI();
-    broadcast({ type: 'TIMER_TICK', timeLeft: state.timeLeft });
-    if (state.timeLeft === 0) advanceTurn('⏰ 시간 초과!');
-  }, 1000);
-
-  /* ================= 이벤트 바인딩 ================= */
-  $('nickInput').addEventListener('input', () => applyMyProfile(false));
-  $('btnCreateRoom').addEventListener('click', () => {
-    const code = Math.random().toString(36).substring(2, 8).toUpperCase();
-    setupPeerAsHost(code);
-  });
-  $('btnJoinRoom').addEventListener('click', () => {
-    const code = ($('roomCodeInput').value || '').trim().toUpperCase();
-    if (!code) { alert('참여할 방 코드를 입력하세요.'); return; }
-    setupPeerAsGuest(code);
-  });
-  $('btnSoloQuick').addEventListener('click', enterQuickBotRoom);
-  $('btnSoloIsland').addEventListener('click', enterSoloIsland);
-
-  $('btnLeaveRoom').addEventListener('click', () => {
-    stopHelloRetry();
-    if (peer) { try { peer.destroy(); } catch {} peer = null; }
-    conns.clear();
-    state.roomCode = '';
-    state.soloIsland = false;
-    state.activeGame = false;
-    setConnStatus('', '로비 대기 중');
+  /* 이벤트 리스너 */
+  document.getElementById('btnShopTab').onclick = () => {
+    state.shopOpen = !state.shopOpen;
     renderAll();
-  });
-
-  $('btnForceSync').addEventListener('click', () => {
-    if (state.isHost) {
-      syncStateToPeers();
-      addLog('🔄 방장이 모든 참여자에게 최신 상태를 전송했습니다.');
-    } else {
-      broadcast({ type: 'HELLO', playerId: state.myId, playerName: state.myName, char: state.myChar });
-      broadcast({ type: 'REQUEST_SYNC', playerId: state.myId });
-      addLog('🔄 방장에게 최신 화면 동기화를 요청했습니다.');
+    if (!state.shopOpen) {
+      if (state.mode === 'stairs' && state.stairs.running) startStairsLoop();
+      if (state.mode === 'dodge' && state.dodge.running) startDodgeLoop();
+    }
+  };
+  document.getElementById('btnSound').onclick = (e) => {
+    SoundFX.enabled = !SoundFX.enabled;
+    e.target.textContent = SoundFX.enabled ? '🔊 효과음 ON' : '🔇 효과음 OFF';
+    if (SoundFX.enabled) SoundFX.item();
+  };
+  document.getElementById('btnResetHof').onclick = () => { hallOfFame = { maxStairs: 0, maxDodgeSec: 0, totalWins: 0 }; saveHof(); addLog('🗑️ 명예의 전당 기록 초기화 완료', 'sys'); };
+  document.getElementById('btnRouletteOpen').onclick = () => openCeremonyModal(null);
+  document.getElementById('btnSpinRoulette').onclick = spinRoulette;
+  document.getElementById('btnAddPenalty').onclick = () => {
+    const inp = document.getElementById('penaltyInput'), val = inp.value.trim();
+    if (!val) return;
+    state.penalties.push(val); inp.value = ''; drawRouletteWheel();
+  };
+  document.getElementById('btnCloseModal').onclick = () => document.getElementById('ceremonyModal').classList.remove('open');
+  document.getElementById('btnNewMatch').onclick = () => {
+    state.players.forEach(p => { p.score = 0; }); state.ceremonyShown = false;
+    document.getElementById('ceremonyModal').classList.remove('open');
+    renderPlayers(); startGame();
+  };
+  document.getElementById('btnStart').onclick = startGame;
+  document.getElementById('btnNext').onclick = () => {
+    if (!state.activeGame || state.mode === 'stairs' || state.mode === 'dodge') return startGame();
+    revealTimeoutAnswer(); advanceTurn('⏭ 다음 문제로 건너뛰었습니다.');
+  };
+  document.getElementById('btnAddBot').onclick = () => {
+    const botProfiles = [{ name: '럭키봇', char: '🍀' }, { name: '스피드봇', char: '⚡' }, { name: '퀴즈왕봇', char: '👑' }];
+    const pick = botProfiles[state.players.length % botProfiles.length];
+    state.players.push({ id: `bot_${Date.now()}`, name: pick.name, char: pick.char, isBot: true, score: 0 });
+    addLog(`🤖 ${pick.char} ${pick.name} 참가!`, 'sys'); renderPlayers();
+  };
+  document.getElementById('chatForm').onsubmit = (e) => {
+    e.preventDefault();
+    const input = document.getElementById('chatInput'), val = input.value.trim();
+    if (!val) return;
+    input.value = '';
+    const me = state.players.find(p => p.id === state.myId), label = `${me.char} ${me.name}`;
+    addLog(`[${label}] ${val}`); evaluateChatAnswer(state.myId, label, val);
+  };
+  window.addEventListener('keydown', (e) => {
+    state.dodge.keys[e.key] = true;
+    if (!state.shopOpen && state.mode === 'stairs' && state.stairs.running && document.activeElement.id !== 'chatInput') {
+      if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') { e.preventDefault(); stepStairs(false); }
+      if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') { e.preventDefault(); stepStairs(true); }
     }
   });
+  window.addEventListener('keyup', (e) => { state.dodge.keys[e.key] = false; });
 
-  $('btnToggleModeDrawer').addEventListener('click', () => {
-    state.modeDrawerOpen = !state.modeDrawerOpen;
-    renderModeGrid();
-  });
-
-  $('btnCopyRoom').addEventListener('click', () => {
-    if (!state.roomCode) return;
-    navigator.clipboard?.writeText(state.roomCode).catch(() => {});
-    addLog(`📋 방 코드 [${state.roomCode}] 복사 완료!`);
-  });
-
-  $('btnAddBot').addEventListener('click', () => {
-    if (!state.isHost) return;
-    const idx = state.players.filter(p => p.isBot).length + 1;
-    ensurePlayer('bot_' + Date.now() + '_' + idx, `봇_${idx}호`, true, '🤖');
-    addLog(`🤖 AI 봇 [봇_${idx}호] 추가됨`);
-    syncStateToPeers();
-    renderAll();
-  });
-
-  $('btnStartGame').addEventListener('click', startGame);
-
-  const sendChat = () => {
-    const txt = ($('chatInput').value || '').trim();
-    if (!txt) return;
-    $('chatInput').value = '';
-    const senderLabel = `${state.myChar} ${state.myName}`;
-    addLog(`[${senderLabel}] ${txt}`);
-    broadcast({ type: 'CHAT', senderId: state.myId, sender: senderLabel, text: txt });
-    if (state.isHost && state.activeGame) evaluateChatAnswer(state.myId, senderLabel, txt);
-  };
-  $('btnSendChat').addEventListener('click', sendChat);
-  $('chatInput').addEventListener('keydown', e => { if (e.key === 'Enter') sendChat(); });
-
-  $('btnOpenRanking').addEventListener('click', () => {
-    const sorted = [...state.players].sort((a, b) => (state.scores[b.id] || 0) - (state.scores[a.id] || 0));
-    $('rankingBody').innerHTML = sorted.map((p, idx) =>
-      `<div style="padding:8px 10px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between;">
-        <span><strong>#${idx + 1}</strong> ${p.char || '👤'} ${p.name}</span>
-        <strong style="color:#4ade80;">${state.scores[p.id] || 0}점</strong>
-      </div>`
-    ).join('');
-    $('rankingModal').classList.add('open');
-  });
-  $('btnCloseRanking').addEventListener('click', () => $('rankingModal').classList.remove('open'));
-
-  ensurePlayer(state.myId, state.myName, false, state.myChar);
   renderAll();
 })();
 </script>
