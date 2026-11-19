@@ -29,7 +29,7 @@
     padding: 16px;
   }
   .app {
-    max-width: 1120px;
+    max-width: 1140px;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
@@ -122,7 +122,7 @@
 
   .mode-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     gap: 8px;
     margin-top: 10px;
   }
@@ -220,15 +220,8 @@
     padding: 10px;
     z-index: 2;
   }
-  .liar-center-table small {
-    font-size: 0.72rem;
-    color: var(--muted);
-  }
-  .liar-center-table strong {
-    font-size: 0.95rem;
-    color: #38bdf8;
-    margin-top: 3px;
-  }
+  .liar-center-table small { font-size: 0.72rem; color: var(--muted); }
+  .liar-center-table strong { font-size: 0.95rem; color: #38bdf8; margin-top: 3px; }
   .liar-seat {
     position: absolute;
     transform: translate(-50%, -50%);
@@ -247,19 +240,13 @@
     background: #2f2306;
     box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.28);
   }
-  .liar-seat.votable {
-    cursor: pointer;
-    border-color: #38bdf8;
-  }
+  .liar-seat.votable { cursor: pointer; border-color: #38bdf8; }
   .liar-seat.selected-vote {
     border-color: #f97316;
     background: #3b1708;
     box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.35);
   }
-  .liar-chair-icon {
-    font-size: 1.05rem;
-    line-height: 1.1;
-  }
+  .liar-chair-icon { font-size: 1.05rem; line-height: 1.1; }
   .liar-seat-name {
     font-weight: 700;
     margin-top: 2px;
@@ -397,6 +384,51 @@
   }
   .coconut-slot small { font-size: 0.72rem; color: var(--muted); margin-top: 2px; }
 
+  .opponents-gostop-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .opponent-gostop-box {
+    background: rgba(15, 23, 42, 0.88);
+    border: 1px solid #475569;
+    border-radius: 12px;
+    padding: 10px 12px;
+  }
+  .opponent-gostop-box.active-turn {
+    border-color: #facc15;
+    box-shadow: 0 0 0 1px #facc15;
+  }
+  .opponent-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.84rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .face-down-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 6px;
+  }
+  .hwatu-back-card {
+    width: 24px;
+    height: 36px;
+    border-radius: 5px;
+    background: repeating-linear-gradient(
+      45deg,
+      #991b1b,
+      #991b1b 4px,
+      #7f1d1d 4px,
+      #7f1d1d 8px
+    );
+    border: 1.5px solid #fca5a5;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+  }
+
   .gostop-felt-board {
     background: radial-gradient(circle at center, #14532d 0%, #052e16 100%);
     border: 2px solid #22c55e;
@@ -467,9 +499,7 @@
     display: block;
     border-radius: 8px;
   }
-  .hwatu-svg-card.floor-card svg {
-    height: 100px;
-  }
+  .hwatu-svg-card.floor-card svg { height: 100px; }
   .hwatu-footer {
     margin-top: 4px;
     display: flex;
@@ -494,29 +524,29 @@
   .captured-mini-row {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
-    margin-top: 6px;
+    gap: 5px;
+    margin-top: 4px;
   }
   .captured-mini-card {
-    width: 58px;
+    width: 48px;
     background: #fffbeb;
     border: 1.5px solid #78350f;
-    border-radius: 8px;
-    padding: 3px;
+    border-radius: 7px;
+    padding: 2px;
     text-align: center;
   }
   .captured-mini-card svg {
     width: 100%;
-    height: 68px;
+    height: 56px;
     display: block;
-    border-radius: 5px;
+    border-radius: 4px;
   }
   .captured-mini-card span {
     display: block;
-    font-size: 0.65rem;
+    font-size: 0.6rem;
     font-weight: 700;
     color: #1e293b;
-    margin-top: 2px;
+    margin-top: 1px;
   }
 
   .card-flip-board {
@@ -550,19 +580,24 @@
     align-items: center;
     justify-content: center;
   }
-  .card-flip-board.size-8 .flip-btn {
-    height: 44px;
-    font-size: 1.05rem;
-    border-radius: 6px;
-  }
-  .card-flip-board.size-16 .flip-btn {
-    height: 30px;
-    font-size: 0.78rem;
-    border-radius: 4px;
-    padding: 0;
-  }
+  .card-flip-board.size-8 .flip-btn { height: 44px; font-size: 1.05rem; border-radius: 6px; }
+  .card-flip-board.size-16 .flip-btn { height: 30px; font-size: 0.78rem; border-radius: 4px; padding: 0; }
   .flip-btn.revealed { background: #0f172a; border-color: #22c55e; }
   .flip-btn.matched { background: #052e16; border-color: #4ade80; opacity: 0.85; }
+
+  .nunchi-board {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 12px 0;
+  }
+  .nunchi-badge {
+    padding: 8px 14px;
+    border-radius: 12px;
+    background: #0b1120;
+    border: 1px solid #38bdf8;
+    font-weight: 700;
+  }
 
   .modal-backdrop {
     position: fixed;
@@ -591,7 +626,7 @@
   <header class="topbar">
     <div class="brand">
       <h1>🎮 KCM 파티 아케이드</h1>
-      <p>9가지 미니게임 · 무인도 3종 미니스테이지 · 더미 뒤집기 SVG 고스톱</p>
+      <p>12가지 미니게임 · 대확장 랜덤 퀴즈 풀 · 상대패 공개 SVG 고스톱</p>
     </div>
     <div class="conn-badge">
       <span id="connDot" class="dot"></span>
@@ -684,32 +719,50 @@
       emojiquiz: 15,
       liar: 25,
       chosung: 15,
+      nunchi: 15,
+      wordassoc: 18,
+      proverb: 18,
       island: 40,
       gostop: 25
     },
-    cardFlipSeconds: {
-      4: 35,
-      8: 65,
-      16: 120
-    },
-    marketPrices: {
-      wood: 250,
-      fish: 400,
-      coconut: 350
-    }
+    cardFlipSeconds: { 4: 35, 8: 65, 16: 120 },
+    marketPrices: { wood: 250, fish: 400, coconut: 350 }
   };
 
   const MODES = [
     { id: 'wordchain', name: '끝말잇기', desc: '턴제·타임어택 · 3콤보 보너스' },
-    { id: 'hunmin', name: '훈민정음', desc: '초성 2글자 턴제 · 타임어택' },
-    { id: 'catchmind', name: '캐치마인드', desc: '컬러 팔레트 · 선 연결 · 삡삡이/빱빱이' },
+    { id: 'hunmin', name: '훈민정음', desc: '초성 2글자 랜덤 · 타임어택' },
+    { id: 'catchmind', name: '캐치마인드', desc: '컬러 팔레트 · 선 연결 · 랜덤 제시어' },
     { id: 'cardflip', name: '같은 그림찾기', desc: '4×4 / 8×8 / 16×16 턴제·타임어택' },
-    { id: 'emojiquiz', name: '이모지 맞추기', desc: '이모지 조합 퀴즈 · 타임어택' },
-    { id: 'liar', name: '라이어 게임', desc: '둥근 의자 턴제 발언 · 추리 투표' },
-    { id: 'chosung', name: '초성 퀴즈 배틀', desc: '대확장 초성 문제 · 타임어택' },
-    { id: 'island', name: '무인도 생존', desc: '낚시/나무/코코넛 미니스테이지 · 판매·고스톱' },
-    { id: 'gostop', name: '고스톱 배틀', desc: '바닥패·더미뒤집기 · SVG 화투 · GO' }
+    { id: 'emojiquiz', name: '이모지 맞추기', desc: '24종+ 이모지 랜덤 퀴즈' },
+    { id: 'liar', name: '라이어 게임', desc: '둥근 의자 턴제 발언 · 랜덤 주제' },
+    { id: 'chosung', name: '초성 퀴즈 배틀', desc: '40종+ 초성 랜덤 퀴즈' },
+    { id: 'nunchi', name: '눈치게임', desc: '숫자 겹치면 벌점 · 순발력 대결' },
+    { id: 'wordassoc', name: '단어 연상 퀴즈', desc: '18종+ 연상 단서 랜덤 퀴즈' },
+    { id: 'proverb', name: '속담 완성 퀴즈', desc: '16종+ 속담 랜덤 완성 퀴즈' },
+    { id: 'island', name: '무인도 생존', desc: '낚시/나무/코코넛 스테이지 · 판매·고스톱' },
+    { id: 'gostop', name: '고스톱 배틀', desc: '상대패 공개 · 더미뒤집기 · SVG 화투' }
   ];
+
+  function pickRandomIndex(length, excludeIdx = -1) {
+    if (length <= 1) return 0;
+    let next = Math.floor(Math.random() * length);
+    if (next === excludeIdx) {
+      next = (next + 1 + Math.floor(Math.random() * (length - 1))) % length;
+    }
+    return next;
+  }
+
+  function pickRandomItem(arr, prevItem = null) {
+    if (!arr.length) return null;
+    if (arr.length === 1) return arr[0];
+    let candidate = arr[Math.floor(Math.random() * arr.length)];
+    if (prevItem && candidate === prevItem) {
+      const idx = arr.indexOf(prevItem);
+      candidate = arr[(idx + 1 + Math.floor(Math.random() * (arr.length - 1))) % arr.length];
+    }
+    return candidate;
+  }
 
   const CHOSUNG_LIST = ['ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
   function getChosung(str) {
@@ -748,13 +801,19 @@
       .sort(() => Math.random() - 0.5);
   }
 
-  const HUNMIN_PROMPTS = ['ㄱㅅ','ㅅㅋ','ㅂㅋ','ㅎㄹ','ㅁㅋ','ㅊㅋ','ㄴㅁ','ㅍㅈ','ㅇㄹ','ㅂㅅ','ㄷㄹ','ㄱㅁ','ㅅㄷ','ㅎㄱ','ㅋㅍ','ㅈㅁ','ㅌㅅ','ㅍㄹ','ㅇㅎ','ㅁㄷ'];
+  const HUNMIN_PROMPTS = [
+    'ㄱㅅ','ㅅㅋ','ㅂㅋ','ㅎㄹ','ㅁㅋ','ㅊㅋ','ㄴㅁ','ㅍㅈ','ㅇㄹ','ㅂㅅ','ㄷㄹ','ㄱㅁ',
+    'ㅅㄷ','ㅎㄱ','ㅋㅍ','ㅈㅁ','ㅌㅅ','ㅍㄹ','ㅇㅎ','ㅁㄷ','ㄱㅈ','ㅂㄷ','ㅅㄹ','ㅈㅎ',
+    'ㅊㄱ','ㅋㄹ','ㅌㅂ','ㅍㄷ','ㅎㅂ','ㅁㄹ'
+  ];
 
   const CATCHMIND_PROMPTS = [
     { cat: '고양이', word: '삡삡이' },
     { cat: '고양이', word: '빱빱이' },
     { cat: '고양이', word: '꾹꾹이' },
     { cat: '고양이', word: '캣타워' },
+    { cat: '고양이', word: '츄르' },
+    { cat: '고양이', word: '골골송' },
     { cat: '음식', word: '떡볶이' },
     { cat: '음식', word: '치킨' },
     { cat: '음식', word: '붕어빵' },
@@ -763,20 +822,28 @@
     { cat: '음식', word: '아이스크림' },
     { cat: '음식', word: '타코야끼' },
     { cat: '음식', word: '소금빵' },
+    { cat: '음식', word: '라면' },
+    { cat: '음식', word: '피자' },
     { cat: '동물', word: '펭귄' },
     { cat: '동물', word: '코끼리' },
     { cat: '동물', word: '문어' },
     { cat: '동물', word: '카피바라' },
     { cat: '동물', word: '기린' },
     { cat: '동물', word: '부엉이' },
+    { cat: '동물', word: '다람쥐' },
+    { cat: '동물', word: '고래' },
     { cat: '일상·장소', word: '캠핑' },
     { cat: '일상·장소', word: '놀이공원' },
     { cat: '일상·장소', word: '신호등' },
     { cat: '일상·장소', word: '우산' },
+    { cat: '일상·장소', word: '등대' },
+    { cat: '일상·장소', word: '지하철' },
     { cat: '행동·상황', word: '새치기' },
     { cat: '행동·상황', word: '줄다리기' },
     { cat: '행동·상황', word: '밤샘' },
-    { cat: '행동·상황', word: '재채기' }
+    { cat: '행동·상황', word: '재채기' },
+    { cat: '행동·상황', word: '하품' },
+    { cat: '행동·상황', word: '달리기' }
   ];
 
   const CHOSUNG_POOL = [
@@ -801,7 +868,25 @@
     { q: 'ㄱㅁㅈ', a: '고구마전', hint: '부침개' },
     { q: 'ㅅㅈㄱ', a: '설거지', hint: '식사 후 집안일' },
     { q: 'ㅎㄱㅇㅎ', a: '휴가여행', hint: '떠나는 설렘' },
-    { q: 'ㅍㅌㄱㅇ', a: '파티게임', hint: '여럿이 즐기는 놀이' }
+    { q: 'ㅍㅌㄱㅇ', a: '파티게임', hint: '여럿이 즐기는 놀이' },
+    { q: 'ㅂㅇㅂ', a: '비빔밥', hint: '고추장과 나물' },
+    { q: 'ㅅㄱㅇ', a: '수박화채', hint: '여름 디저트' },
+    { q: 'ㅇㅈㄱ', a: '야자수', hint: '해변 나무' },
+    { q: 'ㄱㅇㅅ', a: '가위손', hint: '손재주가 뛰어남' },
+    { q: 'ㄷㅅㄱ', a: '도서관', hint: '책 읽는 공간' },
+    { q: 'ㅂㄱㅇ', a: '번개맨', hint: '순식간에 나타나는 느낌' },
+    { q: 'ㅅㄹㄱ', a: '소라게', hint: '빈 껍데기를 쓰는 게' },
+    { q: 'ㅇㅎㅇ', a: '유튜브', hint: '동영상 플랫폼' },
+    { q: 'ㅈㅁㅅ', a: '자물쇠', hint: '열쇠로 여는 장치' },
+    { q: 'ㅊㅂㅅ', a: '초밥집', hint: '회와 밥의 조화' },
+    { q: 'ㅋㄹㅅㅁㅅ', a: '크리스마스', hint: '12월 25일' },
+    { q: 'ㅌㄴㄹ', a: '터널링', hint: '지하 통로 굴착' },
+    { q: 'ㅍㄷㅂ', a: '파도타기', hint: '서핑/응원 동작' },
+    { q: 'ㅎㅂㄹ', a: '해바라기', hint: '해를 바라보는 꽃' },
+    { q: 'ㄱㄹㅁ', a: '그림판', hint: '낙서와 그림 도구' },
+    { q: 'ㄴㅈㅅ', a: '냉장고', hint: '식재료 보관 가전' },
+    { q: 'ㄷㄷㅂ', a: '도도새', hint: '멸종한 새' },
+    { q: 'ㅁㄱㅁ', a: '모기향', hint: '여름밤 퇴치템' }
   ];
 
   const EMOJI_POOL = [
@@ -816,22 +901,82 @@
     { e: '⛺🔥🥩', a: '캠핑', hint: '야외 바비큐' },
     { e: '🎢🎡🍿', a: '놀이공원', hint: '회전목마와 팝콘' },
     { e: '⏰🏃💨', a: '지각', hint: '늦잠 잤을 때' },
-    { e: '🎤🎶👏', a: '노래방', hint: '마이크 잡기' }
+    { e: '🎤🎶👏', a: '노래방', hint: '마이크 잡기' },
+    { e: '🎂🕯️🥳', a: '생일파티', hint: '축하의 날' },
+    { e: '✈️🧳🗺️', a: '해외여행', hint: '여권과 캐리어' },
+    { e: '🍳🥓🍞', a: '아침식사', hint: '하루의 시작' },
+    { e: '🎬🍿🥤', a: '영화관', hint: '스크린과 팝콘' },
+    { e: '❄️⛄🧤', a: '겨울눈사람', hint: '하얀 눈밭' },
+    { e: '🏖️🕶️🍉', a: '여름휴가', hint: '해변과 수박' },
+    { e: '📚✏️☕', a: '공부', hint: '책상 앞 집중' },
+    { e: '🛒🍎🥛', a: '장보기', hint: '마트 카트' },
+    { e: '🐶🦴🚶', a: '산책', hint: '반려견과 함께' },
+    { e: '🎮🕹️🏆', a: '게임대회', hint: '승부의 세계' },
+    { e: '🌧️🌈☀️', a: '소나기후맑음', hint: '날씨 변화' },
+    { e: '🍜🥚🌶️', a: '라면', hint: '분식 대표 메뉴' }
+  ];
+
+  const WORDASSOC_POOL = [
+    { clues: ['바삭함', '양념', '후라이드', '맥주'], a: '치킨' },
+    { clues: ['고양', '꾹꾹이', '수염', '캣타워'], a: '고양이' },
+    { clues: ['광', '열끗', '띠', '고도리'], a: '고스톱' },
+    { clues: ['파도', '통나무', '코코넛', '표류'], a: '무인도' },
+    { clues: ['빨강', '초록', '노랑', '횡단보도'], a: '신호등' },
+    { clues: ['소금', '버터', '빵집', '짭짤'], a: '소금빵' },
+    { clues: ['가위', '바위', '보', '심리전'], a: '가위바위보' },
+    { clues: ['교량', '터널', '균열', '안전점검'], a: '정밀점검' },
+    { clues: ['겨울', '팥', '슈크림', '붕어'], a: '붕어빵' },
+    { clues: ['여권', '비행기', '캐리어', '면세점'], a: '여행' },
+    { clues: ['마이크', '반주', '탬버린', '고음'], a: '노래방' },
+    { clues: ['달콤함', '사탕', '설탕코팅', '꼬치'], a: '탕후루' },
+    { clues: ['알람', '이불', '늦잠', '뛰기'], a: '지각' },
+    { clues: ['모닥불', '텐트', '고기', '별밤'], a: '캠핑' },
+    { clues: ['달', '토끼', '보름달', '추석'], a: '한가위' },
+    { clues: ['우산', '장화', '구름', '번개'], a: '비오는날' },
+    { clues: ['자물쇠', '비밀번호', '열쇠', '보안'], a: '금고' },
+    { clues: ['수영장', '튜브', '물놀이', '선크림'], a: '워터파크' }
+  ];
+
+  const PROVERB_POOL = [
+    { prompt: '가는 말이 고와야 ___ ____.', a: '오는 말이 곱다' },
+    { prompt: '백지장도 ____ ____.', a: '맞들면 낫다' },
+    { prompt: '소 잃고 ____ ____.', a: '외양간 고친다' },
+    { prompt: '낮말은 새가 듣고 ____ ____ ____.', a: '밤말은 쥐가 듣는다' },
+    { prompt: '티끌 모아 ____.', a: '태산' },
+    { prompt: '원숭이도 나무에서 ____ ____.', a: '떨어질 때가 있다' },
+    { prompt: '아니 땐 굴뚝에 ____ ____.', a: '연기 날까' },
+    { prompt: '세 살 버릇 ____ ____.', a: '여든까지 간다' },
+    { prompt: '우물 안 ____.', a: '개구리' },
+    { prompt: '호랑이도 제 말 하면 ____.', a: '온다' },
+    { prompt: '등잔 밑이 ____.', a: '어둡다' },
+    { prompt: '바늘 도둑이 ____ ____.', a: '소 도둑 된다' },
+    { prompt: '고래 싸움에 ____ ____.', a: '새우 등 터진다' },
+    { prompt: '돌다리도 ____ ____.', a: '두들겨 보고 건너라' },
+    { prompt: '꿩 대신 ____.', a: '닭' },
+    { prompt: '말 한마디로 ____ ____ 빚 갚는다.', a: '천 냥' }
   ];
 
   const LIAR_TOPICS = [
     { cat: '음식', word: '라면' },
     { cat: '음식', word: '떡볶이' },
     { cat: '음식', word: '피자' },
+    { cat: '음식', word: '초밥' },
+    { cat: '음식', word: '빙수' },
     { cat: '동물', word: '고양이' },
     { cat: '동물', word: '강아지' },
     { cat: '동물', word: '펭귄' },
+    { cat: '동물', word: '코알라' },
+    { cat: '동물', word: '돌고래' },
     { cat: '장소', word: '한강공원' },
     { cat: '장소', word: '노래방' },
     { cat: '장소', word: '도서관' },
+    { cat: '장소', word: '놀이공원' },
+    { cat: '장소', word: '해변' },
     { cat: '물건', word: '우산' },
     { cat: '물건', word: '이어폰' },
-    { cat: '물건', word: '텀블러' }
+    { cat: '물건', word: '텀블러' },
+    { cat: '물건', word: '백팩' },
+    { cat: '물건', word: '손전등' }
   ];
 
   const state = {
@@ -856,6 +1001,9 @@
     emojiquiz: { index: 0, solved: false },
     liar: { topic: LIAR_TOPICS[0], liarId: '', phase: 'hint', hints: {}, votes: {}, revealed: false },
     chosung: { index: 0, solved: false },
+    nunchi: { currentNum: 0, calls: [] },
+    wordassoc: { index: 0, solved: false },
+    proverb: { index: 0, solved: false },
     island: {
       weather: '☀️ 맑음',
       wood: 2,
@@ -1010,6 +1158,8 @@
       handleCardFlip(msg.playerId, msg.index);
     } else if (msg.type === 'ACTION_CARDFLIP_SIZE') {
       handleCardFlipSizeChange(msg.playerId, msg.size);
+    } else if (msg.type === 'ACTION_NUNCHI') {
+      handleNunchiCall(msg.playerId, msg.num);
     } else if (msg.type === 'ACTION_LIAR_HINT') {
       state.liar.hints[msg.playerId] = msg.hint;
       addLog(`🕵️ ${getPlayerName(msg.playerId)} 힌트: "${msg.hint}"`);
@@ -1133,30 +1283,36 @@
 
   function initModeState(mode) {
     if (mode === 'wordchain') {
-      const starters = ['사과', '바다', '코끼리', '하늘', '기차', '별빛', '고양이'];
-      const first = starters[Math.floor(Math.random() * starters.length)];
+      const starters = ['사과','바다','코끼리','하늘','기차','별빛','고양이','우주','도서관','바람','여행','음악'];
+      const first = pickRandomItem(starters, state.wordchain.lastWord);
       state.wordchain = { used: [first], lastWord: first, combo: 0 };
     } else if (mode === 'hunmin') {
-      const p = HUNMIN_PROMPTS[Math.floor(Math.random() * HUNMIN_PROMPTS.length)];
+      const p = pickRandomItem(HUNMIN_PROMPTS, state.hunmin.prompt);
       state.hunmin = { prompt: p, used: [] };
     } else if (mode === 'catchmind') {
       const drawer = state.players[state.turnIndex % state.players.length];
-      const prompt = CATCHMIND_PROMPTS[Math.floor(Math.random() * CATCHMIND_PROMPTS.length)];
+      const prompt = pickRandomItem(CATCHMIND_PROMPTS, state.catchmind.prompt);
       state.catchmind = { drawerId: drawer.id, prompt, strokes: [], guessed: false };
     } else if (mode === 'cardflip') {
       const sz = [4, 8, 16].includes(state.cardflip.size) ? state.cardflip.size : 4;
       state.cardflip = { size: sz, cards: buildCardDeck(sz), flipped: [], matched: [] };
     } else if (mode === 'emojiquiz') {
-      state.emojiquiz = { index: Math.floor(Math.random() * EMOJI_POOL.length), solved: false };
+      state.emojiquiz = { index: pickRandomIndex(EMOJI_POOL.length, state.emojiquiz.index), solved: false };
+    } else if (mode === 'chosung') {
+      state.chosung = { index: pickRandomIndex(CHOSUNG_POOL.length, state.chosung.index), solved: false };
+    } else if (mode === 'nunchi') {
+      state.nunchi = { currentNum: 0, calls: [] };
+    } else if (mode === 'wordassoc') {
+      state.wordassoc = { index: pickRandomIndex(WORDASSOC_POOL.length, state.wordassoc.index), solved: false };
+    } else if (mode === 'proverb') {
+      state.proverb = { index: pickRandomIndex(PROVERB_POOL.length, state.proverb.index), solved: false };
     } else if (mode === 'liar') {
-      const topic = LIAR_TOPICS[Math.floor(Math.random() * LIAR_TOPICS.length)];
+      const topic = pickRandomItem(LIAR_TOPICS, state.liar.topic);
       const liar = state.players[Math.floor(Math.random() * state.players.length)];
       state.liar = { topic, liarId: liar.id, phase: 'hint', hints: {}, votes: {}, revealed: false };
-    } else if (mode === 'chosung') {
-      state.chosung = { index: Math.floor(Math.random() * CHOSUNG_POOL.length), solved: false };
     } else if (mode === 'island') {
       const weathers = ['☀️ 맑음 (채집 +1 보너스)', '🌊 잔잔한 파도 (낚시 유리)', '🌴 산들바람 (코코넛 풍년)', '🌧️ 소나기 (주의)'];
-      state.island.weather = weathers[Math.floor(Math.random() * weathers.length)];
+      state.island.weather = pickRandomItem(weathers, state.island.weather);
     } else if (mode === 'gostop') {
       initGostopRound();
     }
@@ -1170,14 +1326,20 @@
 
     if (state.mode === 'catchmind') {
       const drawer = getCurrentTurnPlayer();
-      const prompt = CATCHMIND_PROMPTS[Math.floor(Math.random() * CATCHMIND_PROMPTS.length)];
+      const prompt = pickRandomItem(CATCHMIND_PROMPTS, state.catchmind.prompt);
       state.catchmind = { drawerId: drawer.id, prompt, strokes: [], guessed: false };
     } else if (state.mode === 'emojiquiz') {
-      state.emojiquiz.index = (state.emojiquiz.index + 1) % EMOJI_POOL.length;
+      state.emojiquiz.index = pickRandomIndex(EMOJI_POOL.length, state.emojiquiz.index);
       state.emojiquiz.solved = false;
     } else if (state.mode === 'chosung') {
-      state.chosung.index = (state.chosung.index + 1) % CHOSUNG_POOL.length;
+      state.chosung.index = pickRandomIndex(CHOSUNG_POOL.length, state.chosung.index);
       state.chosung.solved = false;
+    } else if (state.mode === 'wordassoc') {
+      state.wordassoc.index = pickRandomIndex(WORDASSOC_POOL.length, state.wordassoc.index);
+      state.wordassoc.solved = false;
+    } else if (state.mode === 'proverb') {
+      state.proverb.index = pickRandomIndex(PROVERB_POOL.length, state.proverb.index);
+      state.proverb.solved = false;
     } else if (state.mode === 'gostop') {
       const cur = getCurrentTurnPlayer();
       state.gostop.turnId = cur ? cur.id : state.myId;
@@ -1215,6 +1377,13 @@
       const ans = sampleMap[p] || (p[0] + '가' + p[1] + '나');
       handleHunminSubmit(botId, ans);
       return;
+    } else if (state.mode === 'nunchi') {
+      const nextNum = state.nunchi.currentNum + 1;
+      const target = Math.max(2, state.players.length);
+      if (nextNum <= target) {
+        handleNunchiCall(botId, nextNum);
+        return;
+      }
     } else if (state.mode === 'liar') {
       if (!state.liar.hints[botId]) {
         state.liar.hints[botId] = '일상에서 자주 접하는 느낌';
@@ -1279,8 +1448,35 @@
     state.hunmin.used.push(word);
     state.scores[playerId] = (state.scores[playerId] || 0) + 15;
     addLog(`🎯 ${cur.name}: "${word}" (${state.hunmin.prompt}) 정답! +15점`);
-    state.hunmin.prompt = HUNMIN_PROMPTS[Math.floor(Math.random() * HUNMIN_PROMPTS.length)];
+    state.hunmin.prompt = pickRandomItem(HUNMIN_PROMPTS, state.hunmin.prompt);
     advanceTurn();
+  }
+
+  function handleNunchiCall(playerId, num) {
+    const targetMax = Math.max(2, state.players.length);
+    const expected = state.nunchi.currentNum + 1;
+    const pname = getPlayerName(playerId);
+
+    if (num !== expected || state.nunchi.calls.some(c => c.num === num)) {
+      state.scores[playerId] = (state.scores[playerId] || 0) - 10;
+      addLog(`💥 ${pname} 눈치 실패! (${num} 외침 — -10점) 새 판 시작!`);
+      state.nunchi = { currentNum: 0, calls: [] };
+      syncStateToPeers();
+      renderAll();
+      return;
+    }
+
+    state.nunchi.currentNum = num;
+    state.nunchi.calls.push({ playerId, name: pname, num });
+    state.scores[playerId] = (state.scores[playerId] || 0) + 10;
+    addLog(`👀 ${pname}: "${num}" 성공! (+10점)`);
+
+    if (num >= targetMax) {
+      addLog(`🎉 ${targetMax}까지 눈치게임 클리어! 다음 라운드로 넘어갑니다.`);
+      state.nunchi = { currentNum: 0, calls: [] };
+    }
+    syncStateToPeers();
+    renderAll();
   }
 
   function evaluateChatAnswer(senderId, senderName, text) {
@@ -1308,6 +1504,22 @@
         state.emojiquiz.solved = true;
         state.scores[senderId] = (state.scores[senderId] || 0) + 15;
         addLog(`😄 ${senderName} 님 이모지 퀴즈 정답! "${item.a}" (+15점)`);
+        setTimeout(() => advanceTurn(), 800);
+      }
+    } else if (state.mode === 'wordassoc' && !state.wordassoc.solved) {
+      const item = WORDASSOC_POOL[state.wordassoc.index];
+      if (clean === item.a) {
+        state.wordassoc.solved = true;
+        state.scores[senderId] = (state.scores[senderId] || 0) + 15;
+        addLog(`💡 ${senderName} 님 단어 연상 정답! "${item.a}" (+15점)`);
+        setTimeout(() => advanceTurn(), 800);
+      }
+    } else if (state.mode === 'proverb' && !state.proverb.solved) {
+      const item = PROVERB_POOL[state.proverb.index];
+      if (clean === item.a) {
+        state.proverb.solved = true;
+        state.scores[senderId] = (state.scores[senderId] || 0) + 15;
+        addLog(`📜 ${senderName} 님 속담 완성 정답! "${item.a}" (+15점)`);
         setTimeout(() => advanceTurn(), 800);
       }
     }
@@ -1467,7 +1679,6 @@
     renderAll();
   }
 
-  // 고스톱 배틀 & 바닥패 + 더미 뒤집기 & SVG 화투 일러스트
   const HWATU_DECK = [
     { id: '1광', month: 1, name: '송학광', type: '광', motif: 'pine-crane' },
     { id: '1띠', month: 1, name: '송학홍단', type: '띠', motif: 'pine-ribbon' },
@@ -1615,7 +1826,7 @@
     state.gostop.shaken = {};
     state.gostop.goCount = 0;
 
-    state.players.forEach((p, idx) => {
+    state.players.forEach((p) => {
       state.gostop.hands[p.id] = shuffled.splice(0, 5);
       state.gostop.captured[p.id] = [];
       state.gostop.shaken[p.id] = false;
@@ -1849,7 +2060,7 @@
       if (myTurn) setTimeout(() => $('wcInput')?.focus(), 30);
     } else if (state.mode === 'hunmin') {
       vp.innerHTML = hudHtml + `
-        <p style="margin:6px 0;">출제 초성 (2글자): <strong style="font-size:1.5rem; color:#facc15; letter-spacing:4px;">${state.hunmin.prompt}</strong></p>
+        <p style="margin:6px 0;">랜덤 출제 초성 (${HUNMIN_PROMPTS.length}종 풀): <strong style="font-size:1.5rem; color:#facc15; letter-spacing:4px;">${state.hunmin.prompt}</strong></p>
         <div class="row">
           <input id="hmInput" type="text" maxlength="2" placeholder="초성에 맞는 2글자 입력" ${myTurn ? '' : 'disabled'} />
           <button id="hmSubmit" class="btn-green" ${myTurn ? '' : 'disabled'}>정답 제출</button>
@@ -1866,12 +2077,42 @@
         const el = $('hmInput');
         if (el && !el.disabled) el.focus();
       }, 30);
+    } else if (state.mode === 'nunchi') {
+      const maxNum = Math.max(2, state.players.length);
+      const nextNum = state.nunchi.currentNum + 1;
+      vp.innerHTML = hudHtml + `
+        <p style="margin:6px 0;">목표 숫자: <strong>1 ~ ${maxNum}</strong> · 현재 숫자: <strong style="color:#38bdf8; font-size:1.2rem;">${state.nunchi.currentNum}</strong> (숫자가 겹치면 -10점!)</p>
+        <div class="row" style="margin:10px 0;">
+          <button id="btnNunchiNext" class="btn-amber">👀 다음 숫자 "${nextNum}" 외치기!</button>
+        </div>
+        <div class="nunchi-board">
+          ${state.nunchi.calls.map(c => `<div class="nunchi-badge">${c.num} · ${c.name}</div>`).join('') || '<span style="color:var(--muted); font-size:0.84rem;">아직 외친 숫자가 없습니다.</span>'}
+        </div>
+      `;
+      $('btnNunchiNext')?.addEventListener('click', () => {
+        if (state.isHost || state.soloIsland) handleNunchiCall(state.myId, nextNum);
+        else broadcast({ type: 'ACTION_NUNCHI', playerId: state.myId, num: nextNum });
+      });
+    } else if (state.mode === 'wordassoc') {
+      const item = WORDASSOC_POOL[state.wordassoc.index] || WORDASSOC_POOL[0];
+      vp.innerHTML = hudHtml + `
+        <div style="font-size:0.8rem; color:var(--muted); margin-bottom:4px;">랜덤 연상 문제 풀: ${WORDASSOC_POOL.length}개</div>
+        <p style="margin:6px 0;">연상 단서: ${item.clues.map(cl => `<span class="nunchi-badge" style="padding:4px 10px;">#${cl}</span>`).join(' ')}</p>
+        <p style="margin:8px 0 0; color:#fde047;"><strong>아래 채팅창에 연상되는 정답을 입력하세요!</strong></p>
+      `;
+    } else if (state.mode === 'proverb') {
+      const item = PROVERB_POOL[state.proverb.index] || PROVERB_POOL[0];
+      vp.innerHTML = hudHtml + `
+        <div style="font-size:0.8rem; color:var(--muted); margin-bottom:4px;">랜덤 속담 문제 풀: ${PROVERB_POOL.length}개</div>
+        <div style="font-size:1.25rem; font-weight:700; color:#7dd3fc; margin:8px 0;">"${item.prompt}"</div>
+        <p style="margin:4px 0 0; color:#fde047;"><strong>빈칸/뒷부분 정답을 채팅창에 입력하세요!</strong></p>
+      `;
     } else if (state.mode === 'catchmind') {
       const isDrawer = state.catchmind.drawerId === state.myId;
       const colors = ['#0f172a','#ef4444','#f97316','#eab308','#22c55e','#3b82f6','#a855f7','#ec4899','#92400e'];
       vp.innerHTML = hudHtml + `
         <div style="margin-bottom:8px;">
-          출제자: <strong>${getPlayerName(state.catchmind.drawerId)}</strong> ·
+          출제자: <strong>${getPlayerName(state.catchmind.drawerId)}</strong> (${CATCHMIND_PROMPTS.length}종 제시어 풀) ·
           ${isDrawer
             ? `내 제시어: <strong style="color:#4ade80; font-size:1.15rem;">[${state.catchmind.prompt.cat}] ${state.catchmind.prompt.word}</strong>`
             : `카테고리 힌트: <strong style="color:#facc15;">[${state.catchmind.prompt.cat}]</strong> (${state.catchmind.prompt.word.length}글자 — 채팅창에 정답 입력!)`}
@@ -1931,14 +2172,16 @@
         });
       });
     } else if (state.mode === 'emojiquiz') {
-      const item = EMOJI_POOL[state.emojiquiz.index];
+      const item = EMOJI_POOL[state.emojiquiz.index] || EMOJI_POOL[0];
       vp.innerHTML = hudHtml + `
+        <div style="font-size:0.8rem; color:var(--muted);">랜덤 이모지 문제 풀: ${EMOJI_POOL.length}개</div>
         <div style="font-size:2.2rem; margin:8px 0;">${item.e}</div>
         <p style="margin:4px 0 10px; color:#fde047;">힌트: ${item.hint} · <strong>아래 채팅창에 정답을 입력하세요!</strong></p>
       `;
     } else if (state.mode === 'chosung') {
-      const item = CHOSUNG_POOL[state.chosung.index];
+      const item = CHOSUNG_POOL[state.chosung.index] || CHOSUNG_POOL[0];
       vp.innerHTML = hudHtml + `
+        <div style="font-size:0.8rem; color:var(--muted);">랜덤 초성 문제 풀: ${CHOSUNG_POOL.length}개</div>
         <div style="font-size:2rem; letter-spacing:6px; font-weight:800; color:#38bdf8; margin:8px 0;">${item.q}</div>
         <p style="margin:4px 0 10px; color:#fde047;">힌트: ${item.hint} · <strong>아래 채팅창에 정답을 입력하세요!</strong></p>
       `;
@@ -1948,7 +2191,7 @@
 
       vp.innerHTML = hudHtml + `
         <div style="margin-bottom:8px;">
-          주제 카테고리: <strong>[${state.liar.topic.cat}]</strong> ·
+          주제 카테고리: <strong>[${state.liar.topic.cat}]</strong> (${LIAR_TOPICS.length}종 주제 풀) ·
           ${isLiar
             ? `<span style="color:#f87171; font-weight:700;">당신은 라이어입니다! 들키지 않게 둘러대세요.</span>`
             : `제시어: <strong style="color:#4ade80; font-size:1.15rem;">${state.liar.topic.word}</strong>`}
@@ -2050,6 +2293,34 @@
       const isGsTurn = gs.turnId === state.myId;
       const mult = (gs.shaken[state.myId] ? 2 : 1) * Math.pow(2, gs.goCount);
 
+      const opponentsHtml = state.players
+        .filter(p => p.id !== state.myId)
+        .map(p => {
+          const oppHand = gs.hands[p.id] || [];
+          const oppCap = gs.captured[p.id] || [];
+          const isOppTurn = gs.turnId === p.id;
+          return `
+            <div class="opponent-gostop-box ${isOppTurn ? 'active-turn' : ''}">
+              <div class="opponent-header">
+                <span>${p.isBot ? '🤖' : '👤'} ${p.name} ${isOppTurn ? '<span style="color:#facc15;">(차례)</span>' : ''}</span>
+                <span style="color:#93c5fd;">손패 ${oppHand.length}장 · 획득 ${oppCap.length}장</span>
+              </div>
+              <div class="face-down-row">
+                ${oppHand.map(() => `<div class="hwatu-back-card" title="상대 손패 뒷면"></div>`).join('') || '<span style="font-size:0.74rem; color:var(--muted);">손패 없음</span>'}
+              </div>
+              <div style="font-size:0.72rem; color:var(--muted);">획득 패:</div>
+              <div class="captured-mini-row">
+                ${oppCap.map(c => `
+                  <div class="captured-mini-card">
+                    ${renderHwatuArtSvg(c)}
+                    <span>${c.id}·${c.type}</span>
+                  </div>
+                `).join('') || '<span style="font-size:0.72rem; color:var(--muted);">없음</span>'}
+              </div>
+            </div>
+          `;
+        }).join('');
+
       vp.innerHTML = hudHtml + `
         <div class="row" style="justify-content:space-between; margin-bottom:8px;">
           <div>
@@ -2063,6 +2334,8 @@
             <button id="btnStop" class="btn-danger" style="padding:5px 10px; font-size:0.8rem;">스톱 (STOP)</button>
           </div>
         </div>
+
+        ${opponentsHtml ? `<div class="opponents-gostop-grid">${opponentsHtml}</div>` : ''}
 
         <div class="gostop-felt-board">
           <div class="gostop-board-title">
@@ -2097,7 +2370,7 @@
             </div>
           `).join('') || '<span style="color:var(--muted); font-size:0.85rem;">손패가 없습니다.</span>'}
         </div>
-        <div style="font-size:0.82rem; color:var(--muted); margin-top:10px;">획득 패 (${myCap.length}장):</div>
+        <div style="font-size:0.82rem; color:var(--muted); margin-top:10px;">내 획득 패 (${myCap.length}장):</div>
         <div class="captured-mini-row">
           ${myCap.map(c => `
             <div class="captured-mini-card">
