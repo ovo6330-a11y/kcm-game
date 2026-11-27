@@ -11,8 +11,8 @@
 
     :root {
       --bg-base: #060913;
-      --panel-bg: rgba(13, 20, 38, 0.86);
-      --border-subtle: rgba(148, 163, 184, 0.16);
+      --panel-bg: rgba(13, 20, 38, 0.88);
+      --border-subtle: rgba(148, 163, 184, 0.18);
     }
 
     * {
@@ -41,25 +41,25 @@
       backdrop-filter: blur(22px);
       -webkit-backdrop-filter: blur(22px);
       border: 1px solid var(--border-subtle);
-      box-shadow: 0 24px 60px -15px rgba(0, 0, 0, 0.72), inset 0 1px 0 0 rgba(255, 255, 255, 0.09);
+      box-shadow: 0 24px 60px -15px rgba(0, 0, 0, 0.76), inset 0 1px 0 0 rgba(255, 255, 255, 0.09);
     }
 
     .glass-card {
-      background: rgba(24, 34, 58, 0.68);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(24, 34, 58, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.09);
       transition: all 0.16s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .glass-card:hover:not(:disabled) {
-      background: rgba(34, 48, 82, 0.9);
+      background: rgba(34, 48, 82, 0.92);
       border-color: rgba(99, 102, 241, 0.45);
       transform: translateY(-2px);
     }
 
     .mode-card-selected {
-      background: linear-gradient(145deg, rgba(79, 70, 229, 0.35), rgba(14, 165, 233, 0.24)) !important;
+      background: linear-gradient(145deg, rgba(79, 70, 229, 0.38), rgba(14, 165, 233, 0.26)) !important;
       border: 1.5px solid #818cf8 !important;
-      box-shadow: 0 0 25px -5px rgba(99, 102, 241, 0.48), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+      box-shadow: 0 0 25px -5px rgba(99, 102, 241, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.22);
     }
 
     .btn-primary {
@@ -97,6 +97,47 @@
       filter: grayscale(0.85);
     }
 
+    /* Rummikub Physical Ivory Tile & Felt Table */
+    .rummi-felt {
+      background: radial-gradient(circle at 50% 35%, rgba(16, 185, 129, 0.18), rgba(6, 78, 59, 0.25) 60%, rgba(15, 23, 42, 0.85));
+      border: 1px solid rgba(52, 211, 153, 0.25);
+      box-shadow: inset 0 2px 18px rgba(0, 0, 0, 0.55);
+    }
+
+    .rummi-rack {
+      background: linear-gradient(180deg, #451a03 0%, #290f02 100%);
+      border: 1.5px solid rgba(217, 119, 6, 0.45);
+      box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.7), 0 8px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .rummi-tile {
+      background: linear-gradient(180deg, #fffbeb 0%, #fef3c7 85%, #fde68a 100%);
+      box-shadow: 0 3px 0 #b45309, 0 5px 10px rgba(0, 0, 0, 0.45), inset 0 1px 0 #ffffff;
+      border: 1px solid #fcd34d;
+      transition: transform 0.14s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.14s ease;
+    }
+
+    .rummi-tile:hover:not(:disabled) {
+      transform: translateY(-3px);
+    }
+
+    .rummi-tile-selected {
+      transform: translateY(-8px) scale(1.04) !important;
+      box-shadow: 0 8px 0 #4f46e5, 0 12px 20px rgba(99, 102, 241, 0.55), inset 0 1px 0 #ffffff !important;
+      border: 2px solid #6366f1 !important;
+    }
+
+    /* Yut Stick Animation */
+    @keyframes yutToss {
+      0% { transform: translateY(0) rotate(0deg) scale(1); }
+      40% { transform: translateY(-16px) rotate(14deg) scale(1.08); }
+      75% { transform: translateY(3px) rotate(-8deg) scale(0.97); }
+      100% { transform: translateY(0) rotate(0deg) scale(1); }
+    }
+    .yut-stick-toss {
+      animation: yutToss 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
     ::-webkit-scrollbar {
       width: 5px;
       height: 5px;
@@ -105,7 +146,7 @@
       background: transparent;
     }
     ::-webkit-scrollbar-thumb {
-      background: rgba(148, 163, 184, 0.28);
+      background: rgba(148, 163, 184, 0.32);
       border-radius: 9999px;
     }
 
@@ -136,26 +177,26 @@
   <div id="canvas-container"></div>
 
   <!-- Top Navigation Bar -->
-  <header class="fixed top-0 inset-x-0 z-40 h-14 px-4 sm:px-6 flex items-center justify-between bg-slate-950/85 backdrop-blur-xl border-b border-white/10">
-    <div class="flex items-center gap-3">
-      <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 via-sky-500 to-emerald-400 flex items-center justify-center shadow-lg shadow-indigo-500/30">
+  <header class="fixed top-0 inset-x-0 z-40 h-14 px-3 sm:px-6 flex items-center justify-between bg-slate-950/90 backdrop-blur-xl border-b border-white/10">
+    <div class="flex items-center gap-2.5">
+      <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 via-sky-500 to-emerald-400 flex items-center justify-center shadow-lg shadow-indigo-500/30 shrink-0">
         <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
         </svg>
       </div>
-      <div class="flex items-center gap-2.5">
+      <div class="flex items-center gap-2">
         <span class="font-black text-sm sm:text-base tracking-tight text-white">SKY ARCADE <span class="text-sky-400">ROYALE</span></span>
         <span class="hidden md:inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-extrabold tracking-wider uppercase bg-indigo-500/20 text-indigo-300 border border-indigo-400/30">11-IN-1 PARTY HUB</span>
       </div>
     </div>
 
-    <div class="flex items-center gap-2 sm:gap-2.5">
+    <div class="flex items-center gap-1.5 sm:gap-2.5">
       <div id="headerModeBadge" class="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/15 border border-indigo-400/25 text-xs">
         <span id="headerModeIcon">🪜</span>
         <span id="headerModeName" class="font-extrabold text-indigo-200">무한의 계단 3D</span>
       </div>
 
-      <div id="headerRoomBadge" class="hidden items-center gap-2 px-3 py-1 rounded-full bg-slate-900/90 border border-white/10 text-xs">
+      <div id="headerRoomBadge" class="hidden items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full bg-slate-900/90 border border-white/10 text-xs">
         <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
         <span class="text-slate-400 font-medium hidden sm:inline">초대코드</span>
         <strong id="headerRoomCode" class="text-white font-extrabold tracking-wider">SKY-7K9M</strong>
@@ -189,14 +230,14 @@
       <section class="lg:col-span-5 glass-panel rounded-3xl p-6 sm:p-7 flex flex-col justify-between gap-6">
         <div class="space-y-3">
           <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/15 border border-sky-400/25 text-sky-300 text-xs font-bold">
-            <span>🏆 3D 아케이드 5종 + 파티 게임 6종</span>
+            <span>🏆 3D 아케이드 5종 + 파티 보드/추리 6종</span>
           </div>
           <h1 class="text-2xl sm:text-3xl font-black tracking-tight text-white leading-tight">
             초대하고 봇과 즐기는<br />
             <span class="bg-gradient-to-r from-indigo-400 via-sky-300 to-emerald-300 bg-clip-text text-transparent">올인원 3D 파티 허브</span>
           </h1>
           <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
-            좌·우 방향키로 오르는 무한의 계단 3D와 대기업형 윷놀이·루미큐브 UI, 실시간 채팅과 초대코드를 한 방에서 즐기세요.
+            무한의 계단 3D와 전용 보드판이 탑재된 윷놀이·루미큐브·라이어게임, 실시간 파티 채팅까지 한 방에서 즐기세요.
           </p>
         </div>
 
@@ -223,7 +264,7 @@
           <div class="flex items-center justify-between border-b border-white/10 pb-4">
             <div>
               <h2 class="text-lg sm:text-xl font-black text-white">파티 방 개설 및 초대코드 입장</h2>
-              <p class="text-xs text-slate-400 mt-0.5">생성된 방의 상태와 채팅이 세션 저장소에 유지됩니다.</p>
+              <p class="text-xs text-slate-400 mt-0.5">생성된 방의 상태와 실시간 채팅이 세션에 유지됩니다.</p>
             </div>
             <span class="px-2.5 py-1 rounded-lg bg-emerald-500/15 border border-emerald-400/25 text-emerald-300 text-xs font-bold">READY</span>
           </div>
@@ -272,17 +313,17 @@
 
           <!-- Quick Preset Rooms -->
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-            <button onclick="joinOrCreateRoomByCode('SKY-2W4R', '끝말잇기 & 라이어 추리방', 5, 'wordchain', false)" class="glass-card p-3.5 rounded-2xl text-left flex items-center justify-between">
+            <button onclick="joinOrCreateRoomByCode('SKY-2W4R', '라이어게임 & 끝말잇기 추리방', 5, 'liar', true)" class="glass-card p-3.5 rounded-2xl text-left flex items-center justify-between">
               <div>
-                <div class="text-xs font-black text-white">🔤 끝말잇기 & 라이어 방</div>
-                <div class="text-[11px] text-slate-400 mt-0.5">SKY-2W4R · 6인 라운지</div>
+                <div class="text-xs font-black text-white">🎭 라이어게임 & 추리 라운지</div>
+                <div class="text-[11px] text-slate-400 mt-0.5">SKY-2W4R · 6인 파티</div>
               </div>
               <span class="px-2.5 py-1 rounded-lg bg-indigo-500/20 text-indigo-300 text-[11px] font-extrabold">참가</span>
             </button>
-            <button onclick="joinOrCreateRoomByCode('SKY-8M5T', '루미큐브 & 윷놀이 라운지', 5, 'rummikub', false)" class="glass-card p-3.5 rounded-2xl text-left flex items-center justify-between">
+            <button onclick="joinOrCreateRoomByCode('SKY-8M5T', '루미큐브 & 윷놀이 보드방', 5, 'yut', true)" class="glass-card p-3.5 rounded-2xl text-left flex items-center justify-between">
               <div>
-                <div class="text-xs font-black text-white">🎲 루미큐브 & 윷놀이 방</div>
-                <div class="text-[11px] text-slate-400 mt-0.5">SKY-8M5T · 6인 라운지</div>
+                <div class="text-xs font-black text-white">🥢 윷놀이 & 루미큐브 라운지</div>
+                <div class="text-[11px] text-slate-400 mt-0.5">SKY-8M5T · 6인 파티</div>
               </div>
               <span class="px-2.5 py-1 rounded-lg bg-indigo-500/20 text-indigo-300 text-[11px] font-extrabold">참가</span>
             </button>
@@ -292,13 +333,13 @@
     </div>
   </main>
 
-  <!-- VIEW 2: UNIFIED PARTY LOBBY & CHAT -->
+  <!-- VIEW 2: UNIFIED PARTY LOBBY & ALWAYS-VISIBLE CHAT -->
   <main id="lobbyView" class="hidden relative z-10 w-full h-full pt-14 flex items-center justify-center p-3 sm:p-5 overflow-y-auto">
-    <div class="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-12 gap-5 my-auto">
+    <div class="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5 my-auto">
 
       <!-- Left: 11-Mode Selector & Room Settings (7 cols) -->
-      <section class="lg:col-span-7 glass-panel rounded-3xl p-5 sm:p-6 flex flex-col justify-between gap-4">
-        <div class="space-y-3.5">
+      <section class="lg:col-span-7 glass-panel rounded-3xl p-4 sm:p-6 flex flex-col justify-between gap-3.5">
+        <div class="space-y-3">
           <div class="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-3">
             <div>
               <div class="flex items-center gap-2">
@@ -333,7 +374,7 @@
           </div>
 
           <!-- Modes Grid -->
-          <div id="modeSelectorGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-[190px] overflow-y-auto pr-1"></div>
+          <div id="modeSelectorGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-[180px] overflow-y-auto pr-1"></div>
 
           <!-- Selected Mode Detail -->
           <div id="selectedModeDetailBox" class="p-3.5 rounded-2xl bg-slate-950/70 border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
@@ -352,7 +393,7 @@
           </div>
 
           <!-- Host Custom Prompt Builder -->
-          <div id="hostCustomBuilderBox" class="p-3.5 rounded-2xl bg-indigo-950/35 border border-indigo-400/25 space-y-2.5">
+          <div id="hostCustomBuilderBox" class="p-3 rounded-2xl bg-indigo-950/35 border border-indigo-400/25 space-y-2">
             <div class="flex items-center justify-between">
               <span class="text-xs font-black text-indigo-200">✍️ 방장 커스텀 문제 / 제시어 출제 (낱말퀴즈 · 라이어 · 캐치마인드)</span>
               <span id="customCountSummary" class="text-[11px] font-bold text-sky-300">등록 0개</span>
@@ -376,7 +417,7 @@
           </div>
 
           <!-- Room Settings -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3 rounded-2xl bg-slate-950/55 border border-white/10">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 p-2.5 rounded-2xl bg-slate-950/55 border border-white/10">
             <div>
               <label class="block text-[11px] font-bold text-slate-400 mb-1">방 최대 정원</label>
               <select id="roomMaxPlayersSelect" onchange="updateRoomSettings()" class="w-full px-3 py-1.5 rounded-xl bg-slate-900 border border-white/15 text-white text-xs font-bold">
@@ -419,34 +460,42 @@
         </div>
       </section>
 
-      <!-- Right: Participant List & Lobby Chat (5 cols) -->
-      <section class="lg:col-span-5 glass-panel rounded-3xl p-5 sm:p-6 flex flex-col justify-between gap-4">
-        <div class="space-y-2.5">
-          <div class="flex items-center justify-between border-b border-white/10 pb-2.5">
+      <!-- Right: Participant List & Prominent Lobby Chat (5 cols) -->
+      <section class="lg:col-span-5 glass-panel rounded-3xl p-4 sm:p-6 flex flex-col justify-between gap-4">
+        <div class="space-y-2">
+          <div class="flex items-center justify-between border-b border-white/10 pb-2">
             <div>
               <h3 class="text-sm sm:text-base font-black text-white">참가자 및 AI 봇 목록</h3>
               <p class="text-[11px] text-slate-400">방장은 👑 위임 버튼으로 권한을 넘길 수 있습니다.</p>
             </div>
             <span id="lobbyPlayerCount" class="px-2.5 py-1 rounded-lg bg-slate-900 border border-white/10 text-xs font-black text-indigo-300">6 / 12명</span>
           </div>
-          <div id="lobbyPlayerList" class="max-h-[210px] overflow-y-auto space-y-1.5 pr-1"></div>
+          <div id="lobbyPlayerList" class="max-h-[175px] overflow-y-auto space-y-1.5 pr-1"></div>
         </div>
 
-        <!-- Lobby Chat Box -->
-        <div class="p-3.5 rounded-2xl bg-slate-950/75 border border-white/10 flex flex-col gap-2.5">
+        <!-- Lobby Chat Box (Always Visible + Quick Reactions) -->
+        <div class="p-3.5 rounded-2xl bg-slate-950/80 border border-indigo-400/25 flex flex-col gap-2.5">
           <div class="flex items-center justify-between">
             <span class="text-xs font-black text-white flex items-center gap-1.5">
-              <span>💬</span> 파티 대기실 채팅
+              <span>💬</span> 실시간 파티 채팅
             </span>
             <button onclick="toggleBotChat()" id="botChatToggleBtn" class="px-2 py-0.5 rounded-md bg-indigo-500/20 border border-indigo-400/30 text-[10px] font-bold text-indigo-200">
               봇 채팅 ON
             </button>
           </div>
-          <div id="lobbyChatFeed" class="h-36 overflow-y-auto space-y-1.5 pr-1 text-xs"></div>
+          <div id="lobbyChatFeed" class="h-40 overflow-y-auto space-y-1.5 pr-1 text-xs"></div>
+          <!-- Quick Emoji/Phrase Bar -->
+          <div class="flex items-center gap-1.5 overflow-x-auto pb-0.5">
+            <button onclick="sendQuickChat('안녕하세요! 반갑습니다 👋')" class="px-2 py-1 rounded-lg bg-slate-800/90 hover:bg-slate-700 text-[10px] font-bold text-slate-200 shrink-0">👋 인사</button>
+            <button onclick="sendQuickChat('준비 완료! 바로 시작해요 🔥')" class="px-2 py-1 rounded-lg bg-slate-800/90 hover:bg-slate-700 text-[10px] font-bold text-slate-200 shrink-0">🔥 준비완료</button>
+            <button onclick="sendQuickChat('윷놀이 한 판 어때요? 🥢')" class="px-2 py-1 rounded-lg bg-slate-800/90 hover:bg-slate-700 text-[10px] font-bold text-slate-200 shrink-0">🥢 윷놀이</button>
+            <button onclick="sendQuickChat('라이어게임 가자! 🎭')" class="px-2 py-1 rounded-lg bg-slate-800/90 hover:bg-slate-700 text-[10px] font-bold text-slate-200 shrink-0">🎭 라이어</button>
+            <button onclick="sendQuickChat('루미큐브 승부! 🟦')" class="px-2 py-1 rounded-lg bg-slate-800/90 hover:bg-slate-700 text-[10px] font-bold text-slate-200 shrink-0">🟦 루미큐브</button>
+          </div>
           <div class="flex gap-2">
-            <input id="lobbyChatInput" type="text" maxlength="120" placeholder="대기실 채팅 입력..."
+            <input id="lobbyChatInput" type="text" maxlength="120" placeholder="파티원에게 메시지 보내기 (Enter)..."
               class="flex-1 px-3 py-2 rounded-xl bg-slate-900 border border-white/15 text-white text-xs font-bold focus:outline-none focus:border-indigo-400" />
-            <button onclick="sendChatMessage('lobbyChatInput')" class="px-3.5 py-2 rounded-xl bg-indigo-500 hover:bg-indigo-400 text-white text-xs font-black shrink-0 transition">
+            <button onclick="sendChatMessage('lobbyChatInput')" class="btn-primary px-3.5 py-2 rounded-xl text-white text-xs font-black shrink-0">
               전송
             </button>
           </div>
@@ -455,104 +504,113 @@
     </div>
   </main>
 
-  <!-- VIEW 3: IN-GAME HUD, PARTY STAGE & IN-GAME CHAT -->
-  <div id="gameHudView" class="hidden fixed inset-0 z-20 pointer-events-none flex flex-col justify-between p-3 sm:p-5 pt-20">
+  <!-- VIEW 3: IN-GAME HUD, PARTY STAGE & ALWAYS-ACCESSIBLE LIVE CHAT -->
+  <div id="gameHudView" class="hidden fixed inset-0 z-20 pointer-events-none flex flex-col justify-between p-2.5 sm:p-4 pt-16">
     <!-- Top HUD -->
-    <div class="flex items-start justify-between gap-3">
-      <div class="glass-panel rounded-2xl p-3 sm:p-4 pointer-events-auto min-w-[180px] sm:min-w-[235px] space-y-2">
+    <div class="flex items-start justify-between gap-2 sm:gap-3">
+      <div class="glass-panel rounded-2xl p-2.5 sm:p-3.5 pointer-events-auto min-w-[165px] sm:min-w-[225px] space-y-1.5">
         <div class="flex items-center justify-between gap-3">
           <div>
             <div id="hudMetricLabel" class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">도달 층수</div>
             <div class="flex items-baseline gap-1">
-              <span id="hudPrimaryScore" class="text-2xl sm:text-3xl font-black text-white tracking-tight">0</span>
+              <span id="hudPrimaryScore" class="text-xl sm:text-3xl font-black text-white tracking-tight">0</span>
               <span id="hudPrimaryUnit" class="text-xs font-extrabold text-indigo-300">층</span>
             </div>
           </div>
           <div class="text-right">
             <div class="text-[10px] font-extrabold text-slate-400">생존 인원</div>
-            <div class="text-base sm:text-lg font-black text-emerald-400">
+            <div class="text-sm sm:text-lg font-black text-emerald-400">
               <span id="hudAliveCount">6</span><span class="text-xs text-slate-400 font-bold">/<span id="hudTotalCount">6</span></span>
             </div>
           </div>
         </div>
 
         <div id="hudTimerWrapper" class="space-y-1">
-          <div class="flex items-center justify-between text-[11px] font-bold">
+          <div class="flex items-center justify-between text-[10px] sm:text-[11px] font-bold">
             <span id="hudPressureLabel" class="text-slate-300">무입력 타이머</span>
             <span id="hudSpeedMultiplier" class="text-amber-300 font-extrabold">1.0x</span>
           </div>
-          <div class="w-full h-2.5 rounded-full bg-slate-900 overflow-hidden border border-white/10">
+          <div class="w-full h-2 rounded-full bg-slate-900 overflow-hidden border border-white/10">
             <div id="hudTimerFill" class="h-full rounded-full bg-gradient-to-r from-emerald-400 via-sky-400 to-indigo-400 transition-all duration-75" style="width: 100%"></div>
           </div>
         </div>
       </div>
 
       <!-- Spectator Banner -->
-      <div id="spectatorBanner" class="hidden glass-panel rounded-2xl px-4 py-3 border border-rose-500/40 bg-rose-950/65 pointer-events-auto flex flex-col items-center gap-2 shadow-2xl">
+      <div id="spectatorBanner" class="hidden glass-panel rounded-2xl px-3.5 py-2.5 border border-rose-500/40 bg-rose-950/75 pointer-events-auto flex flex-col items-center gap-1.5 shadow-2xl">
         <div class="flex items-center gap-2">
           <span class="px-2 py-0.5 rounded-md bg-rose-500 text-white text-[10px] font-black uppercase">관전 모드</span>
           <span id="spectatorReasonText" class="text-xs font-bold text-rose-200">탈락했습니다!</span>
         </div>
         <div class="flex items-center gap-2">
-          <button onclick="cycleSpectatorTarget(-1)" class="w-8 h-8 rounded-xl bg-slate-900 hover:bg-slate-800 border border-white/15 text-white font-black text-sm">◀</button>
-          <div class="px-3 py-1 rounded-xl bg-slate-950/80 border border-white/10 text-xs font-extrabold text-sky-300 min-w-[130px] text-center">
+          <button onclick="cycleSpectatorTarget(-1)" class="w-7 h-7 rounded-xl bg-slate-900 hover:bg-slate-800 border border-white/15 text-white font-black text-xs">◀</button>
+          <div class="px-2.5 py-1 rounded-xl bg-slate-950/80 border border-white/10 text-xs font-extrabold text-sky-300 min-w-[120px] text-center">
             🎥 <span id="spectatingTargetName">생존자 관전</span>
           </div>
-          <button onclick="cycleSpectatorTarget(1)" class="w-8 h-8 rounded-xl bg-slate-900 hover:bg-slate-800 border border-white/15 text-white font-black text-sm">▶</button>
+          <button onclick="cycleSpectatorTarget(1)" class="w-7 h-7 rounded-xl bg-slate-900 hover:bg-slate-800 border border-white/15 text-white font-black text-xs">▶</button>
         </div>
       </div>
 
       <!-- Survivor Grid & Top 3 -->
-      <div class="glass-panel rounded-2xl p-3 pointer-events-auto w-[165px] sm:w-[220px] space-y-2">
+      <div class="glass-panel rounded-2xl p-2.5 sm:p-3 pointer-events-auto w-[150px] sm:w-[215px] space-y-1.5">
         <div class="flex items-center justify-between">
-          <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-300">실시간 생존 현황</span>
+          <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-300">실시간 현황</span>
           <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
         </div>
         <div id="miniSurvivorGrid" class="grid grid-cols-6 gap-1"></div>
-        <div id="liveTop3List" class="space-y-1 pt-1 border-t border-white/10 text-[11px]"></div>
+        <div id="liveTop3List" class="space-y-0.5 pt-1 border-t border-white/10 text-[10px] sm:text-[11px]"></div>
       </div>
     </div>
 
-    <!-- Center Stage for 6 Party Games -->
-    <div id="partyStagePanel" class="hidden pointer-events-auto my-auto mx-auto w-full max-w-3xl glass-panel rounded-3xl p-4 sm:p-6 space-y-4">
-      <div class="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-2.5">
+    <!-- Center Stage for 6 Party Games (Expanded Width for Rich Board/Table UI) -->
+    <div id="partyStagePanel" class="hidden pointer-events-auto my-auto mx-auto w-full max-w-4xl glass-panel rounded-3xl p-3.5 sm:p-5 space-y-3 max-h-[62vh] overflow-y-auto">
+      <div class="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-2">
         <div class="flex items-center gap-2">
-          <span id="partyStageBadge" class="px-2.5 py-0.5 rounded-lg bg-indigo-500/20 text-indigo-300 text-xs font-black">턴 진행중</span>
+          <span id="partyStageBadge" class="px-2.5 py-0.5 rounded-lg bg-indigo-500/25 border border-indigo-400/30 text-indigo-200 text-xs font-black">진행중</span>
           <span id="partyTurnOwnerText" class="text-xs sm:text-sm font-extrabold text-white">현재 턴: -</span>
         </div>
-        <div id="partyRoundInfoText" class="text-xs font-bold text-amber-300">라운드 1</div>
+        <div class="flex items-center gap-2">
+          <span id="partyRoundInfoText" class="text-xs font-bold text-amber-300">라운드 1</span>
+        </div>
       </div>
 
-      <div id="partyStageBody" class="space-y-3 min-h-[210px]"></div>
+      <div id="partyStageBody" class="space-y-3"></div>
 
-      <!-- Word / Answer / Guess Input Bar -->
+      <!-- Word / Answer / Guess / Clue Input Bar -->
       <div id="partyInputBar" class="hidden flex items-center gap-2 pt-2 border-t border-white/10">
         <input id="partyTextInput" type="text" autocomplete="off" placeholder="정답 또는 단어를 입력하세요..."
-          class="flex-1 px-4 py-2.5 rounded-xl bg-slate-900/95 border border-white/20 text-white text-sm font-bold focus:outline-none focus:border-sky-400" />
-        <button id="partySubmitBtn" onclick="submitPartyTextInput()" class="btn-primary px-5 py-2.5 rounded-xl text-white text-xs sm:text-sm font-black shrink-0">
+          class="flex-1 px-3.5 py-2.5 rounded-xl bg-slate-900/95 border border-white/20 text-white text-xs sm:text-sm font-bold focus:outline-none focus:border-sky-400" />
+        <button id="partySubmitBtn" onclick="submitPartyTextInput()" class="btn-primary px-4 sm:px-5 py-2.5 rounded-xl text-white text-xs sm:text-sm font-black shrink-0">
           제출 (Enter)
         </button>
       </div>
     </div>
 
-    <!-- Bottom Row: Compact In-Game Chat + 3D Arcade Controls -->
-    <div class="flex flex-col sm:flex-row items-stretch sm:items-end justify-between gap-3 pb-1">
-      <!-- Compact Collapsible In-Game Chat -->
-      <div id="gameChatBox" class="pointer-events-auto glass-panel rounded-2xl p-2.5 w-full sm:w-72 space-y-1.5">
+    <!-- Bottom Row: Persistent In-Game Live Chat + 3D Arcade Controls -->
+    <div class="flex flex-col sm:flex-row items-stretch sm:items-end justify-between gap-2.5 pb-0.5">
+      <!-- Persistent In-Game Chat Panel -->
+      <div id="gameChatBox" class="pointer-events-auto glass-panel rounded-2xl p-2.5 w-full sm:w-80 border border-indigo-400/30 shadow-2xl space-y-1.5">
         <div class="flex items-center justify-between">
-          <span class="text-[11px] font-black text-slate-200 flex items-center gap-1">
-            <span>💬</span> 게임 채팅
-          </span>
-          <button onclick="toggleGameChatCollapse()" id="gameChatCollapseBtn" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-[10px] font-bold text-slate-300">
-            접기
-          </button>
+          <div class="flex items-center gap-1.5">
+            <span class="text-[11px] font-black text-white flex items-center gap-1">
+              <span>💬</span> 실시간 파티 채팅
+            </span>
+            <span id="unreadChatBadge" class="hidden px-1.5 py-0.2 rounded-full bg-rose-500 text-white text-[9px] font-black">NEW</span>
+          </div>
+          <div class="flex items-center gap-1">
+            <button onclick="sendQuickChat('ㅋㅋㅋ 대박!')" class="px-1.5 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-[9px] font-bold text-slate-300">ㅋㅋ</button>
+            <button onclick="sendQuickChat('나이스 플레이! 👏')" class="px-1.5 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-[9px] font-bold text-slate-300">👏</button>
+            <button onclick="toggleGameChatCollapse()" id="gameChatCollapseBtn" class="px-2 py-0.5 rounded bg-indigo-500/25 hover:bg-indigo-500/40 text-[10px] font-extrabold text-indigo-200">
+              접기
+            </button>
+          </div>
         </div>
         <div id="gameChatContent" class="space-y-1.5">
-          <div id="gameChatFeed" class="h-20 overflow-y-auto space-y-1 pr-1 text-[11px]"></div>
+          <div id="gameChatFeed" class="h-24 overflow-y-auto space-y-1 pr-1 text-[11px]"></div>
           <div class="flex gap-1.5">
-            <input id="gameChatInput" type="text" maxlength="100" placeholder="메시지..."
+            <input id="gameChatInput" type="text" maxlength="100" placeholder="게임 중 채팅 입력 (Enter)..."
               class="flex-1 px-2.5 py-1.5 rounded-lg bg-slate-900 border border-white/15 text-white text-[11px] font-bold focus:outline-none focus:border-sky-400" />
-            <button onclick="sendChatMessage('gameChatInput')" class="px-2.5 py-1.5 rounded-lg bg-indigo-500 hover:bg-indigo-400 text-white text-[11px] font-black shrink-0">
+            <button onclick="sendChatMessage('gameChatInput')" class="btn-primary px-3 py-1.5 rounded-lg text-white text-[11px] font-black shrink-0">
               전송
             </button>
           </div>
@@ -561,17 +619,17 @@
 
       <!-- 3D Arcade Controls -->
       <div id="arcadeControlsContainer" class="flex-1 flex flex-col items-center gap-1.5 pointer-events-auto">
-        <div id="controlHintBanner" class="px-3 py-1 rounded-full bg-slate-950/80 border border-white/10 text-[11px] font-bold text-slate-300 text-center">
+        <div id="controlHintBanner" class="px-3 py-1 rounded-full bg-slate-950/85 border border-white/10 text-[11px] font-bold text-slate-300 text-center">
           [← / →] 좌우 이동으로 계단을 오르세요
         </div>
         <div id="arcadeButtonsRow" class="flex items-center justify-center gap-3 sm:gap-5 w-full max-w-md px-2">
           <button id="btnActionSecondary" onpointerdown="handleSecondaryInput(event)"
-            class="arcade-btn flex-1 py-4 sm:py-5 rounded-3xl bg-gradient-to-b from-amber-400 to-orange-500 text-slate-950 font-black text-base sm:text-lg shadow-[0_6px_0_#9a3412] flex flex-col items-center justify-center">
+            class="arcade-btn flex-1 py-3.5 sm:py-4 rounded-3xl bg-gradient-to-b from-amber-400 to-orange-500 text-slate-950 font-black text-base sm:text-lg shadow-[0_6px_0_#9a3412] flex flex-col items-center justify-center">
             <span id="btnSecondaryLabel">⬅️ 왼쪽 이동</span>
             <span id="btnSecondarySub" class="text-[10px] font-extrabold opacity-80">← / A</span>
           </button>
           <button id="btnActionPrimary" onpointerdown="handlePrimaryInput(event)"
-            class="arcade-btn flex-1 py-4 sm:py-5 rounded-3xl bg-gradient-to-b from-sky-400 to-indigo-600 text-white font-black text-base sm:text-lg shadow-[0_6px_0_#1e1b4b] flex flex-col items-center justify-center">
+            class="arcade-btn flex-1 py-3.5 sm:py-4 rounded-3xl bg-gradient-to-b from-sky-400 to-indigo-600 text-white font-black text-base sm:text-lg shadow-[0_6px_0_#1e1b4b] flex flex-col items-center justify-center">
             <span id="btnPrimaryLabel">➡️ 오른쪽 이동</span>
             <span id="btnPrimarySub" class="text-[10px] font-extrabold opacity-85">→ / D</span>
           </button>
@@ -743,23 +801,23 @@
       rummikub: {
         id: 'rummikub', category: 'board', stageType: 'party',
         name: '루미큐브', icon: '🟦', tag: '보드/전략 · 그룹/런',
-        desc: '같은 숫자(다른 색) 그룹 또는 같은 색 연속 숫자 런을 만들어 손패를 털어내세요!',
+        desc: '펠트 테이블 위에 같은 숫자(다른 색) 그룹 또는 같은 색 연속 숫자 런을 등록해 손패를 비우세요!',
         controls: '타일 선택 · 등록/드로우', metricLabel: '등록 횟수', unit: '회', pressureLabel: '턴 제한시간',
-        hint: '타일을 클릭해 선택한 뒤 [조합 등록] 또는 [1장 뽑기]를 누르세요.'
+        hint: '받침대 타일을 클릭해 선택한 뒤 [조합 등록] 또는 [1장 뽑기]를 누르세요.'
       },
       yut: {
         id: 'yut', category: 'board', stageType: 'party',
-        name: '윷놀이', icon: '🥢', tag: '보드/전략 · 윷판/업기',
-        desc: '윷을 던져 29칸 말판에서 말을 전진시키고, 윷·모 보너스 턴과 잡기·업기를 활용하세요!',
+        name: '윷놀이', icon: '🥢', tag: '보드/전략 · 29칸 윷판',
+        desc: '4개의 윷가락을 던져 29칸 전통 윷판(지름길 대각선 포함)에서 말을 전진시키고 잡기·업기를 활용하세요!',
         controls: '윷 던지기 · 말 이동', metricLabel: '완주 말 수', unit: '개', pressureLabel: '턴 제한시간',
-        hint: '[윷 던지기] 후 이동할 말을 선택하세요.'
+        hint: '[윷 던지기] 후 윷판 위 말을 선택해 이동하세요.'
       },
       liar: {
         id: 'liar', category: 'social', stageType: 'party',
         name: '라이어게임', icon: '🎭', tag: '추리/심리 · 제시어/투표',
-        desc: '공통 제시어를 모르는 라이어를 찾아 투표하세요! 방장 커스텀 주제도 지원합니다.',
+        desc: '역할 카드와 제시어를 확인하고 토론 말풍선으로 정체를 숨긴 라이어를 지목하세요!',
         controls: '발언 · 투표 · 변론', metricLabel: '추리 점수', unit: '점', pressureLabel: '단계 타이머',
-        hint: '내 제시어를 확인하고 라이어에게 투표하세요.'
+        hint: '내 역할 카드를 확인하고 차례대로 한 줄 설명을 입력한 뒤 투표하세요.'
       },
       catchmind: {
         id: 'catchmind', category: 'social', stageType: 'party',
@@ -849,7 +907,7 @@
     // =========================================================================
     // 3. APP & ROOM REGISTRY STATE (SESSION PERSISTENCE)
     // =========================================================================
-    const STORAGE_KEY = 'SKY_ARCADE_ROOMS_V1';
+    const STORAGE_KEY = 'SKY_ARCADE_ROOMS_V2';
 
     const AppState = {
       screen: 'entry',
@@ -964,8 +1022,16 @@
     }
 
     // =========================================================================
-    // 4. CHAT SYSTEM & BOT REACTIONS
+    // 4. REAL-TIME CHAT SYSTEM & BOT REACTIONS
     // =========================================================================
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
     function appendChatMessage(senderName, text, type = 'user', colorHex = '#38bdf8') {
       if (!AppState.room.messages) AppState.room.messages = [];
       AppState.room.messages.push({
@@ -977,6 +1043,9 @@
         time: new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })
       });
       if (AppState.room.messages.length > 60) AppState.room.messages.shift();
+      if (AppState.screen === 'game' && AppState.gameChatCollapsed && type !== 'system') {
+        document.getElementById('unreadChatBadge').classList.remove('hidden');
+      }
       persistCurrentRoom();
       renderChatFeeds();
     }
@@ -984,7 +1053,7 @@
     function triggerBotChatReaction(eventKey) {
       if (!AppState.botChatEnabled) return;
       const now = Date.now();
-      if (now - AppState.lastBotChatTime < 3500) return;
+      if (now - AppState.lastBotChatTime < 3200) return;
       const bots = AppState.room.players.filter(p => p.isBot);
       if (bots.length === 0) return;
       const pool = BOT_CHAT_LINES[eventKey] || BOT_CHAT_LINES.join;
@@ -1009,6 +1078,11 @@
       requestAnimationFrame(() => input.focus());
     }
 
+    function sendQuickChat(text) {
+      appendChatMessage(AppState.myName, text, 'user', AppState.myColor.hex);
+      SoundEngine.sfxStep();
+    }
+
     function toggleBotChat() {
       AppState.botChatEnabled = !AppState.botChatEnabled;
       document.getElementById('botChatToggleBtn').textContent = AppState.botChatEnabled ? '봇 채팅 ON' : '봇 채팅 OFF';
@@ -1019,18 +1093,24 @@
       AppState.gameChatCollapsed = !AppState.gameChatCollapsed;
       document.getElementById('gameChatContent').classList.toggle('hidden', AppState.gameChatCollapsed);
       document.getElementById('gameChatCollapseBtn').textContent = AppState.gameChatCollapsed ? '펼치기' : '접기';
+      if (!AppState.gameChatCollapsed) {
+        document.getElementById('unreadChatBadge').classList.add('hidden');
+      }
     }
 
     function renderChatFeeds() {
       const msgs = AppState.room.messages || [];
       const renderHtml = (compact) => msgs.map(m => {
         if (m.type === 'system') {
-          return `<div class="text-center text-[10px] font-bold text-slate-400 py-0.5">${m.text}</div>`;
+          return `<div class="text-center text-[10px] font-bold text-slate-400 py-0.5">${escapeHtml(m.text)}</div>`;
         }
         return `
-          <div class="${compact ? 'leading-snug' : 'px-2.5 py-1.5 rounded-xl bg-slate-900/80'}">
-            <span class="font-extrabold mr-1" style="color:${m.colorHex}">${m.sender}</span>
-            <span class="text-slate-200 break-words">${m.text}</span>
+          <div class="${compact ? 'leading-snug px-2 py-1 rounded-lg bg-slate-900/75' : 'px-2.5 py-1.5 rounded-xl bg-slate-900/85 border border-white/5'}">
+            <div class="flex items-baseline justify-between gap-1">
+              <span class="font-extrabold text-[11px]" style="color:${m.colorHex}">${escapeHtml(m.sender)}</span>
+              <span class="text-[9px] text-slate-500">${m.time}</span>
+            </div>
+            <div class="text-slate-100 break-words mt-0.5">${escapeHtml(m.text)}</div>
           </div>
         `;
       }).join('');
@@ -1089,7 +1169,7 @@
       const raw = document.getElementById('inviteCodeInput').value;
       const code = normalizeInviteCode(raw);
       if (!code) return showToast('⚠️ 올바른 초대코드를 입력하세요. (예: SKY-7K9M)');
-      joinOrCreateRoomByCode(code, `${code} 초대 파티룸`, 5, 'stairs', false);
+      joinOrCreateRoomByCode(code, `${code} 초대 파티룸`, 5, 'stairs', true);
     }
 
     function joinOrCreateRoomByCode(code, fallbackTitle, botCount, fallbackMode, makeMeHost) {
@@ -1357,7 +1437,7 @@
 
       chips.innerHTML = items.map(it => `
         <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-indigo-500/20 border border-indigo-400/30 text-[10px] font-bold text-indigo-100">
-          ${it.label}
+          ${escapeHtml(it.label)}
           ${isMeHost() ? `<button onclick="removeCustomItem('${it.kind}', ${it.i})" class="text-rose-300 hover:text-white ml-0.5">✕</button>` : ''}
         </span>
       `).join('');
@@ -1455,11 +1535,11 @@
         row.className = `p-2 rounded-2xl border flex items-center justify-between gap-2 ${isMe ? 'bg-indigo-950/50 border-indigo-400/40' : 'bg-slate-900/70 border-white/10'}`;
         row.innerHTML = `
           <div class="flex items-center gap-2 min-w-0">
-            <div class="w-7 h-7 rounded-xl flex items-center justify-center font-black text-xs text-white shrink-0" style="background-color:${p.colorHex}">${p.name.slice(0, 1)}</div>
+            <div class="w-7 h-7 rounded-xl flex items-center justify-center font-black text-xs text-white shrink-0" style="background-color:${p.colorHex}">${escapeHtml(p.name.slice(0, 1))}</div>
             <div class="min-w-0">
               <div class="flex items-center gap-1">
                 ${p.isHost ? '<span class="text-amber-400 text-xs">👑</span>' : ''}
-                <span class="text-xs font-extrabold text-white truncate">${p.name}</span>
+                <span class="text-xs font-extrabold text-white truncate">${escapeHtml(p.name)}</span>
                 ${isMe ? '<span class="px-1.5 rounded bg-indigo-500/30 text-indigo-200 text-[10px] font-bold">나</span>' : ''}
                 ${p.isBot ? '<span class="px-1.5 rounded bg-slate-800 text-slate-400 text-[10px] font-bold">AI</span>' : ''}
               </div>
@@ -1586,14 +1666,13 @@
         else if (modeId === 'stack') this.initStack(players);
       },
 
-      // 1) Left-Right Only Stairs 3D (x: -1 left, +1 right; y rises per step)
       initStairs(players) {
         this.scene.background = new THREE.Color(0x080d1e);
         this.scene.fog = new THREE.FogExp2(0x080d1e, 0.013);
         const steps = [{ x: 0, y: 0, stepDir: 1 }];
         let x = 0, y = 0;
         for (let i = 1; i <= 400; i++) {
-          const stepDir = Math.random() < 0.5 ? -1 : 1; // -1 = Left, +1 = Right
+          const stepDir = Math.random() < 0.5 ? -1 : 1;
           x += stepDir * 1.55;
           y += 0.72;
           steps.push({ x, y, stepDir });
@@ -1621,7 +1700,6 @@
         this.modeState = { type: 'stairs', steps, actors };
       },
 
-      // Move Left (-1) or Right (+1) on Stairs
       stepStairsHorizontal(dir) {
         const me = AppState.room.players.find(p => p.id === AppState.myId);
         if (!me || !me.alive || !AppState.game.running) return;
@@ -1641,7 +1719,6 @@
         }
       },
 
-      // 2) Crossy Road 3D
       initCrossy(players) {
         this.scene.background = new THREE.Color(0x071222);
         this.scene.fog = new THREE.FogExp2(0x071222, 0.014);
@@ -1711,7 +1788,6 @@
         this.modeState = { type: 'crossy', lanes, obstacles, actors, deadlineZ, deadlineWall };
       },
 
-      // 3) Only Up 3D
       initOnlyUp(players) {
         this.scene.background = new THREE.Color(0x090d1f);
         this.scene.fog = new THREE.FogExp2(0x090d1f, 0.011);
@@ -1751,7 +1827,6 @@
         this.modeState = { type: 'onlyup', platforms, actors, lavaY: -3.5, lavaPlane };
       },
 
-      // 4) Flappy Royale 3D
       initFlappy(players) {
         this.scene.background = new THREE.Color(0x071326);
         this.scene.fog = new THREE.FogExp2(0x071326, 0.012);
@@ -1780,7 +1855,6 @@
         this.modeState = { type: 'flappy', pipes, actors, forwardSpeed: 6.8 };
       },
 
-      // 5) Stack Tower 3D
       initStack(players) {
         this.scene.background = new THREE.Color(0x0a091d);
         this.scene.fog = new THREE.FogExp2(0x0a091d, 0.011);
@@ -1821,7 +1895,7 @@
         if (!st) return;
 
         if (st.type === 'stairs') {
-          this.stepStairsHorizontal(1); // Right
+          this.stepStairsHorizontal(1);
         } else if (st.type === 'crossy') {
           const actor = st.actors[me.id];
           actor.row++; me.score = actor.row; SoundEngine.sfxStep();
@@ -1846,7 +1920,7 @@
         if (!st) return;
 
         if (st.type === 'stairs') {
-          this.stepStairsHorizontal(-1); // Left
+          this.stepStairsHorizontal(-1);
         } else if (st.type === 'crossy') {
           const actor = st.actors[me.id];
           const stepDir = this._explicitCrossyDir || actor.lateralDir;
@@ -2181,7 +2255,95 @@
     };
 
     // =========================================================================
-    // 7. 6 PARTY GAMES ENGINE (ENTERPRISE YUT & RUMMIKUB UI + OTHERS)
+    // 7. 29-NODE TRADITIONAL YUT BOARD GEOMETRY & HELPERS
+    // =========================================================================
+    // 29 nodes on SVG (viewBox 0 0 260 260)
+    // Outer square 0..19 (0=출발/도착 bottom-right, 5=top-right, 10=top-left, 15=bottom-left)
+    // Diagonal 1 (from 5 -> 20 -> 21 -> 22(center) -> 23 -> 24 -> 15)
+    // Diagonal 2 (from 10 -> 25 -> 26 -> 22(center) -> 27 -> 28 -> 0)
+    const YUT_NODES = {
+      0:  { x: 230, y: 230, label: '참먹이', corner: true },
+      1:  { x: 230, y: 190 },
+      2:  { x: 230, y: 150 },
+      3:  { x: 230, y: 110 },
+      4:  { x: 230, y: 70 },
+      5:  { x: 230, y: 30,  label: '모서리', corner: true },
+      6:  { x: 190, y: 30 },
+      7:  { x: 150, y: 30 },
+      8:  { x: 110, y: 30 },
+      9:  { x: 70,  y: 30 },
+      10: { x: 30,  y: 30,  label: '모서리', corner: true },
+      11: { x: 30,  y: 70 },
+      12: { x: 30,  y: 110 },
+      13: { x: 30,  y: 150 },
+      14: { x: 30,  y: 190 },
+      15: { x: 30,  y: 230, label: '모서리', corner: true },
+      16: { x: 70,  y: 230 },
+      17: { x: 110, y: 230 },
+      18: { x: 150, y: 230 },
+      19: { x: 190, y: 230 },
+      // Diagonal 5 -> 22 -> 15
+      20: { x: 196, y: 64 },
+      21: { x: 163, y: 97 },
+      22: { x: 130, y: 130, label: '방', corner: true },
+      23: { x: 97,  y: 163 },
+      24: { x: 64,  y: 196 },
+      // Diagonal 10 -> 22 -> 0
+      25: { x: 64,  y: 64 },
+      26: { x: 97,  y: 97 },
+      27: { x: 163, y: 163 },
+      28: { x: 196, y: 196 }
+    };
+
+    const YUT_EDGES = [
+      // Outer loop
+      [0,1],[1,2],[2,3],[3,4],[4,5],
+      [5,6],[6,7],[7,8],[8,9],[9,10],
+      [10,11],[11,12],[12,13],[13,14],[14,15],
+      [15,16],[16,17],[17,18],[18,19],[19,0],
+      // Diagonals
+      [5,20],[20,21],[21,22],[22,23],[23,24],[24,15],
+      [10,25],[25,26],[26,22],[22,27],[27,28],[28,0]
+    ];
+
+    function computeYutNextNode(currentNode, steps, started) {
+      if (!started || currentNode === 0) {
+        // Starting from home (0)
+        return { node: steps, finished: false };
+      }
+      let cur = currentNode;
+      // Branching at start of move if standing on shortcut corner/center
+      let pathMode = 'outer';
+      if (cur === 5 || cur === 20 || cur === 21 || cur === 23 || cur === 24) pathMode = 'diag1';
+      else if (cur === 10 || cur === 25 || cur === 26 || cur === 27 || cur === 28) pathMode = 'diag2';
+      else if (cur === 22) pathMode = 'diag2'; // Center heads directly to home (0)
+
+      for (let s = 0; s < steps; s++) {
+        if (pathMode === 'outer') {
+          if (cur === 19) return { node: 0, finished: true };
+          cur = cur + 1;
+        } else if (pathMode === 'diag1') {
+          if (cur === 5) cur = 20;
+          else if (cur === 20) cur = 21;
+          else if (cur === 21) cur = 22;
+          else if (cur === 22) cur = 23;
+          else if (cur === 23) cur = 24;
+          else if (cur === 24) cur = 15;
+          else if (cur === 15) { pathMode = 'outer'; cur = 16; }
+        } else if (pathMode === 'diag2') {
+          if (cur === 10) cur = 25;
+          else if (cur === 25) cur = 26;
+          else if (cur === 26) cur = 22;
+          else if (cur === 22) cur = 27;
+          else if (cur === 27) cur = 28;
+          else if (cur === 28) return { node: 0, finished: true };
+        }
+      }
+      return { node: cur, finished: false };
+    }
+
+    // =========================================================================
+    // 8. 6 PARTY GAMES ENGINE (YUT, RUMMIKUB, LIAR, CATCHMIND, WORDQUIZ, WORDCHAIN)
     // =========================================================================
     function initPartyGame(modeId, players) {
       const turnOrder = players.map(p => p.id);
@@ -2189,8 +2351,8 @@
         modeId,
         turnOrder,
         activeTurnIdx: 0,
-        turnDuration: 14 / (AppState.room.speedMultiplier || 1.0),
-        turnTimeLeft: 14 / (AppState.room.speedMultiplier || 1.0),
+        turnDuration: 16 / (AppState.room.speedMultiplier || 1.0),
+        turnTimeLeft: 16 / (AppState.room.speedMultiplier || 1.0),
         roundNumber: 1,
         log: []
       };
@@ -2211,9 +2373,10 @@
         base.category = chosen.category;
         base.secretWord = chosen.words[Math.floor(Math.random() * chosen.words.length)];
         base.liarId = turnOrder[Math.floor(Math.random() * turnOrder.length)];
-        base.phase = 'clue';
+        base.phase = 'clue'; // 'clue' | 'vote' | 'defense'
         base.clues = [];
         base.votes = {};
+        base.revealMyRole = true;
       } else if (modeId === 'catchmind') {
         const pool = [...AppState.customContent.catchmind, ...PRESET_CATCH_WORDS.map(w => ({ category: '기본', word: w }))];
         const chosen = pool[Math.floor(Math.random() * pool.length)];
@@ -2226,10 +2389,12 @@
         base.phase = 'throw'; // 'throw' | 'move'
         base.throwing = false;
         base.lastThrow = null;
+        base.stickFaces = [1, 0, 1, 0]; // 1 = flat (배), 0 = round (등)
         base.lastBonus = false;
+        base.selectedTokenId = null;
         base.tokens = {};
         players.forEach(p => {
-          base.tokens[p.id] = [0, 1, 2, 3].map(i => ({ id: i, pos: 0, finished: false }));
+          base.tokens[p.id] = [0, 1, 2, 3].map(i => ({ id: i, node: 0, started: false, finished: false }));
         });
       } else if (modeId === 'rummikub') {
         const colors = ['빨강', '파랑', '노랑', '검정'];
@@ -2241,7 +2406,7 @@
         base.deck = deck;
         base.hands = {};
         players.forEach(p => {
-          base.hands[p.id] = base.deck.splice(0, 7);
+          base.hands[p.id] = base.deck.splice(0, 8);
         });
         base.selectedIds = new Set();
         base.sortBy = 'color'; // 'color' | 'number'
@@ -2278,6 +2443,7 @@
           if (pState.modeId === 'yut') {
             pState.phase = 'throw';
             pState.throwing = false;
+            pState.selectedTokenId = null;
           }
           if (pState.modeId === 'rummikub') {
             pState.selectedIds.clear();
@@ -2320,10 +2486,10 @@
           advanceCatchmindRound();
         } else if (pState.modeId === 'liar') {
           if (pState.phase === 'clue') {
-            pState.clues.push({ name: curPlayer ? curPlayer.name : '참가자', text: '무난한 특징이 있어요!' });
+            pState.clues.push({ playerId: curPlayer ? curPlayer.id : '', name: curPlayer ? curPlayer.name : '참가자', text: '무난한 특징이 있어요!' });
             if (pState.clues.length >= AppState.room.players.filter(p => p.alive).length) {
               pState.phase = 'vote';
-              pState.turnTimeLeft = 10;
+              pState.turnTimeLeft = 12;
               renderPartyStage();
             } else {
               advancePartyTurn();
@@ -2400,11 +2566,21 @@
         }
       } else if (pState.modeId === 'liar') {
         if (pState.phase === 'clue' && curPlayer && curPlayer.isBot) {
-          const sampleClues = ['일상에서 자주 마주치는 느낌이에요.', '분위기를 확 바꿔주는 특징이 있습니다.', '어린 시절 기억이 떠오르는 키워드네요.'];
-          pState.clues.push({ name: curPlayer.name, text: sampleClues[Math.floor(Math.random() * sampleClues.length)] });
+          const sampleClues = [
+            '일상에서 자주 접할 수 있는 친숙한 키워드입니다.',
+            '사람들마다 취향이 갈릴 수 있는 특징이 있어요.',
+            '생각보다 크기가 크지 않고 아담한 편이죠.',
+            '분위기를 전환할 때 꼭 떠오르는 단어입니다.'
+          ];
+          pState.clues.push({
+            playerId: curPlayer.id,
+            name: curPlayer.name,
+            text: sampleClues[Math.floor(Math.random() * sampleClues.length)]
+          });
+          SoundEngine.sfxStep();
           if (pState.clues.length >= AppState.room.players.filter(p => p.alive).length) {
             pState.phase = 'vote';
-            pState.turnTimeLeft = 10;
+            pState.turnTimeLeft = 12;
             renderPartyStage();
           } else {
             advancePartyTurn();
@@ -2430,9 +2606,10 @@
       } else if (pState.modeId === 'rummikub' && curPlayer && curPlayer.isBot) {
         const hand = pState.hands[curPlayer.id] || [];
         const valid = findValidMeldInHand(hand);
-        if (valid && valid.length >= 3 && Math.random() < 0.55) {
+        if (valid && valid.length >= 3 && Math.random() < 0.6) {
           const ids = new Set(valid.map(t => t.id));
-          pState.melds.push(valid);
+          const evalRes = evaluateRummikubSelection(valid);
+          pState.melds.push({ type: evalRes.type, tiles: valid });
           pState.hands[curPlayer.id] = hand.filter(t => !ids.has(t.id));
           curPlayer.score += 1;
           SoundEngine.sfxSuccess();
@@ -2453,12 +2630,10 @@
       const colors = tiles.map(t => t.color);
       const uniqueColors = new Set(colors);
 
-      // Group: same number (3~4), distinct colors
       if (tiles.length <= 4 && nums.every(n => n === nums[0]) && uniqueColors.size === tiles.length) {
         return { valid: true, type: 'group', reason: `그룹 성립 (${nums[0]}×${tiles.length})` };
       }
 
-      // Run: same color, consecutive numbers
       if (uniqueColors.size === 1) {
         const sorted = [...nums].sort((a, b) => a - b);
         const consecutive = sorted.every((n, i) => i === 0 || n === sorted[i - 1] + 1);
@@ -2486,7 +2661,6 @@
       return null;
     }
 
-    // WordChain submission
     function processWordChainSubmission(playerId, rawWord) {
       const pState = AppState.game.party;
       const pl = AppState.room.players.find(p => p.id === playerId);
@@ -2554,8 +2728,23 @@
           pState.guesses.unshift(`${AppState.myName}: ${val}`);
           renderPartyStage();
         }
-      } else if (pState.modeId === 'liar' && pState.phase === 'defense') {
-        resolveLiarDefense(val);
+      } else if (pState.modeId === 'liar') {
+        if (pState.phase === 'clue') {
+          const cur = getActiveTurnPlayer();
+          if (cur && cur.id === AppState.myId) {
+            pState.clues.push({ playerId: AppState.myId, name: AppState.myName, text: val });
+            SoundEngine.sfxStep();
+            if (pState.clues.length >= AppState.room.players.filter(p => p.alive).length) {
+              pState.phase = 'vote';
+              pState.turnTimeLeft = 12;
+              renderPartyStage();
+            } else {
+              advancePartyTurn();
+            }
+          }
+        } else if (pState.phase === 'defense') {
+          resolveLiarDefense(val);
+        }
       }
 
       input.value = '';
@@ -2581,6 +2770,13 @@
       pState.strokes = [];
       pState.guesses = [];
       pState.turnTimeLeft = 18;
+      renderPartyStage();
+    }
+
+    function toggleLiarRoleBlind() {
+      const pState = AppState.game.party;
+      if (!pState || pState.modeId !== 'liar') return;
+      pState.revealMyRole = !pState.revealMyRole;
       renderPartyStage();
     }
 
@@ -2636,53 +2832,86 @@
         if (!AppState.game.running || AppState.game.ended || !AppState.game.party) return;
         const outcomes = [1, 2, 2, 3, 3, 4, 5];
         const steps = outcomes[Math.floor(Math.random() * outcomes.length)];
+        // Generate matching stick faces (flat count = steps % 4, or 4 for 윷, 0 for 모)
+        const flatCount = steps === 4 ? 4 : (steps === 5 ? 0 : steps);
+        const faces = [0, 0, 0, 0];
+        const idxs = [0, 1, 2, 3].sort(() => Math.random() - 0.5);
+        for (let i = 0; i < flatCount; i++) faces[idxs[i]] = 1;
+
+        pState.stickFaces = faces;
         pState.lastThrow = steps;
         pState.lastBonus = steps === 4 || steps === 5;
         pState.throwing = false;
         pState.phase = 'move';
+        const firstAvail = (pState.tokens[playerId] || []).find(t => !t.finished);
+        pState.selectedTokenId = firstAvail ? firstAvail.id : null;
         SoundEngine.sfxJump();
         renderPartyStage();
-      }, 240);
+      }, 280);
+    }
+
+    function selectYutTokenPreview(tokenId) {
+      const pState = AppState.game.party;
+      if (!pState || pState.modeId !== 'yut') return;
+      pState.selectedTokenId = tokenId;
+      renderPartyStage();
     }
 
     function doYutMove(playerId, tokenId) {
       const pState = AppState.game.party;
-      const tok = pState.tokens[playerId].find(t => t.id === tokenId);
+      const myList = pState.tokens[playerId] || [];
+      const tok = myList.find(t => t.id === tokenId);
       const pl = AppState.room.players.find(p => p.id === playerId);
       const steps = pState.lastThrow || 1;
       if (tok && !tok.finished) {
-        tok.pos += steps;
-        // Check capture against other players on the same board square
+        const originNode = tok.node;
+        const originStarted = tok.started;
+        // Piggyback (업기): move any friendly token stacked on the same active board node
+        const stackGroup = (originStarted && originNode > 0)
+          ? myList.filter(t => !t.finished && t.started && t.node === originNode)
+          : [tok];
+
+        const dest = computeYutNextNode(originNode, steps, originStarted);
+        stackGroup.forEach(t => {
+          t.started = true;
+          t.node = dest.node;
+          if (dest.finished) {
+            t.finished = true;
+            if (pl) pl.score += 1;
+          }
+        });
+
         let captured = false;
-        if (tok.pos < 20) {
+        if (!dest.finished && dest.node > 0) {
           Object.entries(pState.tokens).forEach(([oid, oList]) => {
             if (oid === playerId) return;
             oList.forEach(ot => {
-              if (!ot.finished && ot.pos > 0 && ot.pos === tok.pos) {
-                ot.pos = 0;
+              if (!ot.finished && ot.started && ot.node === dest.node) {
+                ot.node = 0;
+                ot.started = false;
                 captured = true;
               }
             });
           });
         }
-        if (tok.pos >= 20) {
-          tok.finished = true;
-          if (pl) pl.score += 1;
-          SoundEngine.sfxSuccess();
-        } else {
-          SoundEngine.sfxStep();
+
+        if (dest.finished) SoundEngine.sfxSuccess();
+        else SoundEngine.sfxStep();
+
+        if (captured) {
+          showToast(`🎯 ${pl ? pl.name : '플레이어'} 님이 상대 말을 잡았습니다! (+보너스 턴)`);
         }
-        if (captured) showToast(`🎯 ${pl ? pl.name : '플레이어'} 님이 상대 말을 잡았습니다!`);
-      }
 
-      if (pl && pState.tokens[playerId].every(t => t.finished)) {
-        return finishSurvivalRound(pl);
-      }
+        if (pl && myList.every(t => t.finished)) {
+          return finishSurvivalRound(pl);
+        }
 
-      const bonusTurn = steps === 4 || steps === 5;
-      pState.phase = 'throw';
-      if (!bonusTurn) advancePartyTurn();
-      else renderPartyStage();
+        const bonusTurn = steps === 4 || steps === 5 || captured;
+        pState.phase = 'throw';
+        pState.selectedTokenId = null;
+        if (!bonusTurn) advancePartyTurn();
+        else renderPartyStage();
+      }
     }
 
     function toggleRummikubTile(tileId) {
@@ -2745,6 +2974,9 @@
       advancePartyTurn();
     }
 
+    // =========================================================================
+    // 9. RICH PARTY STAGE RENDERER (YUT BOARD, RUMMIKUB TABLE, LIAR GAME, ETC.)
+    // =========================================================================
     function renderPartyStage() {
       const pState = AppState.game.party;
       if (!pState) return;
@@ -2758,16 +2990,19 @@
       const inputBar = document.getElementById('partyInputBar');
       const inputEl = document.getElementById('partyTextInput');
       const submitBtn = document.getElementById('partySubmitBtn');
+      const stageBadge = document.getElementById('partyStageBadge');
 
       inputBar.classList.add('hidden');
+      stageBadge.textContent = '진행중';
 
       if (pState.modeId === 'wordchain') {
         const myTurn = Boolean(cur && cur.id === AppState.myId && me && me.alive);
+        stageBadge.textContent = myTurn ? '내 차례!' : '대기중';
         body.innerHTML = `
-          <div class="text-center space-y-2 py-2">
-            <div class="text-xs text-slate-400">이전 단어: <strong class="text-white">${pState.currentWord}</strong></div>
-            <div class="text-3xl sm:text-4xl font-black text-sky-400">시작 글자: "${pState.requiredChar}"</div>
-            <div class="text-[11px] text-slate-400">사용된 단어 ${pState.usedWords.size}개</div>
+          <div class="text-center space-y-2 py-3">
+            <div class="text-xs text-slate-400">이전 단어: <strong class="text-white">${escapeHtml(pState.currentWord)}</strong></div>
+            <div class="text-3xl sm:text-4xl font-black text-sky-400">시작 글자: "${escapeHtml(pState.requiredChar)}"</div>
+            <div class="text-[11px] text-slate-400">연결된 단어 ${pState.usedWords.size}개</div>
           </div>
         `;
         inputBar.classList.remove('hidden');
@@ -2775,13 +3010,15 @@
         submitBtn.disabled = !myTurn;
         inputEl.placeholder = myTurn ? `"${pState.requiredChar}"(으)로 시작하는 단어 입력` : '다른 플레이어 차례입니다...';
         if (myTurn) requestAnimationFrame(() => inputEl.focus());
+
       } else if (pState.modeId === 'wordquiz') {
         const q = pState.questions[pState.qIndex] || { prompt: '완료', hint: '', answer: '' };
+        stageBadge.textContent = `문제 ${pState.qIndex + 1}/${pState.questions.length}`;
         body.innerHTML = `
-          <div class="text-center space-y-2">
-            <span class="px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-xs font-bold">${q.hint}</span>
-            <div class="text-2xl sm:text-3xl font-black text-white tracking-widest">${q.prompt}</div>
-            <div class="text-xs text-slate-400">${pState.log[0] || '정답을 입력해 점수를 획득하세요!'}</div>
+          <div class="text-center space-y-2 py-2">
+            <span class="px-3 py-1 rounded-full bg-amber-500/20 border border-amber-400/30 text-amber-300 text-xs font-bold">${escapeHtml(q.hint)}</span>
+            <div class="text-2xl sm:text-4xl font-black text-white tracking-widest py-1">${escapeHtml(q.prompt)}</div>
+            <div class="text-xs text-slate-400">${escapeHtml(pState.log[0] || '정답을 입력해 점수를 획득하세요!')}</div>
           </div>
         `;
         inputBar.classList.remove('hidden');
@@ -2789,50 +3026,107 @@
         submitBtn.disabled = !(me && me.alive);
         inputEl.placeholder = '정답 입력 후 Enter';
         if (me && me.alive) requestAnimationFrame(() => inputEl.focus());
+
       } else if (pState.modeId === 'liar') {
+        // FULL VISUAL LIAR GAME UI: Role/Secret Card + Discussion Table + Clue Bubbles + Vote Cards + Final Defense
         const amLiar = pState.liarId === AppState.myId;
+        const myTurnClue = pState.phase === 'clue' && cur && cur.id === AppState.myId;
+        const phaseLabels = { clue: '1단계 · 한 줄 설명 토론', vote: '2단계 · 라이어 지목 투표', defense: '3단계 · 라이어 최후의 변론' };
+        stageBadge.textContent = phaseLabels[pState.phase] || '추리 진행중';
+
+        const roleCardHtml = `
+          <div class="p-3 sm:p-4 rounded-2xl border ${amLiar ? 'bg-gradient-to-r from-rose-950/80 to-slate-900 border-rose-500/45' : 'bg-gradient-to-r from-emerald-950/75 to-slate-900 border-emerald-400/40'} flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-xl ${amLiar ? 'bg-rose-500/25 border border-rose-400/40' : 'bg-emerald-500/25 border border-emerald-400/40'}">
+                ${pState.revealMyRole ? (amLiar ? '🎭' : '🕵️') : '🙈'}
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="px-2 py-0.5 rounded bg-slate-950/80 border border-white/10 text-[11px] font-black text-indigo-300">주제: ${escapeHtml(pState.category)}</span>
+                  <span class="text-xs font-black ${amLiar ? 'text-rose-300' : 'text-emerald-300'}">
+                    ${pState.revealMyRole ? (amLiar ? '당신은 라이어(LIAR)입니다!' : '당신은 시민(CITIZEN)입니다') : '역할/제시어 가림 상태'}
+                  </span>
+                </div>
+                <div class="text-sm sm:text-base font-black text-white mt-0.5">
+                  ${pState.revealMyRole
+                    ? (amLiar ? '제시어를 모른 척 자연스럽게 설명하세요!' : `공통 제시어: <span class="text-amber-300 underline decoration-amber-400/60">${escapeHtml(pState.secretWord)}</span>`)
+                    : '••••••'}
+                </div>
+              </div>
+            </div>
+            <button onclick="toggleLiarRoleBlind()" class="px-3 py-1.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-white/15 text-[11px] font-extrabold text-slate-200">
+              ${pState.revealMyRole ? '🙈 카드 가리기' : '👁️ 카드 확인'}
+            </button>
+          </div>
+        `;
+
+        const seatGridHtml = `
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            ${AppState.room.players.map(p => {
+              const clueObj = pState.clues.find(c => c.playerId === p.id);
+              const isTurn = pState.phase === 'clue' && cur && cur.id === p.id;
+              const voteCount = Object.values(pState.votes).filter(v => v === p.id).length;
+              const votedByMe = pState.votes[AppState.myId] === p.id;
+              const canVoteThis = pState.phase === 'vote' && p.alive && p.id !== AppState.myId;
+              return `
+                <div class="p-2.5 rounded-2xl border ${isTurn ? 'bg-indigo-950/70 border-indigo-400 shadow-lg shadow-indigo-500/20' : (votedByMe ? 'bg-rose-950/65 border-rose-400' : 'bg-slate-900/80 border-white/10')} flex flex-col justify-between gap-1.5">
+                  <div class="flex items-center justify-between gap-1">
+                    <div class="flex items-center gap-1.5 min-w-0">
+                      <span class="w-5 h-5 rounded-lg flex items-center justify-center text-[10px] font-black text-white shrink-0" style="background:${p.colorHex}">${escapeHtml(p.name.slice(0,1))}</span>
+                      <span class="text-xs font-extrabold text-white truncate">${escapeHtml(p.name)}</span>
+                    </div>
+                    ${pState.phase === 'vote' ? `<span class="px-1.5 py-0.2 rounded bg-rose-500/25 text-rose-200 text-[10px] font-black">${voteCount}표</span>` : (isTurn ? '<span class="text-[10px] font-black text-amber-300 animate-pulse">발언중</span>' : '')}
+                  </div>
+                  <div class="px-2.5 py-1.5 rounded-xl bg-slate-950/75 border border-white/5 text-[11px] text-slate-200 min-h-[34px] flex items-center">
+                    ${clueObj ? `💬 "${escapeHtml(clueObj.text)}"` : '<span class="text-slate-500">아직 발언 전...</span>'}
+                  </div>
+                  ${canVoteThis ? `
+                    <button onclick="castLiarVote('${p.id}')" class="w-full py-1.5 rounded-xl ${votedByMe ? 'bg-rose-600 text-white' : 'bg-rose-500/20 hover:bg-rose-500/35 text-rose-200 border border-rose-400/35'} text-[11px] font-black transition">
+                      ${votedByMe ? '✅ 지목 완료' : '🗳️ 라이어로 지목'}
+                    </button>
+                  ` : ''}
+                </div>
+              `;
+            }).join('')}
+          </div>
+        `;
+
         if (pState.phase === 'clue') {
-          body.innerHTML = `
-            <div class="flex flex-wrap items-center justify-between gap-2 p-3 rounded-2xl bg-slate-900/80 border border-white/10">
-              <span class="text-xs font-bold text-indigo-300">주제: ${pState.category}</span>
-              <span class="text-sm font-black ${amLiar ? 'text-rose-400' : 'text-emerald-300'}">
-                ${amLiar ? '🎭 당신은 라이어입니다! (제시어 비공개)' : `제시어: ${pState.secretWord}`}
-              </span>
-            </div>
-            <div class="space-y-1 max-h-28 overflow-y-auto text-xs">
-              ${pState.clues.map(c => `<div class="px-3 py-1.5 rounded-xl bg-slate-900/70"><strong>${c.name}:</strong> ${c.text}</div>`).join('') || '<div class="text-slate-400">발언 순서대로 특징을 설명하세요.</div>'}
-            </div>
-          `;
+          body.innerHTML = roleCardHtml + seatGridHtml;
+          inputBar.classList.remove('hidden');
+          inputEl.disabled = !myTurnClue;
+          submitBtn.disabled = !myTurnClue;
+          inputEl.placeholder = myTurnClue ? '제시어에 대한 한 줄 설명을 입력하세요 (직접 언급 금지)...' : `${cur ? cur.name : '상대'} 님의 설명을 기다리는 중...`;
+          if (myTurnClue) requestAnimationFrame(() => inputEl.focus());
         } else if (pState.phase === 'vote') {
-          body.innerHTML = `
-            <div class="text-xs font-extrabold text-amber-300">라이어로 의심되는 참가자에게 투표하세요!</div>
-            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
-              ${AppState.room.players.filter(p => p.alive && p.id !== AppState.myId).map(p => `
-                <button onclick="castLiarVote('${p.id}')" class="p-2.5 rounded-xl bg-slate-900 hover:bg-rose-500/20 border border-white/15 text-xs font-black text-white">
-                  🗳️ ${p.name}
-                </button>
-              `).join('')}
+          body.innerHTML = roleCardHtml + `<div class="text-xs font-extrabold text-amber-300">🗳️ 모든 발언이 끝났습니다! 라이어로 의심되는 플레이어 카드를 눌러 투표하세요.</div>` + seatGridHtml;
+        } else if (pState.phase === 'defense') {
+          const liarPlayer = AppState.room.players.find(p => p.id === pState.liarId);
+          body.innerHTML = roleCardHtml + `
+            <div class="p-4 rounded-2xl bg-rose-950/70 border border-rose-400/45 text-center space-y-1">
+              <div class="text-sm sm:text-base font-black text-rose-200">🚨 라이어 [${liarPlayer ? escapeHtml(liarPlayer.name) : ''}] 지목 성공!</div>
+              <div class="text-xs text-slate-200">라이어가 공통 제시어를 정확히 맞히면 역전 승리합니다!</div>
             </div>
           `;
-        } else if (pState.phase === 'defense') {
-          body.innerHTML = `<div class="text-center text-sm font-black text-rose-300">라이어가 지목되었습니다! 공통 제시어를 맞히면 역전 승리!</div>`;
           inputBar.classList.remove('hidden');
           inputEl.disabled = !amLiar;
           submitBtn.disabled = !amLiar;
-          inputEl.placeholder = amLiar ? '공통 제시어를 입력하세요!' : '라이어가 제시어를 추측 중입니다...';
+          inputEl.placeholder = amLiar ? '공통 제시어를 추측하여 입력하세요!' : '라이어가 제시어를 입력하는 중입니다...';
+          if (amLiar) requestAnimationFrame(() => inputEl.focus());
         }
+
       } else if (pState.modeId === 'catchmind') {
         const amDrawer = pState.drawerId === AppState.myId;
         const linesSvg = pState.strokes.map(s => `<line x1="${s.x1}" y1="${s.y1}" x2="${s.x2}" y2="${s.y2}" stroke="${s.color}" stroke-width="4" stroke-linecap="round"/>`).join('');
         body.innerHTML = `
           <div class="flex items-center justify-between text-xs">
-            <span class="text-slate-300">카테고리: <strong>${pState.category}</strong></span>
-            <span class="font-black text-sky-300">${amDrawer ? `출제 제시어: [${pState.targetWord}]` : '그림을 보고 정답을 맞히세요!'}</span>
+            <span class="text-slate-300">카테고리: <strong>${escapeHtml(pState.category)}</strong></span>
+            <span class="font-black text-sky-300">${amDrawer ? `출제 제시어: [${escapeHtml(pState.targetWord)}]` : '그림을 보고 정답을 맞히세요!'}</span>
           </div>
           <svg id="catchCanvasSvg" viewBox="0 0 300 150" class="w-full h-36 rounded-2xl bg-slate-950 border border-white/15 touch-none">
             ${linesSvg}
           </svg>
-          <div class="text-[11px] text-slate-400 truncate">${pState.guesses[0] || pState.log[0] || '정답 입력창에 단어를 적어보세요.'}</div>
+          <div class="text-[11px] text-slate-400 truncate">${escapeHtml(pState.guesses[0] || pState.log[0] || '정답 입력창에 단어를 적어보세요.')}</div>
         `;
         const svgEl = document.getElementById('catchCanvasSvg');
         if (svgEl && amDrawer) {
@@ -2859,76 +3153,163 @@
           submitBtn.disabled = false;
           inputEl.placeholder = '정답 입력 후 Enter';
         }
+
       } else if (pState.modeId === 'yut') {
-        // Enterprise Yut UI: Status Strip + Yut Result Card & CTA + Token Selection Dock
+        // FULL VISUAL 29-NODE YUT BOARD + 4 YUT STICKS + TOKEN DOCK
         const myTurn = Boolean(cur && cur.id === AppState.myId);
         const myTokens = pState.tokens[AppState.myId] || [];
         const yutMeta = {
-          1: { label: '도 · 1칸 전진', badge: 'bg-sky-500/20 text-sky-300 border-sky-400/30' },
-          2: { label: '개 · 2칸 전진', badge: 'bg-indigo-500/20 text-indigo-300 border-indigo-400/30' },
-          3: { label: '걸 · 3칸 전진', badge: 'bg-emerald-500/20 text-emerald-300 border-emerald-400/30' },
-          4: { label: '윷 · 4칸 + 추가 턴', badge: 'bg-amber-500/20 text-amber-300 border-amber-400/30' },
-          5: { label: '모 · 5칸 + 추가 턴', badge: 'bg-rose-500/20 text-rose-300 border-rose-400/30' }
+          1: { name: '도', desc: '1칸 전진', badge: 'bg-sky-500/20 text-sky-300 border-sky-400/35' },
+          2: { name: '개', desc: '2칸 전진', badge: 'bg-indigo-500/20 text-indigo-300 border-indigo-400/35' },
+          3: { name: '걸', desc: '3칸 전진', badge: 'bg-emerald-500/20 text-emerald-300 border-emerald-400/35' },
+          4: { name: '윷', desc: '4칸 + 한 번 더!', badge: 'bg-amber-500/20 text-amber-300 border-amber-400/35' },
+          5: { name: '모', desc: '5칸 + 한 번 더!', badge: 'bg-rose-500/20 text-rose-300 border-rose-400/35' }
         };
         const curYut = pState.lastThrow ? yutMeta[pState.lastThrow] : null;
+        stageBadge.textContent = pState.phase === 'throw' ? '윷 던지기 단계' : '말 이동 단계';
+
+        // Compute destination preview node for currently selected token
+        let previewDestNode = null;
+        if (myTurn && pState.phase === 'move' && pState.selectedTokenId !== null && pState.lastThrow) {
+          const selTok = myTokens.find(t => t.id === pState.selectedTokenId && !t.finished);
+          if (selTok) {
+            const dest = computeYutNextNode(selTok.node, pState.lastThrow, selTok.started);
+            previewDestNode = dest.finished ? 0 : dest.node;
+          }
+        }
+
+        // Build SVG edges & 29 nodes
+        const edgesSvg = YUT_EDGES.map(([a, b]) => {
+          const na = YUT_NODES[a], nb = YUT_NODES[b];
+          return `<line x1="${na.x}" y1="${na.y}" x2="${nb.x}" y2="${nb.y}" stroke="rgba(148,163,184,0.35)" stroke-width="2.5" />`;
+        }).join('');
+
+        const nodesSvg = Object.entries(YUT_NODES).map(([idStr, pt]) => {
+          const nid = Number(idStr);
+          const isPreview = previewDestNode === nid;
+          const r = pt.corner ? 13 : 9;
+          const fill = nid === 0 ? '#f59e0b' : (pt.corner ? '#1e293b' : '#0f172a');
+          const stroke = isPreview ? '#38bdf8' : (nid === 0 ? '#fef3c7' : (pt.corner ? '#818cf8' : '#64748b'));
+          return `
+            <g>
+              ${isPreview ? `<circle cx="${pt.x}" cy="${pt.y}" r="${r + 6}" fill="rgba(56,189,248,0.28)" stroke="#38bdf8" stroke-width="2" />` : ''}
+              <circle cx="${pt.x}" cy="${pt.y}" r="${r}" fill="${fill}" stroke="${stroke}" stroke-width="${isPreview ? 2.5 : 1.8}" />
+              ${pt.label ? `<text x="${pt.x}" y="${pt.y + 3}" text-anchor="middle" fill="${nid === 0 ? '#0f172a' : '#cbd5e1'}" font-size="7.5" font-weight="900">${pt.label}</text>` : ''}
+            </g>
+          `;
+        }).join('');
+
+        // Group active tokens on board nodes
+        const nodeOccupants = {};
+        AppState.room.players.forEach(p => {
+          (pState.tokens[p.id] || []).forEach(t => {
+            if (!t.finished && t.started && t.node > 0) {
+              if (!nodeOccupants[t.node]) nodeOccupants[t.node] = [];
+              nodeOccupants[t.node].push({ player: p, token: t });
+            }
+          });
+        });
+
+        const tokensSvg = Object.entries(nodeOccupants).map(([nidStr, list]) => {
+          const pt = YUT_NODES[Number(nidStr)];
+          if (!pt) return '';
+          return list.map((item, idx) => {
+            const ox = (idx - (list.length - 1) * 0.5) * 7;
+            const oy = -idx * 4;
+            const isMine = item.player.id === AppState.myId;
+            return `
+              <g transform="translate(${pt.x + ox}, ${pt.y + oy})" ${isMine && myTurn && pState.phase === 'move' ? `onclick="doYutMove('${AppState.myId}', ${item.token.id})" style="cursor:pointer"` : ''}>
+                <circle r="8.5" fill="${item.player.colorHex}" stroke="#ffffff" stroke-width="${isMine ? 2.2 : 1.2}" />
+                <text y="3" text-anchor="middle" fill="#ffffff" font-size="8" font-weight="900">${item.token.id + 1}</text>
+              </g>
+            `;
+          }).join('');
+        }).join('');
+
+        // 4 Yut Sticks Visual
+        const sticksHtml = (pState.stickFaces || [1, 0, 1, 0]).map(face => `
+          <div class="${pState.throwing ? 'yut-stick-toss' : ''} w-7 h-16 rounded-full border-2 flex flex-col items-center justify-evenly shadow-lg ${face === 1 ? 'bg-amber-200 border-amber-500 text-amber-900' : 'bg-amber-900 border-amber-600 text-amber-200'}">
+            ${face === 1 ? '<span class="text-[9px] font-black">✕</span><span class="text-[9px] font-black">✕</span><span class="text-[9px] font-black">✕</span>' : '<span class="w-1.5 h-8 rounded-full bg-amber-700/70"></span>'}
+          </div>
+        `).join('');
 
         body.innerHTML = `
-          <!-- Player Completion Status Cards -->
-          <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
-            ${AppState.room.players.slice(0, 6).map(p => {
-              const pToks = pState.tokens[p.id] || [];
-              const doneCount = pToks.filter(t => t.finished).length;
-              const isCur = cur && cur.id === p.id;
-              return `
-                <div class="p-2 rounded-xl border ${isCur ? 'bg-indigo-950/60 border-indigo-400' : 'bg-slate-900/75 border-white/10'} flex items-center justify-between gap-1.5">
-                  <div class="flex items-center gap-1.5 min-w-0">
-                    <span class="w-2.5 h-2.5 rounded-full shrink-0" style="background:${p.colorHex}"></span>
-                    <span class="text-[11px] font-extrabold text-white truncate">${p.name}</span>
-                  </div>
-                  <span class="px-1.5 py-0.5 rounded text-[10px] font-black ${doneCount === 4 ? 'bg-emerald-500/20 text-emerald-300' : 'bg-slate-800 text-slate-300'}">${doneCount}/4 완주</span>
-                </div>
-              `;
-            }).join('')}
-          </div>
-
-          <!-- Yut Result & Throw CTA Card -->
-          <div class="p-3.5 rounded-2xl bg-slate-950/75 border border-white/10 flex flex-wrap items-center justify-between gap-3">
-            <div class="flex items-center gap-2.5">
-              <span class="px-2.5 py-1 rounded-lg border text-xs font-black ${curYut ? curYut.badge : 'bg-slate-800 text-slate-400 border-white/10'}">
-                ${pState.throwing ? '윷 던지는 중...' : (curYut ? curYut.label : '대기중')}
-              </span>
-              <span class="text-xs text-slate-300 font-bold">
-                ${myTurn ? (pState.phase === 'throw' ? '내 턴: 윷을 던지세요' : '이동할 말을 선택하세요') : `${cur ? cur.name : '상대'} 진행 중`}
-              </span>
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
+            <!-- Left: 29-Node Visual SVG Yut Board -->
+            <div class="md:col-span-6 flex flex-col items-center justify-center p-2.5 rounded-2xl bg-slate-950/85 border border-amber-500/25">
+              <svg viewBox="0 0 260 260" class="w-full max-w-[235px] h-auto">
+                <rect x="8" y="8" width="244" height="244" rx="22" fill="rgba(30,41,59,0.55)" stroke="rgba(245,158,11,0.3)" stroke-width="1.5" />
+                ${edgesSvg}
+                ${nodesSvg}
+                ${tokensSvg}
+              </svg>
+              <div class="text-[10px] text-slate-400 font-bold mt-1">모서리·중앙(방)에서 지름길 대각선 진입 · 상대 말 칸 도착 시 잡기</div>
             </div>
-            <button ${myTurn && pState.phase === 'throw' && !pState.throwing ? `onclick="doYutThrow('${AppState.myId}')"` : 'disabled'}
-              class="btn-primary px-4 py-2 rounded-xl text-xs font-black text-white">
-              ${pState.throwing ? '투척 중...' : '🥢 윷 던지기'}
-            </button>
-          </div>
 
-          <!-- My Token Selection Dock -->
-          <div class="grid grid-cols-4 gap-2">
-            ${myTokens.map(t => {
-              const canMove = myTurn && pState.phase === 'move' && !t.finished && !pState.throwing;
-              const nextPos = Math.min(20, t.pos + (pState.lastThrow || 0));
-              return `
-                <button ${canMove ? `onclick="doYutMove('${AppState.myId}', ${t.id})"` : 'disabled'}
-                  class="p-2.5 rounded-2xl border text-left transition ${canMove ? 'bg-indigo-950/60 hover:bg-indigo-900/70 border-sky-400 text-white shadow-lg shadow-sky-500/10' : 'bg-slate-900/75 border-white/10 text-slate-400 opacity-75'}">
-                  <div class="flex items-center justify-between text-[11px] font-black">
-                    <span>말 #${t.id + 1}</span>
-                    <span class="px-1.5 py-0.2 rounded ${t.finished ? 'bg-emerald-500/20 text-emerald-300' : (canMove ? 'bg-sky-500/20 text-sky-300' : 'bg-slate-800 text-slate-400')}">
-                      ${t.finished ? '완주' : (canMove ? `→${nextPos}칸` : '대기')}
+            <!-- Right: 4 Yut Sticks, Throw CTA, Player Scoreboard & My Token Dock -->
+            <div class="md:col-span-6 space-y-2.5">
+              <!-- Player Completion Strip -->
+              <div class="grid grid-cols-2 gap-1.5">
+                ${AppState.room.players.slice(0, 6).map(p => {
+                  const pToks = pState.tokens[p.id] || [];
+                  const doneCount = pToks.filter(t => t.finished).length;
+                  const isCur = cur && cur.id === p.id;
+                  return `
+                    <div class="px-2.5 py-1.5 rounded-xl border ${isCur ? 'bg-indigo-950/75 border-indigo-400' : 'bg-slate-900/75 border-white/10'} flex items-center justify-between gap-1">
+                      <div class="flex items-center gap-1.5 min-w-0">
+                        <span class="w-2.5 h-2.5 rounded-full shrink-0" style="background:${p.colorHex}"></span>
+                        <span class="text-[11px] font-extrabold text-white truncate">${escapeHtml(p.name)}</span>
+                      </div>
+                      <span class="px-1.5 py-0.2 rounded text-[10px] font-black ${doneCount === 4 ? 'bg-emerald-500/20 text-emerald-300' : 'bg-slate-800 text-slate-300'}">${doneCount}/4</span>
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+
+              <!-- Yut Sticks & Throw Box -->
+              <div class="p-3 rounded-2xl bg-slate-950/80 border border-white/10 flex items-center justify-between gap-3">
+                <div class="flex items-center gap-1.5">
+                  ${sticksHtml}
+                </div>
+                <div class="flex-1 text-right space-y-1.5">
+                  <div>
+                    <span class="px-2.5 py-1 rounded-lg border text-xs font-black ${curYut ? curYut.badge : 'bg-slate-800 text-slate-400 border-white/10'}">
+                      ${pState.throwing ? '투척 중...' : (curYut ? `${curYut.name} (${curYut.desc})` : '윷 던지기 대기')}
                     </span>
                   </div>
-                  <div class="text-xs font-extrabold mt-1 text-slate-200">${t.finished ? '도착 완료' : `${t.pos} / 20칸`}</div>
-                </button>
-              `;
-            }).join('')}
+                  <button ${myTurn && pState.phase === 'throw' && !pState.throwing ? `onclick="doYutThrow('${AppState.myId}')"` : 'disabled'}
+                    class="btn-primary w-full py-2.5 rounded-xl text-xs font-black text-white">
+                    ${pState.throwing ? '던지는 중...' : (myTurn && pState.phase === 'throw' ? '🥢 윷 던지기!' : `${cur ? cur.name : '상대'} 진행중`)}
+                  </button>
+                </div>
+              </div>
+
+              <!-- My 4 Tokens Control Dock -->
+              <div class="grid grid-cols-2 gap-1.5">
+                ${myTokens.map(t => {
+                  const canMove = myTurn && pState.phase === 'move' && !t.finished && !pState.throwing;
+                  const destInfo = canMove ? computeYutNextNode(t.node, pState.lastThrow || 1, t.started) : null;
+                  return `
+                    <div onmouseenter="selectYutTokenPreview(${t.id})"
+                      class="p-2 rounded-xl border ${canMove ? 'bg-indigo-950/65 border-sky-400/70' : 'bg-slate-900/75 border-white/10 opacity-75'} flex items-center justify-between gap-1.5">
+                      <div>
+                        <div class="text-[11px] font-black text-white">말 #${t.id + 1}</div>
+                        <div class="text-[10px] text-slate-300">${t.finished ? '완주 완료' : (t.started ? `${t.node}번 칸` : '출발 대기')}</div>
+                      </div>
+                      <button ${canMove ? `onclick="doYutMove('${AppState.myId}', ${t.id})"` : 'disabled'}
+                        class="px-2.5 py-1.5 rounded-lg text-[10px] font-black ${t.finished ? 'bg-emerald-500/20 text-emerald-300' : (canMove ? 'bg-sky-500 hover:bg-sky-400 text-slate-950' : 'bg-slate-800 text-slate-400')}">
+                        ${t.finished ? '완주' : (canMove ? (destInfo.finished ? '골인!' : `→${destInfo.node}칸`) : '대기')}
+                      </button>
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+            </div>
           </div>
         `;
+
       } else if (pState.modeId === 'rummikub') {
-        // Enterprise Rummikub UI: Summary Bar + Melds Board + Validation Badge + Sorted Hand Tray
+        // FULL VISUAL RUMMIKUB TABLE UI: Felt Board + Physical Ivory Tiles + 2-Row Wooden Tile Rack
         const myTurn = Boolean(cur && cur.id === AppState.myId);
         const rawHand = pState.hands[AppState.myId] || [];
         const hand = [...rawHand].sort((a, b) => {
@@ -2939,86 +3320,100 @@
         const evalRes = evaluateRummikubSelection(selectedTiles);
         const canSubmitMeld = myTurn && evalRes.valid;
 
-        const colorChipStyle = (col, selected) => {
-          const baseMap = {
-            '빨강': 'border-rose-400/60 text-rose-200',
-            '파랑': 'border-sky-400/60 text-sky-200',
-            '노랑': 'border-amber-400/60 text-amber-200',
-            '검정': 'border-slate-400/60 text-slate-200'
-          };
-          return selected
-            ? `bg-indigo-600 border-white text-white -translate-y-1 shadow-lg shadow-indigo-500/30`
-            : `bg-slate-900/90 hover:bg-slate-800 ${baseMap[col] || 'border-white/15 text-slate-200'}`;
+        const tileNumberColor = {
+          '빨강': 'text-rose-600',
+          '파랑': 'text-blue-600',
+          '노랑': 'text-amber-600',
+          '검정': 'text-slate-900'
         };
 
+        stageBadge.textContent = myTurn ? '내 턴 · 타일 조합' : `${cur ? cur.name : '상대'} 턴`;
+
         body.innerHTML = `
-          <!-- Top Summary & Action Strip -->
-          <div class="flex flex-wrap items-center justify-between gap-2 p-2.5 rounded-2xl bg-slate-950/75 border border-white/10 text-xs">
-            <div class="flex flex-wrap items-center gap-2">
-              <span class="px-2 py-0.5 rounded-md bg-slate-800 text-slate-200 font-extrabold">등록 조합 ${pState.melds.length}개</span>
-              <span class="px-2 py-0.5 rounded-md bg-slate-800 text-sky-300 font-extrabold">남은 덱 ${pState.deck.length}장</span>
-              <span class="px-2 py-0.5 rounded-md ${selectedTiles.length > 0 ? (evalRes.valid ? 'bg-emerald-500/20 text-emerald-300' : 'bg-amber-500/20 text-amber-300') : 'bg-slate-800 text-slate-400'} font-extrabold">
-                ${selectedTiles.length === 0 ? '타일 선택 대기' : evalRes.reason}
+          <!-- Top Status & Action Controls -->
+          <div class="flex flex-wrap items-center justify-between gap-2 p-2.5 rounded-2xl bg-slate-950/80 border border-white/10 text-xs">
+            <div class="flex flex-wrap items-center gap-1.5">
+              <span class="px-2 py-0.5 rounded-md bg-emerald-500/20 border border-emerald-400/30 text-emerald-200 font-extrabold">테이블 세트 ${pState.melds.length}개</span>
+              <span class="px-2 py-0.5 rounded-md bg-slate-800 text-sky-300 font-extrabold">공용 덱 ${pState.deck.length}장</span>
+              <span class="px-2.5 py-0.5 rounded-md ${selectedTiles.length > 0 ? (evalRes.valid ? 'bg-emerald-500/25 text-emerald-200 border border-emerald-400/40' : 'bg-amber-500/25 text-amber-200 border border-amber-400/40') : 'bg-slate-800 text-slate-400'} font-extrabold">
+                ${selectedTiles.length === 0 ? '받침대 타일을 3장 이상 선택하세요' : evalRes.reason}
               </span>
             </div>
             <div class="flex items-center gap-1.5">
-              <button ${myTurn ? 'onclick="clearRummikubSelection()"' : 'disabled'} class="px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-white/10 text-slate-200 font-extrabold disabled:opacity-40">
-                초기화
+              <button ${myTurn && selectedTiles.length > 0 ? 'onclick="clearRummikubSelection()"' : 'disabled'} class="px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-white/10 text-slate-200 font-extrabold disabled:opacity-40">
+                선택 해제
               </button>
-              <button ${canSubmitMeld ? 'onclick="submitRummikubMeld()"' : 'disabled'} class="px-3 py-1.5 rounded-xl bg-emerald-500/25 hover:bg-emerald-500/35 border border-emerald-400/50 text-emerald-200 font-black disabled:opacity-40">
-                조합 등록
+              <button ${canSubmitMeld ? 'onclick="submitRummikubMeld()"' : 'disabled'} class="px-3.5 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black disabled:opacity-35 transition">
+                ✅ 테이블 등록
               </button>
-              <button ${myTurn ? `onclick="doRummikubDraw('${AppState.myId}')"` : 'disabled'} class="btn-primary px-3 py-1.5 rounded-xl text-white font-black disabled:opacity-40">
-                1장 뽑기
+              <button ${myTurn ? `onclick="doRummikubDraw('${AppState.myId}')"` : 'disabled'} class="btn-primary px-3.5 py-1.5 rounded-xl text-white font-black disabled:opacity-35">
+                ➕ 1장 뽑기
               </button>
             </div>
           </div>
 
-          ${pState.feedbackMsg ? `<div class="px-3 py-1.5 rounded-xl bg-amber-500/15 border border-amber-400/30 text-amber-200 text-xs font-bold">${pState.feedbackMsg}</div>` : ''}
+          ${pState.feedbackMsg ? `<div class="px-3 py-1.5 rounded-xl bg-amber-500/20 border border-amber-400/35 text-amber-200 text-xs font-bold">${escapeHtml(pState.feedbackMsg)}</div>` : ''}
 
-          <!-- Table Melds & Opponents Strip -->
-          <div class="grid grid-cols-1 sm:grid-cols-12 gap-2">
-            <div class="sm:col-span-7 p-2.5 rounded-2xl bg-slate-900/60 border border-white/10 space-y-1.5 max-h-24 overflow-y-auto">
-              <div class="text-[10px] font-extrabold text-slate-400">테이블 등록 조합</div>
+          <!-- Felt Board + Opponents Hand Counter -->
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-2.5">
+            <div class="lg:col-span-9 rummi-felt rounded-2xl p-3 min-h-[105px] max-h-[135px] overflow-y-auto space-y-2">
+              <div class="flex items-center justify-between text-[10px] font-extrabold text-emerald-200/80">
+                <span>🟢 루미큐브 메인 테이블 (등록된 그룹 · 런 세트)</span>
+                <span>같은 숫자(다른 색) 3~4장 또는 같은 색 연속 숫자 3장+</span>
+              </div>
               ${pState.melds.length === 0
-                ? '<div class="text-xs text-slate-500">아직 등록된 조합이 없습니다.</div>'
-                : `<div class="flex flex-wrap gap-1.5">${pState.melds.map(m => {
+                ? '<div class="h-16 flex items-center justify-center text-xs font-bold text-emerald-200/50">아직 테이블에 등록된 타일 세트가 없습니다. 첫 세트를 등록해 보세요!</div>'
+                : `<div class="flex flex-wrap gap-2.5">${pState.melds.map(m => {
                     const tList = m.tiles || m;
-                    return `<span class="px-2 py-1 rounded-lg bg-slate-950 border border-white/15 text-[11px] font-bold text-slate-200">${tList.map(t => `${t.color[0]}${t.num}`).join('·')}</span>`;
+                    return `
+                      <div class="inline-flex items-center gap-1 p-1.5 rounded-xl bg-slate-950/60 border border-emerald-400/30">
+                        ${tList.map(t => `
+                          <div class="rummi-tile w-7 h-9 rounded-lg flex flex-col items-center justify-center">
+                            <span class="text-xs font-black leading-none ${tileNumberColor[t.color] || 'text-slate-900'}">${t.num}</span>
+                            <span class="w-1.5 h-1.5 rounded-full mt-0.5 ${t.color === '빨강' ? 'bg-rose-500' : t.color === '파랑' ? 'bg-blue-500' : t.color === '노랑' ? 'bg-amber-500' : 'bg-slate-800'}"></span>
+                          </div>
+                        `).join('')}
+                      </div>
+                    `;
                   }).join('')}</div>`
               }
             </div>
-            <div class="sm:col-span-5 p-2.5 rounded-2xl bg-slate-900/60 border border-white/10 space-y-1 max-h-24 overflow-y-auto">
-              <div class="text-[10px] font-extrabold text-slate-400">참가자 보유 타일</div>
-              ${AppState.room.players.slice(0, 5).map(p => {
+
+            <div class="lg:col-span-3 p-2.5 rounded-2xl bg-slate-900/80 border border-white/10 space-y-1.5 max-h-[135px] overflow-y-auto">
+              <div class="text-[10px] font-extrabold text-slate-400">플레이어 남은 타일</div>
+              ${AppState.room.players.map(p => {
                 const cnt = (pState.hands[p.id] || []).length;
-                const low = cnt <= 3;
+                const isCur = cur && cur.id === p.id;
                 return `
-                  <div class="flex items-center justify-between text-[11px]">
-                    <span class="font-bold text-slate-200 truncate">${p.name}</span>
-                    <span class="px-1.5 py-0.2 rounded font-black ${low ? 'bg-rose-500/20 text-rose-300' : 'bg-slate-800 text-slate-300'}">${cnt}장</span>
+                  <div class="px-2 py-1 rounded-lg ${isCur ? 'bg-indigo-500/25 border border-indigo-400/40' : 'bg-slate-950/60'} flex items-center justify-between text-[11px]">
+                    <span class="font-bold text-slate-200 truncate">${escapeHtml(p.name)}</span>
+                    <span class="px-1.5 py-0.2 rounded font-black ${cnt <= 2 ? 'bg-rose-500/25 text-rose-300' : 'bg-slate-800 text-slate-300'}">${cnt}장</span>
                   </div>
                 `;
               }).join('')}
             </div>
           </div>
 
-          <!-- My Hand Tray with Sort Controls -->
-          <div class="space-y-1.5">
+          <!-- Personal Wooden Tile Rack (받침대) -->
+          <div class="rummi-rack rounded-2xl p-3 space-y-2">
             <div class="flex items-center justify-between">
-              <span class="text-[11px] font-extrabold text-slate-300">내 손패 (${hand.length}장)</span>
-              <div class="flex gap-1">
-                <button onclick="setRummikubSort('color')" class="px-2 py-0.5 rounded-lg text-[10px] font-black ${pState.sortBy === 'color' ? 'bg-indigo-500 text-white' : 'bg-slate-800 text-slate-400'}">색상순</button>
-                <button onclick="setRummikubSort('number')" class="px-2 py-0.5 rounded-lg text-[10px] font-black ${pState.sortBy === 'number' ? 'bg-indigo-500 text-white' : 'bg-slate-800 text-slate-400'}">숫자순</button>
+              <span class="text-xs font-black text-amber-200">🪵 내 타일 받침대 (${hand.length}장)</span>
+              <div class="flex items-center gap-1.5">
+                <button onclick="setRummikubSort('color')" class="px-2.5 py-1 rounded-lg text-[10px] font-black ${pState.sortBy === 'color' ? 'bg-amber-400 text-slate-950' : 'bg-slate-900/90 text-amber-200 border border-amber-500/30'}">🎨 색상 정렬</button>
+                <button onclick="setRummikubSort('number')" class="px-2.5 py-1 rounded-lg text-[10px] font-black ${pState.sortBy === 'number' ? 'bg-amber-400 text-slate-950' : 'bg-slate-900/90 text-amber-200 border border-amber-500/30'}">🔢 숫자 정렬</button>
               </div>
             </div>
-            <div class="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto pt-1">
+            <div class="flex flex-wrap gap-2 pt-1 max-h-28 overflow-y-auto">
               ${hand.map(tile => {
                 const sel = pState.selectedIds.has(tile.id);
-                return `<button ${myTurn ? `onclick="toggleRummikubTile('${tile.id}')"` : 'disabled'}
-                  class="px-2.5 py-1.5 rounded-xl border text-xs font-black transition ${colorChipStyle(tile.color, sel)}">
-                  ${tile.color} ${tile.num}
-                </button>`;
+                return `
+                  <button ${myTurn ? `onclick="toggleRummikubTile('${tile.id}')"` : 'disabled'}
+                    class="rummi-tile ${sel ? 'rummi-tile-selected' : ''} w-10 h-13 py-1.5 rounded-xl flex flex-col items-center justify-between">
+                    <span class="text-[9px] font-extrabold text-slate-500">${tile.color}</span>
+                    <span class="text-base font-black leading-none ${tileNumberColor[tile.color] || 'text-slate-900'}">${tile.num}</span>
+                    <span class="w-2 h-2 rounded-full ${tile.color === '빨강' ? 'bg-rose-500' : tile.color === '파랑' ? 'bg-blue-500' : tile.color === '노랑' ? 'bg-amber-500' : 'bg-slate-800'}"></span>
+                  </button>
+                `;
               }).join('')}
             </div>
           </div>
@@ -3027,7 +3422,7 @@
     }
 
     // =========================================================================
-    // 8. MATCH START, ELIMINATION, SPECTATOR & PODIUM
+    // 10. MATCH START, ELIMINATION, SPECTATOR & PODIUM
     // =========================================================================
     function hostStartGame() {
       if (!isMeHost()) return showToast('🔒 방장만 게임을 시작할 수 있습니다.');
@@ -3058,6 +3453,7 @@
       document.getElementById('resultModal').classList.add('hidden');
       document.getElementById('gameHudView').classList.remove('hidden');
       document.getElementById('spectatorBanner').classList.add('hidden');
+      document.getElementById('unreadChatBadge').classList.add('hidden');
       renderChatFeeds();
 
       document.getElementById('hudMetricLabel').textContent = mode.metricLabel;
@@ -3179,13 +3575,13 @@
       const grid = document.getElementById('miniSurvivorGrid');
       grid.innerHTML = players.map(p => {
         const isMe = p.id === AppState.myId;
-        return `<div title="${p.name} (${p.score})" class="h-4 rounded flex items-center justify-center text-[8px] font-black ${p.alive ? (isMe ? 'ring-1 ring-white text-white' : 'text-white/90') : 'bg-slate-900 text-slate-600 line-through opacity-45'}" style="${p.alive ? `background-color:${p.colorHex}` : ''}">${p.alive ? p.score : '✕'}</div>`;
+        return `<div title="${escapeHtml(p.name)} (${p.score})" class="h-4 rounded flex items-center justify-center text-[8px] font-black ${p.alive ? (isMe ? 'ring-1 ring-white text-white' : 'text-white/90') : 'bg-slate-900 text-slate-600 line-through opacity-45'}" style="${p.alive ? `background-color:${p.colorHex}` : ''}">${p.alive ? p.score : '✕'}</div>`;
       }).join('');
 
       const sorted = [...players].sort((a, b) => (a.alive !== b.alive ? (a.alive ? -1 : 1) : b.score - a.score));
       document.getElementById('liveTop3List').innerHTML = sorted.slice(0, 3).map((p, i) => `
         <div class="flex items-center justify-between ${p.alive ? 'text-slate-200' : 'text-slate-500'}">
-          <span class="truncate font-bold">${i + 1}. ${p.name}</span>
+          <span class="truncate font-bold">${i + 1}. ${escapeHtml(p.name)}</span>
           <span class="font-black text-indigo-300">${p.score}</span>
         </div>
       `).join('');
@@ -3214,8 +3610,8 @@
       document.getElementById('podiumGrid').innerHTML = ranked.slice(0, 3).map((p, i) => `
         <div class="p-3 rounded-2xl border border-white/15 bg-slate-900/75 text-center space-y-1">
           <div class="text-xs font-black text-amber-300">${medals[i]}</div>
-          <div class="w-8 h-8 mx-auto rounded-xl flex items-center justify-center text-white font-black text-xs" style="background-color:${p.colorHex}">${p.name.slice(0, 1)}</div>
-          <div class="text-xs font-extrabold text-white truncate">${p.name}</div>
+          <div class="w-8 h-8 mx-auto rounded-xl flex items-center justify-center text-white font-black text-xs" style="background-color:${p.colorHex}">${escapeHtml(p.name.slice(0, 1))}</div>
+          <div class="text-xs font-extrabold text-white truncate">${escapeHtml(p.name)}</div>
           <div class="text-sm font-black text-sky-300">${p.score}${mode.unit}</div>
         </div>
       `).join('');
@@ -3224,10 +3620,10 @@
         <div class="px-3 py-2 rounded-xl bg-slate-900/80 border border-white/10 flex items-center justify-between text-xs">
           <div class="flex items-center gap-2 min-w-0">
             <span class="w-6 font-black ${i === 0 ? 'text-amber-400' : 'text-slate-400'}">#${i + 1}</span>
-            <span class="font-extrabold text-white truncate">${p.name}</span>
+            <span class="font-extrabold text-white truncate">${escapeHtml(p.name)}</span>
           </div>
           <div class="flex items-center gap-2 shrink-0">
-            <span class="text-[10px] text-slate-400 hidden sm:inline">${p.alive ? '생존/우승' : (p.elimReason || '탈락')}</span>
+            <span class="text-[10px] text-slate-400 hidden sm:inline">${p.alive ? '생존/우승' : escapeHtml(p.elimReason || '탈락')}</span>
             <span class="font-black text-indigo-300">${p.score}${mode.unit}</span>
           </div>
         </div>
@@ -3242,7 +3638,7 @@
     }
 
     // =========================================================================
-    // 9. INPUT HANDLERS & PARTY TICK LOOP
+    // 11. INPUT HANDLERS & PARTY TICK LOOP
     // =========================================================================
     function handlePrimaryInput(e) {
       if (e) e.preventDefault();
@@ -3290,10 +3686,10 @@
       if (mode.id === 'stairs') {
         if (e.code === 'ArrowLeft' || e.code === 'KeyA') {
           e.preventDefault();
-          ThreeWorld.triggerSecondaryAction(); // Left
+          ThreeWorld.triggerSecondaryAction();
         } else if (e.code === 'ArrowRight' || e.code === 'KeyD') {
           e.preventDefault();
-          ThreeWorld.triggerPrimaryAction(); // Right
+          ThreeWorld.triggerPrimaryAction();
         }
         return;
       }
