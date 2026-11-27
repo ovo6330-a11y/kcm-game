@@ -11,7 +11,7 @@
 
     :root {
       --bg-base: #060913;
-      --panel-bg: rgba(13, 20, 38, 0.84);
+      --panel-bg: rgba(13, 20, 38, 0.86);
       --border-subtle: rgba(148, 163, 184, 0.16);
     }
 
@@ -45,13 +45,13 @@
     }
 
     .glass-card {
-      background: rgba(24, 34, 58, 0.65);
+      background: rgba(24, 34, 58, 0.68);
       border: 1px solid rgba(255, 255, 255, 0.08);
-      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: all 0.16s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .glass-card:hover:not(:disabled) {
-      background: rgba(34, 48, 82, 0.88);
+      background: rgba(34, 48, 82, 0.9);
       border-color: rgba(99, 102, 241, 0.45);
       transform: translateY(-2px);
     }
@@ -65,7 +65,7 @@
     .btn-primary {
       background: linear-gradient(135deg, #4f46e5 0%, #6366f1 50%, #0ea5e9 100%);
       box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.28);
-      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: all 0.16s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .btn-primary:hover:not(:disabled) {
@@ -157,8 +157,8 @@
 
       <div id="headerRoomBadge" class="hidden items-center gap-2 px-3 py-1 rounded-full bg-slate-900/90 border border-white/10 text-xs">
         <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-        <span class="text-slate-400 font-medium hidden sm:inline">방 코드</span>
-        <strong id="headerRoomCode" class="text-white font-extrabold tracking-wider">KR-701</strong>
+        <span class="text-slate-400 font-medium hidden sm:inline">초대코드</span>
+        <strong id="headerRoomCode" class="text-white font-extrabold tracking-wider">SKY-7K9M</strong>
       </div>
 
       <button id="bgmToggleBtn" onclick="toggleBgm()" title="배경음악 켜기/끄기" class="px-2.5 h-9 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-white/10 flex items-center gap-1.5 text-slate-300 text-xs font-bold transition">
@@ -196,7 +196,7 @@
             <span class="bg-gradient-to-r from-indigo-400 via-sky-300 to-emerald-300 bg-clip-text text-transparent">올인원 3D 파티 허브</span>
           </h1>
           <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
-            5가지 독립 3D 서바이벌과 루미큐브·윷놀이·라이어게임·캐치마인드·낱말퀴즈·끝말잇기를 한 방에서 전환하며 플레이하세요.
+            좌·우 방향키로 오르는 무한의 계단 3D와 대기업형 윷놀이·루미큐브 UI, 실시간 채팅과 초대코드를 한 방에서 즐기세요.
           </p>
         </div>
 
@@ -214,7 +214,7 @@
 
         <div class="space-y-1.5 text-[11px] text-slate-300">
           <div class="font-bold text-slate-400">포함 게임 라인업 (11종)</div>
-          <p class="leading-relaxed">3D: 계단 · 길건너 · 스카이점프 · 플래피 · 스택<br />파티: 루미큐브 · 윷놀이 · 라이어 · 캐치마인드 · 낱말퀴즈 · 끝말잇기</p>
+          <p class="leading-relaxed">3D: 좌우 계단 · 길건너 · 스카이점프 · 플래피 · 스택<br />파티: 루미큐브 · 윷놀이 · 라이어 · 캐치마인드 · 낱말퀴즈 · 끝말잇기</p>
         </div>
       </section>
 
@@ -222,8 +222,8 @@
         <div class="space-y-5">
           <div class="flex items-center justify-between border-b border-white/10 pb-4">
             <div>
-              <h2 class="text-lg sm:text-xl font-black text-white">파티 방 개설 및 초대 코드 입장</h2>
-              <p class="text-xs text-slate-400 mt-0.5">친구를 초대하거나 AI 봇을 추가·제거하며 원하는 게임을 골라 시작하세요.</p>
+              <h2 class="text-lg sm:text-xl font-black text-white">파티 방 개설 및 초대코드 입장</h2>
+              <p class="text-xs text-slate-400 mt-0.5">생성된 방의 상태와 채팅이 세션 저장소에 유지됩니다.</p>
             </div>
             <span class="px-2.5 py-1 rounded-lg bg-emerald-500/15 border border-emerald-400/25 text-emerald-300 text-xs font-bold">READY</span>
           </div>
@@ -233,7 +233,7 @@
               <span class="text-sm font-extrabold text-white flex items-center gap-2">
                 <span class="text-amber-400">👑</span> 새 파티 방 만들기
               </span>
-              <span class="text-[11px] font-bold text-indigo-300">방장 권한 시작</span>
+              <span class="text-[11px] font-bold text-indigo-300">SKY-XXXX 코드 발급</span>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -260,9 +260,9 @@
 
           <!-- Direct Invite / Room Code Join -->
           <div class="p-4 rounded-2xl bg-slate-950/55 border border-white/10 space-y-2.5">
-            <label class="block text-xs font-extrabold text-slate-300">초대 코드 또는 초대 링크로 바로 입장</label>
+            <label class="block text-xs font-extrabold text-slate-300">초대코드 또는 초대 링크로 입장</label>
             <div class="flex gap-2">
-              <input id="inviteCodeInput" type="text" maxlength="40" placeholder="예: KR-701 또는 ?room=KR-701"
+              <input id="inviteCodeInput" type="text" maxlength="60" placeholder="예: SKY-7K9M 또는 ?room=SKY-7K9M"
                 class="flex-1 px-3.5 py-2 rounded-xl bg-slate-900 border border-white/15 text-white text-xs font-bold focus:outline-none focus:border-sky-400" />
               <button onclick="joinByInviteInput()" class="px-4 py-2 rounded-xl bg-sky-500/20 hover:bg-sky-500/30 border border-sky-400/35 text-sky-300 text-xs font-black transition shrink-0">
                 초대 입장
@@ -272,17 +272,17 @@
 
           <!-- Quick Preset Rooms -->
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-            <button onclick="joinPresetRoom('KR-804', '끝말잇기 & 라이어 추리방', 5, 'wordchain')" class="glass-card p-3.5 rounded-2xl text-left flex items-center justify-between">
+            <button onclick="joinOrCreateRoomByCode('SKY-2W4R', '끝말잇기 & 라이어 추리방', 5, 'wordchain', false)" class="glass-card p-3.5 rounded-2xl text-left flex items-center justify-between">
               <div>
                 <div class="text-xs font-black text-white">🔤 끝말잇기 & 라이어 방</div>
-                <div class="text-[11px] text-slate-400 mt-0.5">참가자 시점 · 6인 대기중</div>
+                <div class="text-[11px] text-slate-400 mt-0.5">SKY-2W4R · 6인 라운지</div>
               </div>
               <span class="px-2.5 py-1 rounded-lg bg-indigo-500/20 text-indigo-300 text-[11px] font-extrabold">참가</span>
             </button>
-            <button onclick="joinPresetRoom('KR-912', '루미큐브 & 윷놀이 라운지', 5, 'rummikub')" class="glass-card p-3.5 rounded-2xl text-left flex items-center justify-between">
+            <button onclick="joinOrCreateRoomByCode('SKY-8M5T', '루미큐브 & 윷놀이 라운지', 5, 'rummikub', false)" class="glass-card p-3.5 rounded-2xl text-left flex items-center justify-between">
               <div>
                 <div class="text-xs font-black text-white">🎲 루미큐브 & 윷놀이 방</div>
-                <div class="text-[11px] text-slate-400 mt-0.5">참가자 시점 · 6인 대기중</div>
+                <div class="text-[11px] text-slate-400 mt-0.5">SKY-8M5T · 6인 라운지</div>
               </div>
               <span class="px-2.5 py-1 rounded-lg bg-indigo-500/20 text-indigo-300 text-[11px] font-extrabold">참가</span>
             </button>
@@ -292,24 +292,24 @@
     </div>
   </main>
 
-  <!-- VIEW 2: UNIFIED PARTY LOBBY & CUSTOM CONTENT EDITOR -->
+  <!-- VIEW 2: UNIFIED PARTY LOBBY & CHAT -->
   <main id="lobbyView" class="hidden relative z-10 w-full h-full pt-14 flex items-center justify-center p-3 sm:p-5 overflow-y-auto">
     <div class="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-12 gap-5 my-auto">
 
-      <!-- Left: 11-Mode Selector & Host Custom Prompts (7 cols) -->
+      <!-- Left: 11-Mode Selector & Room Settings (7 cols) -->
       <section class="lg:col-span-7 glass-panel rounded-3xl p-5 sm:p-6 flex flex-col justify-between gap-4">
         <div class="space-y-3.5">
           <div class="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-3">
             <div>
               <div class="flex items-center gap-2">
-                <span id="lobbyRoomCodeBadge" class="px-2 py-0.5 rounded-md bg-indigo-500/20 border border-indigo-400/30 text-indigo-300 text-[11px] font-black">KR-701</span>
+                <span id="lobbyRoomCodeBadge" class="px-2.5 py-0.5 rounded-md bg-indigo-500/20 border border-indigo-400/30 text-indigo-300 text-xs font-black">SKY-7K9M</span>
                 <h2 id="lobbyRoomTitle" class="text-base sm:text-lg font-black text-white">11종 통합 파티 라운지!</h2>
               </div>
-              <p class="text-xs text-slate-400 mt-0.5">방장이 선택한 모드가 모든 참가자에게 실시간 동기화됩니다.</p>
+              <p class="text-xs text-slate-400 mt-0.5">방장이 선택한 모드가 방 상태에 저장되고 동기화됩니다.</p>
             </div>
             <div class="flex flex-wrap items-center gap-1.5">
-              <button onclick="copyInviteLink()" class="px-2.5 py-1.5 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 border border-sky-400/30 text-sky-300 text-[11px] font-bold transition">
-                🔗 초대 링크 복사
+              <button id="copyInviteBtn" onclick="copyInviteInfo()" class="px-2.5 py-1.5 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 border border-sky-400/30 text-sky-300 text-[11px] font-bold transition">
+                🔗 코드·링크 복사
               </button>
               <button id="simulateHostChangeBtn" onclick="simulateExternalHostModeChange()" class="hidden px-2.5 py-1.5 rounded-xl bg-indigo-500/15 hover:bg-indigo-500/25 border border-indigo-400/30 text-indigo-300 text-[11px] font-bold transition">
                 🔄 방장 모드변경 시뮬레이션
@@ -333,7 +333,7 @@
           </div>
 
           <!-- Modes Grid -->
-          <div id="modeSelectorGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-[205px] overflow-y-auto pr-1"></div>
+          <div id="modeSelectorGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-[190px] overflow-y-auto pr-1"></div>
 
           <!-- Selected Mode Detail -->
           <div id="selectedModeDetailBox" class="p-3.5 rounded-2xl bg-slate-950/70 border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
@@ -347,11 +347,11 @@
             </div>
             <div class="shrink-0 text-right">
               <div class="text-[10px] font-bold text-slate-400">조작 방식</div>
-              <div id="detailModeControls" class="text-xs font-extrabold text-sky-300">전진 / 전환</div>
+              <div id="detailModeControls" class="text-xs font-extrabold text-sky-300">좌·우 이동</div>
             </div>
           </div>
 
-          <!-- Host Custom Prompt Builder (WordQuiz / Liar / CatchMind) -->
+          <!-- Host Custom Prompt Builder -->
           <div id="hostCustomBuilderBox" class="p-3.5 rounded-2xl bg-indigo-950/35 border border-indigo-400/25 space-y-2.5">
             <div class="flex items-center justify-between">
               <span class="text-xs font-black text-indigo-200">✍️ 방장 커스텀 문제 / 제시어 출제 (낱말퀴즈 · 라이어 · 캐치마인드)</span>
@@ -372,7 +372,7 @@
                 + 문제 추가
               </button>
             </div>
-            <div id="customItemsChips" class="flex flex-wrap gap-1.5 max-h-14 overflow-y-auto"></div>
+            <div id="customItemsChips" class="flex flex-wrap gap-1.5 max-h-12 overflow-y-auto"></div>
           </div>
 
           <!-- Room Settings -->
@@ -419,37 +419,53 @@
         </div>
       </section>
 
-      <!-- Right: Participant List & Host Delegation (5 cols) -->
+      <!-- Right: Participant List & Lobby Chat (5 cols) -->
       <section class="lg:col-span-5 glass-panel rounded-3xl p-5 sm:p-6 flex flex-col justify-between gap-4">
-        <div class="flex items-center justify-between border-b border-white/10 pb-3">
-          <div>
-            <h3 class="text-sm sm:text-base font-black text-white">참가자 및 AI 봇 목록</h3>
-            <p class="text-[11px] text-slate-400">방장은 👑 위임 버튼으로 방장 권한을 넘길 수 있습니다.</p>
+        <div class="space-y-2.5">
+          <div class="flex items-center justify-between border-b border-white/10 pb-2.5">
+            <div>
+              <h3 class="text-sm sm:text-base font-black text-white">참가자 및 AI 봇 목록</h3>
+              <p class="text-[11px] text-slate-400">방장은 👑 위임 버튼으로 권한을 넘길 수 있습니다.</p>
+            </div>
+            <span id="lobbyPlayerCount" class="px-2.5 py-1 rounded-lg bg-slate-900 border border-white/10 text-xs font-black text-indigo-300">6 / 12명</span>
           </div>
-          <span id="lobbyPlayerCount" class="px-2.5 py-1 rounded-lg bg-slate-900 border border-white/10 text-xs font-black text-indigo-300">6 / 12명</span>
+          <div id="lobbyPlayerList" class="max-h-[210px] overflow-y-auto space-y-1.5 pr-1"></div>
         </div>
 
-        <div id="lobbyPlayerList" class="flex-1 max-h-[420px] overflow-y-auto space-y-2 pr-1"></div>
-
-        <div class="p-3 rounded-2xl bg-slate-950/60 border border-white/10 text-[11px] text-slate-400 flex items-center justify-between">
-          <span>💡 초대 링크로 접속한 친구도 같은 방에 합류합니다.</span>
-          <span class="text-emerald-400 font-bold">동기화 정상</span>
+        <!-- Lobby Chat Box -->
+        <div class="p-3.5 rounded-2xl bg-slate-950/75 border border-white/10 flex flex-col gap-2.5">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-black text-white flex items-center gap-1.5">
+              <span>💬</span> 파티 대기실 채팅
+            </span>
+            <button onclick="toggleBotChat()" id="botChatToggleBtn" class="px-2 py-0.5 rounded-md bg-indigo-500/20 border border-indigo-400/30 text-[10px] font-bold text-indigo-200">
+              봇 채팅 ON
+            </button>
+          </div>
+          <div id="lobbyChatFeed" class="h-36 overflow-y-auto space-y-1.5 pr-1 text-xs"></div>
+          <div class="flex gap-2">
+            <input id="lobbyChatInput" type="text" maxlength="120" placeholder="대기실 채팅 입력..."
+              class="flex-1 px-3 py-2 rounded-xl bg-slate-900 border border-white/15 text-white text-xs font-bold focus:outline-none focus:border-indigo-400" />
+            <button onclick="sendChatMessage('lobbyChatInput')" class="px-3.5 py-2 rounded-xl bg-indigo-500 hover:bg-indigo-400 text-white text-xs font-black shrink-0 transition">
+              전송
+            </button>
+          </div>
         </div>
       </section>
     </div>
   </main>
 
-  <!-- VIEW 3: IN-GAME HUD & STAGE -->
+  <!-- VIEW 3: IN-GAME HUD, PARTY STAGE & IN-GAME CHAT -->
   <div id="gameHudView" class="hidden fixed inset-0 z-20 pointer-events-none flex flex-col justify-between p-3 sm:p-5 pt-20">
     <!-- Top HUD -->
     <div class="flex items-start justify-between gap-3">
       <div class="glass-panel rounded-2xl p-3 sm:p-4 pointer-events-auto min-w-[180px] sm:min-w-[235px] space-y-2">
         <div class="flex items-center justify-between gap-3">
           <div>
-            <div id="hudMetricLabel" class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">현재 점수</div>
+            <div id="hudMetricLabel" class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">도달 층수</div>
             <div class="flex items-baseline gap-1">
               <span id="hudPrimaryScore" class="text-2xl sm:text-3xl font-black text-white tracking-tight">0</span>
-              <span id="hudPrimaryUnit" class="text-xs font-extrabold text-indigo-300">점</span>
+              <span id="hudPrimaryUnit" class="text-xs font-extrabold text-indigo-300">층</span>
             </div>
           </div>
           <div class="text-right">
@@ -462,7 +478,7 @@
 
         <div id="hudTimerWrapper" class="space-y-1">
           <div class="flex items-center justify-between text-[11px] font-bold">
-            <span id="hudPressureLabel" class="text-slate-300">남은 시간</span>
+            <span id="hudPressureLabel" class="text-slate-300">무입력 타이머</span>
             <span id="hudSpeedMultiplier" class="text-amber-300 font-extrabold">1.0x</span>
           </div>
           <div class="w-full h-2.5 rounded-full bg-slate-900 overflow-hidden border border-white/10">
@@ -497,7 +513,7 @@
       </div>
     </div>
 
-    <!-- Center Stage for 6 Party Games (Hidden during 5 3D Arcade Modes) -->
+    <!-- Center Stage for 6 Party Games -->
     <div id="partyStagePanel" class="hidden pointer-events-auto my-auto mx-auto w-full max-w-3xl glass-panel rounded-3xl p-4 sm:p-6 space-y-4">
       <div class="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-2.5">
         <div class="flex items-center gap-2">
@@ -507,9 +523,9 @@
         <div id="partyRoundInfoText" class="text-xs font-bold text-amber-300">라운드 1</div>
       </div>
 
-      <div id="partyStageBody" class="space-y-3 min-h-[190px]"></div>
+      <div id="partyStageBody" class="space-y-3 min-h-[210px]"></div>
 
-      <!-- Word / Answer / Guess Input Bar (Used by WordChain, WordQuiz, CatchMind, Liar Defense) -->
+      <!-- Word / Answer / Guess Input Bar -->
       <div id="partyInputBar" class="hidden flex items-center gap-2 pt-2 border-t border-white/10">
         <input id="partyTextInput" type="text" autocomplete="off" placeholder="정답 또는 단어를 입력하세요..."
           class="flex-1 px-4 py-2.5 rounded-xl bg-slate-900/95 border border-white/20 text-white text-sm font-bold focus:outline-none focus:border-sky-400" />
@@ -519,22 +535,47 @@
       </div>
     </div>
 
-    <!-- Bottom Controls for 3D Arcade Modes -->
-    <div id="arcadeControlsContainer" class="flex flex-col items-center gap-2 pb-1 pointer-events-auto">
-      <div id="controlHintBanner" class="px-3 py-1 rounded-full bg-slate-950/75 border border-white/10 text-[11px] font-bold text-slate-300">
-        키보드 조작 또는 하단 버튼 터치
+    <!-- Bottom Row: Compact In-Game Chat + 3D Arcade Controls -->
+    <div class="flex flex-col sm:flex-row items-stretch sm:items-end justify-between gap-3 pb-1">
+      <!-- Compact Collapsible In-Game Chat -->
+      <div id="gameChatBox" class="pointer-events-auto glass-panel rounded-2xl p-2.5 w-full sm:w-72 space-y-1.5">
+        <div class="flex items-center justify-between">
+          <span class="text-[11px] font-black text-slate-200 flex items-center gap-1">
+            <span>💬</span> 게임 채팅
+          </span>
+          <button onclick="toggleGameChatCollapse()" id="gameChatCollapseBtn" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-[10px] font-bold text-slate-300">
+            접기
+          </button>
+        </div>
+        <div id="gameChatContent" class="space-y-1.5">
+          <div id="gameChatFeed" class="h-20 overflow-y-auto space-y-1 pr-1 text-[11px]"></div>
+          <div class="flex gap-1.5">
+            <input id="gameChatInput" type="text" maxlength="100" placeholder="메시지..."
+              class="flex-1 px-2.5 py-1.5 rounded-lg bg-slate-900 border border-white/15 text-white text-[11px] font-bold focus:outline-none focus:border-sky-400" />
+            <button onclick="sendChatMessage('gameChatInput')" class="px-2.5 py-1.5 rounded-lg bg-indigo-500 hover:bg-indigo-400 text-white text-[11px] font-black shrink-0">
+              전송
+            </button>
+          </div>
+        </div>
       </div>
-      <div id="arcadeButtonsRow" class="flex items-center justify-center gap-3 sm:gap-5 w-full max-w-md px-2">
-        <button id="btnActionSecondary" onpointerdown="handleSecondaryInput(event)"
-          class="arcade-btn flex-1 py-4 sm:py-5 rounded-3xl bg-gradient-to-b from-amber-400 to-orange-500 text-slate-950 font-black text-base sm:text-lg shadow-[0_6px_0_#9a3412] flex flex-col items-center justify-center">
-          <span id="btnSecondaryLabel">🔄 방향 전환</span>
-          <span id="btnSecondarySub" class="text-[10px] font-extrabold opacity-80">SHIFT / 좌우키</span>
-        </button>
-        <button id="btnActionPrimary" onpointerdown="handlePrimaryInput(event)"
-          class="arcade-btn flex-1 py-4 sm:py-5 rounded-3xl bg-gradient-to-b from-sky-400 to-indigo-600 text-white font-black text-base sm:text-lg shadow-[0_6px_0_#1e1b4b] flex flex-col items-center justify-center">
-          <span id="btnPrimaryLabel">⬆️ 오르기</span>
-          <span id="btnPrimarySub" class="text-[10px] font-extrabold opacity-85">SPACE / 위쪽키</span>
-        </button>
+
+      <!-- 3D Arcade Controls -->
+      <div id="arcadeControlsContainer" class="flex-1 flex flex-col items-center gap-1.5 pointer-events-auto">
+        <div id="controlHintBanner" class="px-3 py-1 rounded-full bg-slate-950/80 border border-white/10 text-[11px] font-bold text-slate-300 text-center">
+          [← / →] 좌우 이동으로 계단을 오르세요
+        </div>
+        <div id="arcadeButtonsRow" class="flex items-center justify-center gap-3 sm:gap-5 w-full max-w-md px-2">
+          <button id="btnActionSecondary" onpointerdown="handleSecondaryInput(event)"
+            class="arcade-btn flex-1 py-4 sm:py-5 rounded-3xl bg-gradient-to-b from-amber-400 to-orange-500 text-slate-950 font-black text-base sm:text-lg shadow-[0_6px_0_#9a3412] flex flex-col items-center justify-center">
+            <span id="btnSecondaryLabel">⬅️ 왼쪽 이동</span>
+            <span id="btnSecondarySub" class="text-[10px] font-extrabold opacity-80">← / A</span>
+          </button>
+          <button id="btnActionPrimary" onpointerdown="handlePrimaryInput(event)"
+            class="arcade-btn flex-1 py-4 sm:py-5 rounded-3xl bg-gradient-to-b from-sky-400 to-indigo-600 text-white font-black text-base sm:text-lg shadow-[0_6px_0_#1e1b4b] flex flex-col items-center justify-center">
+            <span id="btnPrimaryLabel">➡️ 오른쪽 이동</span>
+            <span id="btnPrimarySub" class="text-[10px] font-extrabold opacity-85">→ / D</span>
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -661,11 +702,11 @@
     const GAME_MODES = {
       stairs: {
         id: 'stairs', category: '3d', stageType: '3d',
-        name: '무한의 계단 3D', icon: '🪜', tag: '3D 아케이드 · 고도가속',
-        desc: '3D 계단을 오르세요! 높이가 오를수록 무입력 제한 시간이 빨라집니다.',
-        controls: '오르기 / 방향전환', metricLabel: '도달 층수', unit: '층', pressureLabel: '무입력 타이머',
-        primaryBtn: ['⬆️ 오르기', 'SPACE / ↑'], secondaryBtn: ['🔄 방향 전환', 'SHIFT / ←→'],
-        hint: '[SPACE / ↑] 오르기 · [SHIFT / ← / →] 방향 전환'
+        name: '무한의 계단 3D', icon: '🪜', tag: '3D 아케이드 · 좌우 이동',
+        desc: '좌·우 방향키(또는 좌/우 버튼)만으로 다음 계단 방향을 밟으며 끝없이 오르세요!',
+        controls: '좌·우 이동', metricLabel: '도달 층수', unit: '층', pressureLabel: '무입력 타이머',
+        primaryBtn: ['➡️ 오른쪽 이동', '→ / D'], secondaryBtn: ['⬅️ 왼쪽 이동', '← / A'],
+        hint: '[← / A] 왼쪽 계단 · [→ / D] 오른쪽 계단 (고도가 오를수록 타이머 가속)'
       },
       crossy: {
         id: 'crossy', category: '3d', stageType: '3d',
@@ -701,24 +742,24 @@
       },
       rummikub: {
         id: 'rummikub', category: 'board', stageType: 'party',
-        name: '루미큐브', icon: '🟦', tag: '보드/전략 · 타일조합',
+        name: '루미큐브', icon: '🟦', tag: '보드/전략 · 그룹/런',
         desc: '같은 숫자(다른 색) 그룹 또는 같은 색 연속 숫자 런을 만들어 손패를 털어내세요!',
         controls: '타일 선택 · 등록/드로우', metricLabel: '등록 횟수', unit: '회', pressureLabel: '턴 제한시간',
         hint: '타일을 클릭해 선택한 뒤 [조합 등록] 또는 [1장 뽑기]를 누르세요.'
       },
       yut: {
         id: 'yut', category: 'board', stageType: 'party',
-        name: '윷놀이', icon: '🥢', tag: '보드/전략 · 윷/업기/잡기',
-        desc: '윷을 던져 말을 전진시키고, 상대 말을 잡거나 윷·모로 추가 턴을 얻으세요!',
+        name: '윷놀이', icon: '🥢', tag: '보드/전략 · 윷판/업기',
+        desc: '윷을 던져 29칸 말판에서 말을 전진시키고, 윷·모 보너스 턴과 잡기·업기를 활용하세요!',
         controls: '윷 던지기 · 말 이동', metricLabel: '완주 말 수', unit: '개', pressureLabel: '턴 제한시간',
-        hint: '[윷 던지기] 후 말판에서 이동할 말을 선택하세요.'
+        hint: '[윷 던지기] 후 이동할 말을 선택하세요.'
       },
       liar: {
         id: 'liar', category: 'social', stageType: 'party',
         name: '라이어게임', icon: '🎭', tag: '추리/심리 · 제시어/투표',
         desc: '공통 제시어를 모르는 라이어를 찾아 투표하세요! 방장 커스텀 주제도 지원합니다.',
         controls: '발언 · 투표 · 변론', metricLabel: '추리 점수', unit: '점', pressureLabel: '단계 타이머',
-        hint: '내 제시어를 확인하고 특징을 말한 뒤 라이어에게 투표하세요.'
+        hint: '내 제시어를 확인하고 라이어에게 투표하세요.'
       },
       catchmind: {
         id: 'catchmind', category: 'social', stageType: 'party',
@@ -754,11 +795,19 @@
 
     const BOT_NAMES = ['네온타이거', '스카이퀸', '제로원', '블리츠', '루나틱', '카이저', '아크로바트', '플래시', '노바스타', '발키리', '타이탄', '제피르'];
 
+    const BOT_CHAT_LINES = {
+      join: ['안녕하세요! 오늘 판 달려보죠 🔥', '준비 완료! 다들 실력 발휘해 봅시다.', '봇도 만만치 않아요 😎'],
+      mode: ['이 모드 은근 손에 땀 나죠!', '전략 잘 세워봐야겠네요.', '좋아요, 바로 적응해 볼게요!'],
+      start: ['게임 시작! 집중 갑니다!', '첫 판부터 기세 잡죠 🔥'],
+      elim: ['헉, 아깝다! 관전석으로 이동합니다.', '다음 판엔 꼭 살아남는다!'],
+      win: ['우승 축하합니다! 👏', '멋진 플레이였어요!']
+    };
+
     const PRESET_WORDQUIZ = [
       { prompt: 'ㅅㅋㅇㄹㅇㅇ', hint: '하늘 위에서 펼쳐지는 생존 파티', answer: '스카이로얄' },
       { prompt: 'ㄱㅁㅅㅂ', hint: '밤하늘에 빛나는 은하수 속 천체', answer: '금성별' },
       { prompt: 'ㅍㄹㅍㅂㄷ', hint: '날갯짓으로 장애물을 넘는 아케이드 새', answer: '플래피버드' },
-      { prompt: 'ㅇㄴㄱㄷ', hint: '끝없이 이어지는 발판을 오르는 게임', answer: '무한의계단' },
+      { prompt: 'ㅇㄴㄱㄷ', hint: '좌우 계단을 오르는 아케이드 게임', answer: '무한의계단' },
       { prompt: 'ㅈㅇㄱㅇ', hint: '수수께끼와 숨겨진 단서를 찾는 놀이', answer: '추리게임' }
     ];
 
@@ -798,21 +847,28 @@
     };
 
     // =========================================================================
-    // 3. APP & PARTY STATE
+    // 3. APP & ROOM REGISTRY STATE (SESSION PERSISTENCE)
     // =========================================================================
+    const STORAGE_KEY = 'SKY_ARCADE_ROOMS_V1';
+
     const AppState = {
       screen: 'entry',
       lobbyCategory: 'all',
       myId: 'player_me',
       myName: '스카이챔피언',
       myColor: SKIN_COLORS[0],
+      botChatEnabled: true,
+      gameChatCollapsed: false,
+      lastBotChatTime: 0,
+      roomRegistry: {},
       room: {
-        code: 'KR-701',
+        code: 'SKY-7K9M',
         title: '11종 통합 파티 라운지!',
         selectedMode: 'stairs',
         maxPlayers: 12,
         speedMultiplier: 1.0,
-        players: []
+        players: [],
+        messages: []
       },
       customContent: {
         wordquiz: [],
@@ -829,6 +885,51 @@
         botActionTimer: 0
       }
     };
+
+    function loadRoomRegistry() {
+      try {
+        const raw = sessionStorage.getItem(STORAGE_KEY);
+        if (raw) AppState.roomRegistry = JSON.parse(raw) || {};
+      } catch (e) {
+        AppState.roomRegistry = {};
+      }
+    }
+
+    function persistCurrentRoom() {
+      if (!AppState.room || !AppState.room.code) return;
+      AppState.roomRegistry[AppState.room.code] = {
+        code: AppState.room.code,
+        title: AppState.room.title,
+        selectedMode: AppState.room.selectedMode,
+        maxPlayers: AppState.room.maxPlayers,
+        speedMultiplier: AppState.room.speedMultiplier,
+        players: AppState.room.players.map(p => ({ ...p })),
+        messages: (AppState.room.messages || []).slice(-60)
+      };
+      try {
+        sessionStorage.setItem(STORAGE_KEY, JSON.stringify(AppState.roomRegistry));
+      } catch (e) {}
+    }
+
+    function generateInviteCode() {
+      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      for (let attempt = 0; attempt < 25; attempt++) {
+        let suffix = '';
+        for (let i = 0; i < 4; i++) suffix += chars[Math.floor(Math.random() * chars.length)];
+        const code = `SKY-${suffix}`;
+        if (!AppState.roomRegistry[code]) return code;
+      }
+      return `SKY-${Date.now().toString().slice(-4)}`;
+    }
+
+    function normalizeInviteCode(raw) {
+      if (!raw) return '';
+      const trimmed = raw.trim();
+      const qMatch = trimmed.match(/[?&]room=([A-Za-z0-9-]+)/i);
+      const candidate = (qMatch ? qMatch[1] : trimmed).toUpperCase().replace(/\s+/g, '');
+      const codeMatch = candidate.match(/SKY-[A-Z0-9]{3,6}/) || candidate.match(/[A-Z0-9-]{3,12}/);
+      return codeMatch ? codeMatch[0] : '';
+    }
 
     function showToast(msg) {
       const stack = document.getElementById('toastStack');
@@ -863,7 +964,91 @@
     }
 
     // =========================================================================
-    // 4. LOBBY, INVITE, BOTS & HOST PERMISSIONS
+    // 4. CHAT SYSTEM & BOT REACTIONS
+    // =========================================================================
+    function appendChatMessage(senderName, text, type = 'user', colorHex = '#38bdf8') {
+      if (!AppState.room.messages) AppState.room.messages = [];
+      AppState.room.messages.push({
+        id: Date.now() + Math.random(),
+        sender: senderName,
+        text: text.trim(),
+        type, // 'system' | 'user' | 'bot'
+        colorHex,
+        time: new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })
+      });
+      if (AppState.room.messages.length > 60) AppState.room.messages.shift();
+      persistCurrentRoom();
+      renderChatFeeds();
+    }
+
+    function triggerBotChatReaction(eventKey) {
+      if (!AppState.botChatEnabled) return;
+      const now = Date.now();
+      if (now - AppState.lastBotChatTime < 3500) return;
+      const bots = AppState.room.players.filter(p => p.isBot);
+      if (bots.length === 0) return;
+      const pool = BOT_CHAT_LINES[eventKey] || BOT_CHAT_LINES.join;
+      const recentTexts = (AppState.room.messages || []).slice(-5).map(m => m.text);
+      const candidates = pool.filter(line => !recentTexts.includes(line));
+      const line = (candidates.length > 0 ? candidates : pool)[Math.floor(Math.random() * (candidates.length > 0 ? candidates.length : pool.length))];
+      const chosenBot = bots[Math.floor(Math.random() * bots.length)];
+      AppState.lastBotChatTime = now;
+      setTimeout(() => {
+        appendChatMessage(chosenBot.name, line, 'bot', chosenBot.colorHex);
+      }, 450);
+    }
+
+    function sendChatMessage(inputId) {
+      const input = document.getElementById(inputId);
+      if (!input) return;
+      const val = input.value.trim();
+      if (!val) return;
+      appendChatMessage(AppState.myName, val, 'user', AppState.myColor.hex);
+      input.value = '';
+      SoundEngine.sfxStep();
+      requestAnimationFrame(() => input.focus());
+    }
+
+    function toggleBotChat() {
+      AppState.botChatEnabled = !AppState.botChatEnabled;
+      document.getElementById('botChatToggleBtn').textContent = AppState.botChatEnabled ? '봇 채팅 ON' : '봇 채팅 OFF';
+      showToast(AppState.botChatEnabled ? '🤖 AI 봇 채팅 반응이 켜졌습니다.' : '🔇 AI 봇 채팅 반응이 꺼졌습니다.');
+    }
+
+    function toggleGameChatCollapse() {
+      AppState.gameChatCollapsed = !AppState.gameChatCollapsed;
+      document.getElementById('gameChatContent').classList.toggle('hidden', AppState.gameChatCollapsed);
+      document.getElementById('gameChatCollapseBtn').textContent = AppState.gameChatCollapsed ? '펼치기' : '접기';
+    }
+
+    function renderChatFeeds() {
+      const msgs = AppState.room.messages || [];
+      const renderHtml = (compact) => msgs.map(m => {
+        if (m.type === 'system') {
+          return `<div class="text-center text-[10px] font-bold text-slate-400 py-0.5">${m.text}</div>`;
+        }
+        return `
+          <div class="${compact ? 'leading-snug' : 'px-2.5 py-1.5 rounded-xl bg-slate-900/80'}">
+            <span class="font-extrabold mr-1" style="color:${m.colorHex}">${m.sender}</span>
+            <span class="text-slate-200 break-words">${m.text}</span>
+          </div>
+        `;
+      }).join('');
+
+      const lobbyFeed = document.getElementById('lobbyChatFeed');
+      if (lobbyFeed) {
+        lobbyFeed.innerHTML = renderHtml(false);
+        lobbyFeed.scrollTop = lobbyFeed.scrollHeight;
+      }
+      const gameFeed = document.getElementById('gameChatFeed');
+      if (gameFeed) {
+        gameFeed.innerHTML = renderHtml(true);
+        gameFeed.scrollTop = gameFeed.scrollHeight;
+      }
+    }
+
+    // =========================================================================
+    // 5. LOBBY, INVITE, BOTS & HOST PERMISSIONS
     // =========================================================================
     function isMeHost() {
       const me = AppState.room.players.find(p => p.id === AppState.myId);
@@ -876,57 +1061,103 @@
       AppState.myName = document.getElementById('playerNameInput').value.trim() || '스카이챔피언';
       const title = document.getElementById('customRoomTitleInput').value.trim() || '11종 통합 파티 라운지!';
       const botCount = parseInt(document.getElementById('initialBotCountSelect').value, 10);
+      const code = generateInviteCode();
 
-      AppState.room.code = 'KR-' + Math.floor(100 + Math.random() * 899);
-      AppState.room.title = title;
-      AppState.room.selectedMode = 'stairs';
-      AppState.room.maxPlayers = Math.max(botCount + 1, 12);
-      AppState.room.speedMultiplier = 1.0;
-      AppState.room.players = [{
-        id: AppState.myId, name: AppState.myName,
-        colorHex: AppState.myColor.hex, colorNum: AppState.myColor.num,
-        isHost: true, isBot: false, ready: true, alive: true, score: 0, elimOrder: 0, elimReason: ''
-      }];
+      AppState.room = {
+        code,
+        title,
+        selectedMode: 'stairs',
+        maxPlayers: Math.max(botCount + 1, 12),
+        speedMultiplier: 1.0,
+        players: [{
+          id: AppState.myId, name: AppState.myName,
+          colorHex: AppState.myColor.hex, colorNum: AppState.myColor.num,
+          isHost: true, isBot: false, ready: true, alive: true, score: 0, elimOrder: 0, elimReason: ''
+        }],
+        messages: []
+      };
       for (let i = 0; i < botCount; i++) appendBotInternal(i, false);
 
+      appendChatMessage('시스템', `[${code}] "${title}" 방이 개설되었습니다.`, 'system');
+      triggerBotChatReaction('join');
+      persistCurrentRoom();
       enterLobbyScreen();
-      showToast(`👑 [${AppState.room.code}] 방장으로 파티룸을 개설했습니다.`);
+      showToast(`👑 초대코드 [${code}]로 파티룸을 열었습니다.`);
     }
 
     function joinByInviteInput() {
-      const raw = document.getElementById('inviteCodeInput').value.trim();
-      const match = raw.match(/room=([A-Za-z0-9-]+)/i);
-      const code = (match ? match[1] : raw) || 'KR-701';
-      joinPresetRoom(code.toUpperCase(), `${code.toUpperCase()} 초대 파티룸`, 5, 'wordchain');
+      const raw = document.getElementById('inviteCodeInput').value;
+      const code = normalizeInviteCode(raw);
+      if (!code) return showToast('⚠️ 올바른 초대코드를 입력하세요. (예: SKY-7K9M)');
+      joinOrCreateRoomByCode(code, `${code} 초대 파티룸`, 5, 'stairs', false);
     }
 
-    function joinPresetRoom(code, title, botCount, modeId) {
+    function joinOrCreateRoomByCode(code, fallbackTitle, botCount, fallbackMode, makeMeHost) {
       SoundEngine.init();
       SoundEngine.startBgm();
       AppState.myName = document.getElementById('playerNameInput').value.trim() || '스카이챔피언';
-      AppState.room.code = code;
-      AppState.room.title = title;
-      AppState.room.selectedMode = modeId;
-      AppState.room.maxPlayers = 12;
-      AppState.room.speedMultiplier = 1.0;
-      AppState.room.players = [];
-      for (let i = 0; i < botCount; i++) appendBotInternal(i, i === 0);
-      AppState.room.players.push({
-        id: AppState.myId, name: AppState.myName,
-        colorHex: AppState.myColor.hex, colorNum: AppState.myColor.num,
-        isHost: false, isBot: false, ready: true, alive: true, score: 0, elimOrder: 0, elimReason: ''
-      });
-      enterLobbyScreen();
-      showToast(`🎟️ [${code}] 방에 초대 입장했습니다.`);
+
+      const existing = AppState.roomRegistry[code];
+      if (existing) {
+        const players = (existing.players || []).filter(p => p.id !== AppState.myId);
+        if (players.length >= (existing.maxPlayers || 12)) {
+          return showToast(`⚠️ [${code}] 방 정원이 가득 찼습니다.`);
+        }
+        const hasHost = players.some(p => p.isHost);
+        players.push({
+          id: AppState.myId, name: AppState.myName,
+          colorHex: AppState.myColor.hex, colorNum: AppState.myColor.num,
+          isHost: makeMeHost || !hasHost, isBot: false, ready: true, alive: true, score: 0, elimOrder: 0, elimReason: ''
+        });
+        AppState.room = {
+          code: existing.code,
+          title: existing.title,
+          selectedMode: existing.selectedMode || fallbackMode,
+          maxPlayers: existing.maxPlayers || 12,
+          speedMultiplier: existing.speedMultiplier || 1.0,
+          players,
+          messages: [...(existing.messages || [])]
+        };
+        appendChatMessage('시스템', `${AppState.myName} 님이 [${code}] 방에 입장했습니다.`, 'system');
+        persistCurrentRoom();
+        enterLobbyScreen();
+        showToast(`🎟️ 기존 방 [${code}] 상태에 합류했습니다.`);
+      } else {
+        AppState.room = {
+          code,
+          title: fallbackTitle,
+          selectedMode: fallbackMode,
+          maxPlayers: 12,
+          speedMultiplier: 1.0,
+          players: [],
+          messages: []
+        };
+        for (let i = 0; i < botCount; i++) appendBotInternal(i, !makeMeHost && i === 0);
+        AppState.room.players.push({
+          id: AppState.myId, name: AppState.myName,
+          colorHex: AppState.myColor.hex, colorNum: AppState.myColor.num,
+          isHost: makeMeHost, isBot: false, ready: true, alive: true, score: 0, elimOrder: 0, elimReason: ''
+        });
+        appendChatMessage('시스템', `[${code}] 방이 생성되었고 ${AppState.myName} 님이 입장했습니다.`, 'system');
+        triggerBotChatReaction('join');
+        persistCurrentRoom();
+        enterLobbyScreen();
+        showToast(`🎟️ 초대코드 [${code}] 파티룸에 입장했습니다.`);
+      }
     }
 
-    function copyInviteLink() {
-      const baseUrl = `${window.location.origin}${window.location.pathname}`;
-      const inviteUrl = `${baseUrl}?room=${encodeURIComponent(AppState.room.code)}`;
+    function copyInviteInfo() {
+      const code = AppState.room.code;
+      const isHttp = window.location.protocol === 'http:' || window.location.protocol === 'https:';
+      const inviteLink = isHttp
+        ? `${window.location.origin}${window.location.pathname}?room=${encodeURIComponent(code)}`
+        : '';
+      const payload = inviteLink ? `초대코드: ${code}\n초대링크: ${inviteLink}` : `초대코드: ${code}`;
+
       if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(inviteUrl).catch(() => {});
+        navigator.clipboard.writeText(payload).catch(() => {});
       }
-      showToast(`🔗 초대 링크 복사됨: ${inviteUrl}`);
+      showToast(inviteLink ? `🔗 코드(${code}) 및 링크 복사됨` : `🔗 초대코드 [${code}] 복사됨`);
     }
 
     function appendBotInternal(seedIdx, makeHost = false) {
@@ -946,7 +1177,10 @@
         return showToast(`⚠️ 최대 정원(${AppState.room.maxPlayers}명)에 도달했습니다.`);
       }
       appendBotInternal(AppState.room.players.length, false);
+      const added = AppState.room.players[AppState.room.players.length - 1];
       SoundEngine.sfxStep();
+      appendChatMessage('시스템', `${added.name} AI 봇이 입장했습니다.`, 'system');
+      persistCurrentRoom();
       renderLobbyUI();
     }
 
@@ -959,6 +1193,8 @@
       const removed = AppState.room.players.splice(idx, 1)[0];
       if (removed.isHost && AppState.room.players.length > 0) AppState.room.players[0].isHost = true;
       SoundEngine.sfxTurn();
+      appendChatMessage('시스템', `${removed.name} AI 봇이 퇴장했습니다.`, 'system');
+      persistCurrentRoom();
       renderLobbyUI();
     }
 
@@ -971,7 +1207,8 @@
       target.isHost = true;
       target.ready = true;
       SoundEngine.sfxSuccess();
-      showToast(`👑 [${target.name}]님에게 방장이 위임되었습니다.`);
+      appendChatMessage('시스템', `👑 ${target.name} 님에게 방장 권한이 위임되었습니다.`, 'system');
+      persistCurrentRoom();
       renderLobbyUI();
     }
 
@@ -982,6 +1219,7 @@
       AppState.room.players.splice(hostIdx, 1);
       if (leaving.id === AppState.myId) {
         if (AppState.room.players.length > 0) AppState.room.players[0].isHost = true;
+        persistCurrentRoom();
         leaveCurrentRoom();
         showToast('🚪 방장에서 퇴장했습니다.');
         return;
@@ -990,8 +1228,9 @@
         AppState.room.players[0].isHost = true;
         AppState.room.players[0].ready = true;
         SoundEngine.sfxSuccess();
-        showToast(`👑 [${leaving.name}] 퇴장 → [${AppState.room.players[0].name}]님 방장 자동 승계!`);
+        appendChatMessage('시스템', `${leaving.name} 방장 퇴장 → ${AppState.room.players[0].name} 님 방장 승계!`, 'system');
       }
+      persistCurrentRoom();
       renderLobbyUI();
     }
 
@@ -1010,6 +1249,9 @@
       AppState.room.selectedMode = modeId;
       SoundEngine.sfxTurn();
       syncModeHeaderBadge();
+      appendChatMessage('시스템', `모드가 [${GAME_MODES[modeId].name}](으)로 변경되었습니다.`, 'system');
+      triggerBotChatReaction('mode');
+      persistCurrentRoom();
       renderLobbyUI();
       ThreeWorld.setStageForMode(modeId);
     }
@@ -1021,9 +1263,10 @@
       AppState.room.selectedMode = next;
       SoundEngine.sfxTurn();
       syncModeHeaderBadge();
+      appendChatMessage('시스템', `방장이 [${GAME_MODES[next].name}](으)로 변경했습니다.`, 'system');
+      persistCurrentRoom();
       renderLobbyUI();
       ThreeWorld.setStageForMode(next);
-      showToast(`📡 방장이 [${GAME_MODES[next].name}](으)로 변경했습니다.`);
     }
 
     function updateRoomSettings() {
@@ -1041,6 +1284,7 @@
         AppState.room.players.splice(idx, 1);
       }
       AppState.room.speedMultiplier = parseFloat(diffSel.value) || 1.0;
+      persistCurrentRoom();
       renderLobbyUI();
     }
 
@@ -1049,10 +1293,11 @@
       if (!me || me.isHost) return;
       me.ready = !me.ready;
       SoundEngine.sfxStep();
+      persistCurrentRoom();
       renderLobbyUI();
     }
 
-    // Host Custom Content Builder (WordQuiz / Liar / CatchMind)
+    // Host Custom Content Builder
     function syncCustomBuilderFields() {
       const target = document.getElementById('customTargetGameSelect').value;
       const a = document.getElementById('customFieldA');
@@ -1060,15 +1305,12 @@
       if (target === 'wordquiz') {
         a.placeholder = '초성 또는 힌트 (예: ㄱㅁㅅㅂ)';
         b.placeholder = '정답 (예: 금성별)';
-        b.classList.remove('hidden');
       } else if (target === 'liar') {
         a.placeholder = '주제/카테고리 (예: 우리팀 별명)';
         b.placeholder = '제시어(,로 구분 예: 에이스,막내,캡틴)';
-        b.classList.remove('hidden');
       } else {
         a.placeholder = '카테고리 (예: 커스텀)';
         b.placeholder = '그릴 제시어 (예: 우주선)';
-        b.classList.remove('hidden');
       }
     }
 
@@ -1148,6 +1390,7 @@
       syncModeHeaderBadge();
       syncCustomBuilderFields();
       renderLobbyUI();
+      renderChatFeeds();
       ThreeWorld.setStageForMode(AppState.room.selectedMode);
     }
 
@@ -1209,10 +1452,10 @@
       AppState.room.players.forEach((p, idx) => {
         const isMe = p.id === AppState.myId;
         const row = document.createElement('div');
-        row.className = `p-2.5 rounded-2xl border flex items-center justify-between gap-2 ${isMe ? 'bg-indigo-950/50 border-indigo-400/40' : 'bg-slate-900/70 border-white/10'}`;
+        row.className = `p-2 rounded-2xl border flex items-center justify-between gap-2 ${isMe ? 'bg-indigo-950/50 border-indigo-400/40' : 'bg-slate-900/70 border-white/10'}`;
         row.innerHTML = `
-          <div class="flex items-center gap-2.5 min-w-0">
-            <div class="w-8 h-8 rounded-xl flex items-center justify-center font-black text-xs text-white shrink-0" style="background-color:${p.colorHex}">${p.name.slice(0, 1)}</div>
+          <div class="flex items-center gap-2 min-w-0">
+            <div class="w-7 h-7 rounded-xl flex items-center justify-center font-black text-xs text-white shrink-0" style="background-color:${p.colorHex}">${p.name.slice(0, 1)}</div>
             <div class="min-w-0">
               <div class="flex items-center gap-1">
                 ${p.isHost ? '<span class="text-amber-400 text-xs">👑</span>' : ''}
@@ -1233,7 +1476,7 @@
     }
 
     // =========================================================================
-    // 5. THREE.JS 3D WORLD (5 SEPARATED MODES WITHOUT CROSS-POLLUTION)
+    // 6. THREE.JS 3D WORLD (LEFT/RIGHT STAIRS + 4 OTHER 3D MODES)
     // =========================================================================
     const ThreeWorld = {
       scene: null, camera: null, renderer: null, worldGroup: null,
@@ -1321,12 +1564,14 @@
           this.clearWorld();
           this.modeState = { type: 'lobby_preview', angle: 0 };
           const colors = [0x4f46e5, 0x0ea5e9, 0x10b981, 0xf59e0b, 0xf43f5e];
-          for (let i = 0; i < 16; i++) {
+          let x = 0;
+          for (let i = 0; i < 18; i++) {
+            if (i > 0) x += (Math.random() < 0.5 ? -1 : 1) * 1.55;
             const m = new THREE.Mesh(
-              new THREE.BoxGeometry(1.7, 0.45, 1.7),
+              new THREE.BoxGeometry(1.45, 0.42, 1.45),
               new THREE.MeshStandardMaterial({ color: colors[i % colors.length], roughness: 0.3 })
             );
-            m.position.set(Math.sin(i * 0.65) * 4.2, i * 0.7 - 3.5, Math.cos(i * 0.65) * 4.2);
+            m.position.set(x, i * 0.72 - 4, 0);
             this.worldGroup.add(m);
           }
         }
@@ -1341,23 +1586,26 @@
         else if (modeId === 'stack') this.initStack(players);
       },
 
-      // 1) Pure Stairs 3D
+      // 1) Left-Right Only Stairs 3D (x: -1 left, +1 right; y rises per step)
       initStairs(players) {
         this.scene.background = new THREE.Color(0x080d1e);
         this.scene.fog = new THREE.FogExp2(0x080d1e, 0.013);
-        const steps = [{ x: 0, y: 0, z: 0, dir: 1 }];
-        let x = 0, y = 0, z = 0, dir = 1;
-        for (let i = 1; i <= 360; i++) {
-          if (i > 2 && Math.random() < 0.34) dir *= -1;
-          if (dir === 1) x += 1.4; else z -= 1.4;
-          y += 0.75;
-          steps.push({ x, y, z, dir });
+        const steps = [{ x: 0, y: 0, stepDir: 1 }];
+        let x = 0, y = 0;
+        for (let i = 1; i <= 400; i++) {
+          const stepDir = Math.random() < 0.5 ? -1 : 1; // -1 = Left, +1 = Right
+          x += stepDir * 1.55;
+          y += 0.72;
+          steps.push({ x, y, stepDir });
         }
-        const geo = new THREE.BoxGeometry(1.3, 0.42, 1.3);
+        const geo = new THREE.BoxGeometry(1.38, 0.42, 1.45);
         steps.forEach((s, idx) => {
-          const mat = new THREE.MeshStandardMaterial({ color: idx % 10 === 0 ? 0xf59e0b : (idx % 2 === 0 ? 0x3b82f6 : 0x6366f1), roughness: 0.35 });
+          const mat = new THREE.MeshStandardMaterial({
+            color: idx % 10 === 0 ? 0xf59e0b : (s.stepDir === -1 ? 0x38bdf8 : 0x818cf8),
+            roughness: 0.35
+          });
           const mesh = new THREE.Mesh(geo, mat);
-          mesh.position.set(s.x, s.y - 0.21, s.z);
+          mesh.position.set(s.x, s.y - 0.21, 0);
           mesh.receiveShadow = true;
           this.worldGroup.add(mesh);
         });
@@ -1366,14 +1614,34 @@
         players.forEach((p, idx) => {
           const isMe = p.id === AppState.myId;
           const mesh = this.createAvatar(p, !isMe);
-          const offset = isMe ? 0 : ((idx % 5) - 2) * 0.22;
-          mesh.position.set(offset, 0, offset);
-          actors[p.id] = { stepIdx: 0, facing: 1, timer: 1.0, aiCd: 0.2 + Math.random() * 0.22, offset };
+          const zSpread = isMe ? 0 : ((idx % 5) - 2) * 0.25;
+          mesh.position.set(0, 0, zSpread);
+          actors[p.id] = { stepIdx: 0, timer: 1.0, aiCd: 0.2 + Math.random() * 0.22, zSpread };
         });
         this.modeState = { type: 'stairs', steps, actors };
       },
 
-      // 2) Pure Crossy Road 3D (Complete initCrossy implementation)
+      // Move Left (-1) or Right (+1) on Stairs
+      stepStairsHorizontal(dir) {
+        const me = AppState.room.players.find(p => p.id === AppState.myId);
+        if (!me || !me.alive || !AppState.game.running) return;
+        const st = this.modeState;
+        if (!st || st.type !== 'stairs') return;
+        const actor = st.actors[me.id];
+        const nextStep = st.steps[actor.stepIdx + 1];
+        if (!nextStep) return;
+
+        if (nextStep.stepDir === dir) {
+          actor.stepIdx++;
+          me.score = actor.stepIdx;
+          actor.timer = 1.0;
+          SoundEngine.sfxStep();
+        } else {
+          eliminatePlayer(me.id, dir === -1 ? '왼쪽 계단이 없어 추락했습니다!' : '오른쪽 계단이 없어 추락했습니다!');
+        }
+      },
+
+      // 2) Crossy Road 3D
       initCrossy(players) {
         this.scene.background = new THREE.Color(0x071222);
         this.scene.fog = new THREE.FogExp2(0x071222, 0.014);
@@ -1443,7 +1711,7 @@
         this.modeState = { type: 'crossy', lanes, obstacles, actors, deadlineZ, deadlineWall };
       },
 
-      // 3) Pure Only Up 3D
+      // 3) Only Up 3D
       initOnlyUp(players) {
         this.scene.background = new THREE.Color(0x090d1f);
         this.scene.fog = new THREE.FogExp2(0x090d1f, 0.011);
@@ -1483,7 +1751,7 @@
         this.modeState = { type: 'onlyup', platforms, actors, lavaY: -3.5, lavaPlane };
       },
 
-      // 4) Pure Flappy Royale 3D
+      // 4) Flappy Royale 3D
       initFlappy(players) {
         this.scene.background = new THREE.Color(0x071326);
         this.scene.fog = new THREE.FogExp2(0x071326, 0.012);
@@ -1512,7 +1780,7 @@
         this.modeState = { type: 'flappy', pipes, actors, forwardSpeed: 6.8 };
       },
 
-      // 5) Pure Stack Tower 3D
+      // 5) Stack Tower 3D
       initStack(players) {
         this.scene.background = new THREE.Color(0x0a091d);
         this.scene.fog = new THREE.FogExp2(0x0a091d, 0.011);
@@ -1553,14 +1821,7 @@
         if (!st) return;
 
         if (st.type === 'stairs') {
-          const actor = st.actors[me.id];
-          const next = st.steps[actor.stepIdx + 1];
-          if (!next) return;
-          if (next.dir === actor.facing) {
-            actor.stepIdx++; me.score = actor.stepIdx; actor.timer = 1.0; SoundEngine.sfxStep();
-          } else {
-            eliminatePlayer(me.id, '계단 방향을 잘못 밟아 추락했습니다!');
-          }
+          this.stepStairsHorizontal(1); // Right
         } else if (st.type === 'crossy') {
           const actor = st.actors[me.id];
           actor.row++; me.score = actor.row; SoundEngine.sfxStep();
@@ -1585,14 +1846,7 @@
         if (!st) return;
 
         if (st.type === 'stairs') {
-          const actor = st.actors[me.id];
-          actor.facing *= -1;
-          const next = st.steps[actor.stepIdx + 1];
-          if (next && next.dir === actor.facing) {
-            actor.stepIdx++; me.score = actor.stepIdx; actor.timer = 1.0; SoundEngine.sfxTurn();
-          } else {
-            eliminatePlayer(me.id, '방향 전환 실수로 계단에서 떨어졌습니다!');
-          }
+          this.stepStairsHorizontal(-1); // Left
         } else if (st.type === 'crossy') {
           const actor = st.actors[me.id];
           const stepDir = this._explicitCrossyDir || actor.lateralDir;
@@ -1705,17 +1959,15 @@
                 return eliminatePlayer(p.id, '계단 발을 헛디뎌 탈락');
               }
               actor.stepIdx++; p.score = actor.stepIdx; actor.timer = 1.0;
-              const s = st.steps[actor.stepIdx];
-              if (s) actor.facing = s.dir;
               actor.aiCd = Math.max(0.1, ((0.28 - actor.stepIdx * 0.001) / diff) + Math.random() * 0.16);
             }
           }
 
           const target = st.steps[actor.stepIdx] || st.steps[st.steps.length - 1];
-          mesh.position.x += (target.x + actor.offset - mesh.position.x) * 18 * dt;
+          mesh.position.x += (target.x - mesh.position.x) * 18 * dt;
           mesh.position.y += (target.y - mesh.position.y) * 18 * dt;
-          mesh.position.z += (target.z + actor.offset - mesh.position.z) * 18 * dt;
-          mesh.rotation.y = actor.facing === 1 ? Math.PI * 0.5 : Math.PI;
+          mesh.position.z += (actor.zSpread - mesh.position.z) * 18 * dt;
+          mesh.rotation.y = target.stepDir === -1 ? 0.35 : -0.35;
         });
       },
 
@@ -1888,11 +2140,11 @@
 
         if (st.type === 'stairs') {
           const actor = st.actors[focusId] || Object.values(st.actors)[0];
-          const s = st.steps[actor ? actor.stepIdx : 0] || { x: 0, y: 0, z: 0 };
-          this.camera.position.x += (s.x + 11 - this.camera.position.x) * 6 * dt;
-          this.camera.position.y += (s.y + 6.5 - this.camera.position.y) * 6 * dt;
-          this.camera.position.z += (s.z + 12 - this.camera.position.z) * 6 * dt;
-          this.camera.lookAt(s.x, s.y + 1.5, s.z);
+          const s = st.steps[actor ? actor.stepIdx : 0] || { x: 0, y: 0 };
+          this.camera.position.x += (s.x * 0.75 - this.camera.position.x) * 7 * dt;
+          this.camera.position.y += (s.y + 5.5 - this.camera.position.y) * 7 * dt;
+          this.camera.position.z += (13.5 - this.camera.position.z) * 7 * dt;
+          this.camera.lookAt(s.x * 0.85, s.y + 1.8, 0);
         } else if (st.type === 'crossy') {
           const actor = st.actors[focusId] || Object.values(st.actors)[0];
           const tz = actor ? -actor.row * 1.5 : 0;
@@ -1929,7 +2181,7 @@
     };
 
     // =========================================================================
-    // 6. 6 PARTY GAMES ENGINE (RUMMIKUB, YUT, LIAR, CATCHMIND, WORDQUIZ, WORDCHAIN)
+    // 7. 6 PARTY GAMES ENGINE (ENTERPRISE YUT & RUMMIKUB UI + OTHERS)
     // =========================================================================
     function initPartyGame(modeId, players) {
       const turnOrder = players.map(p => p.id);
@@ -1937,8 +2189,8 @@
         modeId,
         turnOrder,
         activeTurnIdx: 0,
-        turnDuration: 12 / (AppState.room.speedMultiplier || 1.0),
-        turnTimeLeft: 12 / (AppState.room.speedMultiplier || 1.0),
+        turnDuration: 14 / (AppState.room.speedMultiplier || 1.0),
+        turnTimeLeft: 14 / (AppState.room.speedMultiplier || 1.0),
         roundNumber: 1,
         log: []
       };
@@ -1953,14 +2205,13 @@
         const pool = [...AppState.customContent.wordquiz, ...PRESET_WORDQUIZ];
         base.questions = pool.sort(() => Math.random() - 0.5);
         base.qIndex = 0;
-        base.solved = false;
       } else if (modeId === 'liar') {
         const pool = [...AppState.customContent.liar, ...PRESET_LIAR_SETS];
         const chosen = pool[Math.floor(Math.random() * pool.length)];
         base.category = chosen.category;
         base.secretWord = chosen.words[Math.floor(Math.random() * chosen.words.length)];
         base.liarId = turnOrder[Math.floor(Math.random() * turnOrder.length)];
-        base.phase = 'clue'; // 'clue' | 'vote' | 'defense'
+        base.phase = 'clue';
         base.clues = [];
         base.votes = {};
       } else if (modeId === 'catchmind') {
@@ -1971,11 +2222,11 @@
         base.category = chosen.category;
         base.strokes = [];
         base.guesses = [];
-        base.solvedBy = null;
       } else if (modeId === 'yut') {
         base.phase = 'throw'; // 'throw' | 'move'
+        base.throwing = false;
         base.lastThrow = null;
-        base.bonusThrows = 0;
+        base.lastBonus = false;
         base.tokens = {};
         players.forEach(p => {
           base.tokens[p.id] = [0, 1, 2, 3].map(i => ({ id: i, pos: 0, finished: false }));
@@ -1993,7 +2244,9 @@
           base.hands[p.id] = base.deck.splice(0, 7);
         });
         base.selectedIds = new Set();
+        base.sortBy = 'color'; // 'color' | 'number'
         base.melds = [];
+        base.feedbackMsg = '';
       }
 
       AppState.game.party = base;
@@ -2022,7 +2275,15 @@
         if (pl && pl.alive) {
           pState.activeTurnIdx = nextIdx;
           pState.turnTimeLeft = pState.turnDuration;
-          AppState.game.botActionTimer = 0.9 + Math.random() * 0.9;
+          if (pState.modeId === 'yut') {
+            pState.phase = 'throw';
+            pState.throwing = false;
+          }
+          if (pState.modeId === 'rummikub') {
+            pState.selectedIds.clear();
+            pState.feedbackMsg = '';
+          }
+          AppState.game.botActionTimer = 0.95 + Math.random() * 0.85;
           renderPartyStage();
           return;
         }
@@ -2038,12 +2299,10 @@
 
       const curPlayer = getActiveTurnPlayer();
 
-      // Bot AI execution for party games
       if (AppState.game.botActionTimer <= 0) {
         runPartyBotAction(pState, curPlayer);
       }
 
-      // Timeout handling
       if (pState.turnTimeLeft <= 0) {
         if (pState.modeId === 'wordchain' && curPlayer) {
           eliminatePlayer(curPlayer.id, '끝말잇기 시간 초과 탈락!');
@@ -2170,12 +2429,14 @@
         }
       } else if (pState.modeId === 'rummikub' && curPlayer && curPlayer.isBot) {
         const hand = pState.hands[curPlayer.id] || [];
-        if (hand.length >= 3 && Math.random() < 0.35) {
-          const meld = hand.splice(0, 3);
-          pState.melds.push(meld);
+        const valid = findValidMeldInHand(hand);
+        if (valid && valid.length >= 3 && Math.random() < 0.55) {
+          const ids = new Set(valid.map(t => t.id));
+          pState.melds.push(valid);
+          pState.hands[curPlayer.id] = hand.filter(t => !ids.has(t.id));
           curPlayer.score += 1;
           SoundEngine.sfxSuccess();
-          if (hand.length === 0) return finishSurvivalRound(curPlayer);
+          if (pState.hands[curPlayer.id].length === 0) return finishSurvivalRound(curPlayer);
           advancePartyTurn();
         } else {
           doRummikubDraw(curPlayer.id);
@@ -2183,7 +2444,49 @@
       }
     }
 
-    // WordChain submission (Bug-free focus & IME handling)
+    // Rummikub Meld Validation Helper
+    function evaluateRummikubSelection(tiles) {
+      if (!tiles || tiles.length < 3) {
+        return { valid: false, type: null, reason: '3장 이상 선택 필요' };
+      }
+      const nums = tiles.map(t => t.num);
+      const colors = tiles.map(t => t.color);
+      const uniqueColors = new Set(colors);
+
+      // Group: same number (3~4), distinct colors
+      if (tiles.length <= 4 && nums.every(n => n === nums[0]) && uniqueColors.size === tiles.length) {
+        return { valid: true, type: 'group', reason: `그룹 성립 (${nums[0]}×${tiles.length})` };
+      }
+
+      // Run: same color, consecutive numbers
+      if (uniqueColors.size === 1) {
+        const sorted = [...nums].sort((a, b) => a - b);
+        const consecutive = sorted.every((n, i) => i === 0 || n === sorted[i - 1] + 1);
+        if (consecutive) {
+          return { valid: true, type: 'run', reason: `런 성립 (${tiles[0].color} ${sorted[0]}~${sorted[sorted.length - 1]})` };
+        }
+        return { valid: false, type: null, reason: '숫자 불연속' };
+      }
+
+      if (!nums.every(n => n === nums[0])) {
+        return { valid: false, type: null, reason: '색상·숫자 조합 불일치' };
+      }
+      return { valid: false, type: null, reason: '색상 중복' };
+    }
+
+    function findValidMeldInHand(hand) {
+      for (let i = 0; i < hand.length; i++) {
+        for (let j = i + 1; j < hand.length; j++) {
+          for (let k = j + 1; k < hand.length; k++) {
+            const sub = [hand[i], hand[j], hand[k]];
+            if (evaluateRummikubSelection(sub).valid) return sub;
+          }
+        }
+      }
+      return null;
+    }
+
+    // WordChain submission
     function processWordChainSubmission(playerId, rawWord) {
       const pState = AppState.game.party;
       const pl = AppState.room.players.find(p => p.id === playerId);
@@ -2325,12 +2628,21 @@
 
     function doYutThrow(playerId) {
       const pState = AppState.game.party;
-      const outcomes = [1, 2, 2, 3, 3, 4, 5];
-      const steps = outcomes[Math.floor(Math.random() * outcomes.length)];
-      pState.lastThrow = steps;
-      pState.phase = 'move';
-      SoundEngine.sfxJump();
+      if (!pState || pState.throwing) return;
+      pState.throwing = true;
       renderPartyStage();
+
+      setTimeout(() => {
+        if (!AppState.game.running || AppState.game.ended || !AppState.game.party) return;
+        const outcomes = [1, 2, 2, 3, 3, 4, 5];
+        const steps = outcomes[Math.floor(Math.random() * outcomes.length)];
+        pState.lastThrow = steps;
+        pState.lastBonus = steps === 4 || steps === 5;
+        pState.throwing = false;
+        pState.phase = 'move';
+        SoundEngine.sfxJump();
+        renderPartyStage();
+      }, 240);
     }
 
     function doYutMove(playerId, tokenId) {
@@ -2340,6 +2652,19 @@
       const steps = pState.lastThrow || 1;
       if (tok && !tok.finished) {
         tok.pos += steps;
+        // Check capture against other players on the same board square
+        let captured = false;
+        if (tok.pos < 20) {
+          Object.entries(pState.tokens).forEach(([oid, oList]) => {
+            if (oid === playerId) return;
+            oList.forEach(ot => {
+              if (!ot.finished && ot.pos > 0 && ot.pos === tok.pos) {
+                ot.pos = 0;
+                captured = true;
+              }
+            });
+          });
+        }
         if (tok.pos >= 20) {
           tok.finished = true;
           if (pl) pl.score += 1;
@@ -2347,17 +2672,17 @@
         } else {
           SoundEngine.sfxStep();
         }
+        if (captured) showToast(`🎯 ${pl ? pl.name : '플레이어'} 님이 상대 말을 잡았습니다!`);
       }
+
       if (pl && pState.tokens[playerId].every(t => t.finished)) {
         return finishSurvivalRound(pl);
       }
-      if (steps === 4 || steps === 5) {
-        pState.phase = 'throw';
-      } else {
-        pState.phase = 'throw';
-        advancePartyTurn();
-      }
-      renderPartyStage();
+
+      const bonusTurn = steps === 4 || steps === 5;
+      pState.phase = 'throw';
+      if (!bonusTurn) advancePartyTurn();
+      else renderPartyStage();
     }
 
     function toggleRummikubTile(tileId) {
@@ -2365,7 +2690,24 @@
       if (!pState || pState.modeId !== 'rummikub') return;
       if (pState.selectedIds.has(tileId)) pState.selectedIds.delete(tileId);
       else pState.selectedIds.add(tileId);
+      pState.feedbackMsg = '';
       SoundEngine.sfxStep();
+      renderPartyStage();
+    }
+
+    function setRummikubSort(mode) {
+      const pState = AppState.game.party;
+      if (!pState || pState.modeId !== 'rummikub') return;
+      pState.sortBy = mode;
+      SoundEngine.sfxTurn();
+      renderPartyStage();
+    }
+
+    function clearRummikubSelection() {
+      const pState = AppState.game.party;
+      if (!pState || pState.modeId !== 'rummikub') return;
+      pState.selectedIds.clear();
+      pState.feedbackMsg = '';
       renderPartyStage();
     }
 
@@ -2375,11 +2717,16 @@
       if (!pState || !me) return;
       const hand = pState.hands[AppState.myId] || [];
       const chosen = hand.filter(t => pState.selectedIds.has(t.id));
-      if (chosen.length < 3) return showToast('⚠️ 타일 3장 이상을 선택하세요.');
+      const evalRes = evaluateRummikubSelection(chosen);
+      if (!evalRes.valid) {
+        pState.feedbackMsg = `⚠️ 등록 불가: ${evalRes.reason}`;
+        return renderPartyStage();
+      }
 
-      pState.melds.push(chosen);
+      pState.melds.push({ type: evalRes.type, tiles: chosen });
       pState.hands[AppState.myId] = hand.filter(t => !pState.selectedIds.has(t.id));
       pState.selectedIds.clear();
+      pState.feedbackMsg = '';
       me.score += 1;
       SoundEngine.sfxSuccess();
       if (pState.hands[AppState.myId].length === 0) return finishSurvivalRound(me);
@@ -2391,7 +2738,10 @@
       const hand = pState.hands[playerId] || [];
       const drawn = pState.deck.pop();
       if (drawn) hand.push(drawn);
-      if (playerId === AppState.myId) pState.selectedIds.clear();
+      if (playerId === AppState.myId) {
+        pState.selectedIds.clear();
+        pState.feedbackMsg = drawn ? `덱에서 [${drawn.color} ${drawn.num}] 1장을 뽑았습니다.` : '남은 덱이 없어 턴을 넘깁니다.';
+      }
       advancePartyTurn();
     }
 
@@ -2510,49 +2860,174 @@
           inputEl.placeholder = '정답 입력 후 Enter';
         }
       } else if (pState.modeId === 'yut') {
+        // Enterprise Yut UI: Status Strip + Yut Result Card & CTA + Token Selection Dock
         const myTurn = Boolean(cur && cur.id === AppState.myId);
         const myTokens = pState.tokens[AppState.myId] || [];
-        const yutNames = { 1: '도 (1칸)', 2: '개 (2칸)', 3: '걸 (3칸)', 4: '윷 (4칸+보너스)', 5: '모 (5칸+보너스)' };
+        const yutMeta = {
+          1: { label: '도 · 1칸 전진', badge: 'bg-sky-500/20 text-sky-300 border-sky-400/30' },
+          2: { label: '개 · 2칸 전진', badge: 'bg-indigo-500/20 text-indigo-300 border-indigo-400/30' },
+          3: { label: '걸 · 3칸 전진', badge: 'bg-emerald-500/20 text-emerald-300 border-emerald-400/30' },
+          4: { label: '윷 · 4칸 + 추가 턴', badge: 'bg-amber-500/20 text-amber-300 border-amber-400/30' },
+          5: { label: '모 · 5칸 + 추가 턴', badge: 'bg-rose-500/20 text-rose-300 border-rose-400/30' }
+        };
+        const curYut = pState.lastThrow ? yutMeta[pState.lastThrow] : null;
+
         body.innerHTML = `
-          <div class="flex flex-wrap items-center justify-between gap-2">
-            <div class="text-sm font-black text-amber-300">직전 윷: ${pState.lastThrow ? yutNames[pState.lastThrow] : '대기중'}</div>
-            ${myTurn && pState.phase === 'throw' ? `<button onclick="doYutThrow('${AppState.myId}')" class="btn-primary px-4 py-2 rounded-xl text-xs font-black text-white">🥢 윷 던지기</button>` : ''}
+          <!-- Player Completion Status Cards -->
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            ${AppState.room.players.slice(0, 6).map(p => {
+              const pToks = pState.tokens[p.id] || [];
+              const doneCount = pToks.filter(t => t.finished).length;
+              const isCur = cur && cur.id === p.id;
+              return `
+                <div class="p-2 rounded-xl border ${isCur ? 'bg-indigo-950/60 border-indigo-400' : 'bg-slate-900/75 border-white/10'} flex items-center justify-between gap-1.5">
+                  <div class="flex items-center gap-1.5 min-w-0">
+                    <span class="w-2.5 h-2.5 rounded-full shrink-0" style="background:${p.colorHex}"></span>
+                    <span class="text-[11px] font-extrabold text-white truncate">${p.name}</span>
+                  </div>
+                  <span class="px-1.5 py-0.5 rounded text-[10px] font-black ${doneCount === 4 ? 'bg-emerald-500/20 text-emerald-300' : 'bg-slate-800 text-slate-300'}">${doneCount}/4 완주</span>
+                </div>
+              `;
+            }).join('')}
           </div>
+
+          <!-- Yut Result & Throw CTA Card -->
+          <div class="p-3.5 rounded-2xl bg-slate-950/75 border border-white/10 flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-2.5">
+              <span class="px-2.5 py-1 rounded-lg border text-xs font-black ${curYut ? curYut.badge : 'bg-slate-800 text-slate-400 border-white/10'}">
+                ${pState.throwing ? '윷 던지는 중...' : (curYut ? curYut.label : '대기중')}
+              </span>
+              <span class="text-xs text-slate-300 font-bold">
+                ${myTurn ? (pState.phase === 'throw' ? '내 턴: 윷을 던지세요' : '이동할 말을 선택하세요') : `${cur ? cur.name : '상대'} 진행 중`}
+              </span>
+            </div>
+            <button ${myTurn && pState.phase === 'throw' && !pState.throwing ? `onclick="doYutThrow('${AppState.myId}')"` : 'disabled'}
+              class="btn-primary px-4 py-2 rounded-xl text-xs font-black text-white">
+              ${pState.throwing ? '투척 중...' : '🥢 윷 던지기'}
+            </button>
+          </div>
+
+          <!-- My Token Selection Dock -->
           <div class="grid grid-cols-4 gap-2">
-            ${myTokens.map(t => `
-              <button ${myTurn && pState.phase === 'move' && !t.finished ? `onclick="doYutMove('${AppState.myId}', ${t.id})"` : 'disabled'}
-                class="p-2.5 rounded-xl bg-slate-900 border border-white/15 text-xs font-black ${myTurn && pState.phase === 'move' && !t.finished ? 'hover:border-sky-400 text-sky-300' : 'text-slate-400'}">
-                말 #${t.id + 1}<br/><span class="text-[11px]">${t.finished ? '완주!' : `${t.pos}/20칸`}</span>
-              </button>
-            `).join('')}
+            ${myTokens.map(t => {
+              const canMove = myTurn && pState.phase === 'move' && !t.finished && !pState.throwing;
+              const nextPos = Math.min(20, t.pos + (pState.lastThrow || 0));
+              return `
+                <button ${canMove ? `onclick="doYutMove('${AppState.myId}', ${t.id})"` : 'disabled'}
+                  class="p-2.5 rounded-2xl border text-left transition ${canMove ? 'bg-indigo-950/60 hover:bg-indigo-900/70 border-sky-400 text-white shadow-lg shadow-sky-500/10' : 'bg-slate-900/75 border-white/10 text-slate-400 opacity-75'}">
+                  <div class="flex items-center justify-between text-[11px] font-black">
+                    <span>말 #${t.id + 1}</span>
+                    <span class="px-1.5 py-0.2 rounded ${t.finished ? 'bg-emerald-500/20 text-emerald-300' : (canMove ? 'bg-sky-500/20 text-sky-300' : 'bg-slate-800 text-slate-400')}">
+                      ${t.finished ? '완주' : (canMove ? `→${nextPos}칸` : '대기')}
+                    </span>
+                  </div>
+                  <div class="text-xs font-extrabold mt-1 text-slate-200">${t.finished ? '도착 완료' : `${t.pos} / 20칸`}</div>
+                </button>
+              `;
+            }).join('')}
           </div>
         `;
       } else if (pState.modeId === 'rummikub') {
+        // Enterprise Rummikub UI: Summary Bar + Melds Board + Validation Badge + Sorted Hand Tray
         const myTurn = Boolean(cur && cur.id === AppState.myId);
-        const hand = pState.hands[AppState.myId] || [];
+        const rawHand = pState.hands[AppState.myId] || [];
+        const hand = [...rawHand].sort((a, b) => {
+          if (pState.sortBy === 'number') return a.num - b.num || a.color.localeCompare(b.color);
+          return a.color.localeCompare(b.color) || a.num - b.num;
+        });
+        const selectedTiles = hand.filter(t => pState.selectedIds.has(t.id));
+        const evalRes = evaluateRummikubSelection(selectedTiles);
+        const canSubmitMeld = myTurn && evalRes.valid;
+
+        const colorChipStyle = (col, selected) => {
+          const baseMap = {
+            '빨강': 'border-rose-400/60 text-rose-200',
+            '파랑': 'border-sky-400/60 text-sky-200',
+            '노랑': 'border-amber-400/60 text-amber-200',
+            '검정': 'border-slate-400/60 text-slate-200'
+          };
+          return selected
+            ? `bg-indigo-600 border-white text-white -translate-y-1 shadow-lg shadow-indigo-500/30`
+            : `bg-slate-900/90 hover:bg-slate-800 ${baseMap[col] || 'border-white/15 text-slate-200'}`;
+        };
+
         body.innerHTML = `
-          <div class="flex items-center justify-between text-xs">
-            <span class="text-slate-300">테이블 등록 조합: <strong>${pState.melds.length}개</strong> · 남은 덱: <strong>${pState.deck.length}장</strong></span>
-            <div class="flex gap-2">
-              <button ${myTurn ? 'onclick="submitRummikubMeld()"' : 'disabled'} class="px-3 py-1.5 rounded-xl bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 font-black disabled:opacity-40">조합 등록</button>
-              <button ${myTurn ? `onclick="doRummikubDraw('${AppState.myId}')"` : 'disabled'} class="px-3 py-1.5 rounded-xl bg-slate-800 border border-white/15 text-white font-black disabled:opacity-40">1장 뽑기</button>
+          <!-- Top Summary & Action Strip -->
+          <div class="flex flex-wrap items-center justify-between gap-2 p-2.5 rounded-2xl bg-slate-950/75 border border-white/10 text-xs">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="px-2 py-0.5 rounded-md bg-slate-800 text-slate-200 font-extrabold">등록 조합 ${pState.melds.length}개</span>
+              <span class="px-2 py-0.5 rounded-md bg-slate-800 text-sky-300 font-extrabold">남은 덱 ${pState.deck.length}장</span>
+              <span class="px-2 py-0.5 rounded-md ${selectedTiles.length > 0 ? (evalRes.valid ? 'bg-emerald-500/20 text-emerald-300' : 'bg-amber-500/20 text-amber-300') : 'bg-slate-800 text-slate-400'} font-extrabold">
+                ${selectedTiles.length === 0 ? '타일 선택 대기' : evalRes.reason}
+              </span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <button ${myTurn ? 'onclick="clearRummikubSelection()"' : 'disabled'} class="px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-white/10 text-slate-200 font-extrabold disabled:opacity-40">
+                초기화
+              </button>
+              <button ${canSubmitMeld ? 'onclick="submitRummikubMeld()"' : 'disabled'} class="px-3 py-1.5 rounded-xl bg-emerald-500/25 hover:bg-emerald-500/35 border border-emerald-400/50 text-emerald-200 font-black disabled:opacity-40">
+                조합 등록
+              </button>
+              <button ${myTurn ? `onclick="doRummikubDraw('${AppState.myId}')"` : 'disabled'} class="btn-primary px-3 py-1.5 rounded-xl text-white font-black disabled:opacity-40">
+                1장 뽑기
+              </button>
             </div>
           </div>
-          <div class="flex flex-wrap gap-1.5 max-h-28 overflow-y-auto">
-            ${hand.map(tile => {
-              const sel = pState.selectedIds.has(tile.id);
-              return `<button ${myTurn ? `onclick="toggleRummikubTile('${tile.id}')"` : 'disabled'}
-                class="px-2.5 py-1.5 rounded-xl border text-xs font-black ${sel ? 'bg-indigo-500 border-white text-white scale-105' : 'bg-slate-900 border-white/15 text-slate-200'}">
-                ${tile.color} ${tile.num}
-              </button>`;
-            }).join('')}
+
+          ${pState.feedbackMsg ? `<div class="px-3 py-1.5 rounded-xl bg-amber-500/15 border border-amber-400/30 text-amber-200 text-xs font-bold">${pState.feedbackMsg}</div>` : ''}
+
+          <!-- Table Melds & Opponents Strip -->
+          <div class="grid grid-cols-1 sm:grid-cols-12 gap-2">
+            <div class="sm:col-span-7 p-2.5 rounded-2xl bg-slate-900/60 border border-white/10 space-y-1.5 max-h-24 overflow-y-auto">
+              <div class="text-[10px] font-extrabold text-slate-400">테이블 등록 조합</div>
+              ${pState.melds.length === 0
+                ? '<div class="text-xs text-slate-500">아직 등록된 조합이 없습니다.</div>'
+                : `<div class="flex flex-wrap gap-1.5">${pState.melds.map(m => {
+                    const tList = m.tiles || m;
+                    return `<span class="px-2 py-1 rounded-lg bg-slate-950 border border-white/15 text-[11px] font-bold text-slate-200">${tList.map(t => `${t.color[0]}${t.num}`).join('·')}</span>`;
+                  }).join('')}</div>`
+              }
+            </div>
+            <div class="sm:col-span-5 p-2.5 rounded-2xl bg-slate-900/60 border border-white/10 space-y-1 max-h-24 overflow-y-auto">
+              <div class="text-[10px] font-extrabold text-slate-400">참가자 보유 타일</div>
+              ${AppState.room.players.slice(0, 5).map(p => {
+                const cnt = (pState.hands[p.id] || []).length;
+                const low = cnt <= 3;
+                return `
+                  <div class="flex items-center justify-between text-[11px]">
+                    <span class="font-bold text-slate-200 truncate">${p.name}</span>
+                    <span class="px-1.5 py-0.2 rounded font-black ${low ? 'bg-rose-500/20 text-rose-300' : 'bg-slate-800 text-slate-300'}">${cnt}장</span>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+
+          <!-- My Hand Tray with Sort Controls -->
+          <div class="space-y-1.5">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-extrabold text-slate-300">내 손패 (${hand.length}장)</span>
+              <div class="flex gap-1">
+                <button onclick="setRummikubSort('color')" class="px-2 py-0.5 rounded-lg text-[10px] font-black ${pState.sortBy === 'color' ? 'bg-indigo-500 text-white' : 'bg-slate-800 text-slate-400'}">색상순</button>
+                <button onclick="setRummikubSort('number')" class="px-2 py-0.5 rounded-lg text-[10px] font-black ${pState.sortBy === 'number' ? 'bg-indigo-500 text-white' : 'bg-slate-800 text-slate-400'}">숫자순</button>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto pt-1">
+              ${hand.map(tile => {
+                const sel = pState.selectedIds.has(tile.id);
+                return `<button ${myTurn ? `onclick="toggleRummikubTile('${tile.id}')"` : 'disabled'}
+                  class="px-2.5 py-1.5 rounded-xl border text-xs font-black transition ${colorChipStyle(tile.color, sel)}">
+                  ${tile.color} ${tile.num}
+                </button>`;
+              }).join('')}
+            </div>
           </div>
         `;
       }
     }
 
     // =========================================================================
-    // 7. MATCH START, ELIMINATION, SPECTATOR & PODIUM
+    // 8. MATCH START, ELIMINATION, SPECTATOR & PODIUM
     // =========================================================================
     function hostStartGame() {
       if (!isMeHost()) return showToast('🔒 방장만 게임을 시작할 수 있습니다.');
@@ -2576,10 +3051,14 @@
         p.alive = true; p.score = 0; p.elimOrder = 0; p.elimReason = '';
       });
 
+      appendChatMessage('시스템', `[${mode.name}] 라운드가 시작되었습니다!`, 'system');
+      triggerBotChatReaction('start');
+
       document.getElementById('lobbyView').classList.add('hidden');
       document.getElementById('resultModal').classList.add('hidden');
       document.getElementById('gameHudView').classList.remove('hidden');
       document.getElementById('spectatorBanner').classList.add('hidden');
+      renderChatFeeds();
 
       document.getElementById('hudMetricLabel').textContent = mode.metricLabel;
       document.getElementById('hudPrimaryUnit').textContent = mode.unit;
@@ -2621,6 +3100,7 @@
 
       if (playerId === AppState.myId) {
         SoundEngine.sfxEliminated();
+        triggerBotChatReaction('elim');
         document.getElementById('btnActionPrimary').disabled = true;
         document.getElementById('btnActionSecondary').disabled = true;
         document.getElementById('spectatorBanner').classList.remove('hidden');
@@ -2723,6 +3203,9 @@
         return b.score - a.score;
       });
 
+      appendChatMessage('시스템', `🏆 최종 1위: ${ranked[0].name}!`, 'system');
+      triggerBotChatReaction('win');
+
       const mode = GAME_MODES[AppState.room.selectedMode];
       document.getElementById('resultWinnerHeadline').textContent = `👑 ${ranked[0].name} 최종 1위!`;
       document.getElementById('resultModeSubtext').textContent = `${mode.icon} ${mode.name} · 총 ${ranked.length}명 결과`;
@@ -2759,7 +3242,7 @@
     }
 
     // =========================================================================
-    // 8. INPUT HANDLERS & PARTY TICK LOOP
+    // 9. INPUT HANDLERS & PARTY TICK LOOP
     // =========================================================================
     function handlePrimaryInput(e) {
       if (e) e.preventDefault();
@@ -2773,13 +3256,24 @@
       ThreeWorld.triggerSecondaryAction();
     }
 
-    // Dedicated input handling for wordchain / quiz / guess inputs
     document.getElementById('partyTextInput').addEventListener('keydown', (e) => {
       e.stopPropagation();
       if (e.key === 'Enter' && !e.isComposing) {
         e.preventDefault();
         submitPartyTextInput();
       }
+    });
+
+    ['lobbyChatInput', 'gameChatInput'].forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.addEventListener('keydown', (e) => {
+        e.stopPropagation();
+        if (e.key === 'Enter' && !e.isComposing) {
+          e.preventDefault();
+          sendChatMessage(id);
+        }
+      });
     });
 
     window.addEventListener('keydown', (e) => {
@@ -2792,6 +3286,17 @@
 
       const mode = GAME_MODES[AppState.room.selectedMode];
       if (!mode || mode.stageType !== '3d') return;
+
+      if (mode.id === 'stairs') {
+        if (e.code === 'ArrowLeft' || e.code === 'KeyA') {
+          e.preventDefault();
+          ThreeWorld.triggerSecondaryAction(); // Left
+        } else if (e.code === 'ArrowRight' || e.code === 'KeyD') {
+          e.preventDefault();
+          ThreeWorld.triggerPrimaryAction(); // Right
+        }
+        return;
+      }
 
       if (e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'KeyW') {
         e.preventDefault();
@@ -2817,13 +3322,15 @@
     }, 100);
 
     window.onload = () => {
+      loadRoomRegistry();
       initSkinPicker();
       ThreeWorld.init();
       const params = new URLSearchParams(window.location.search);
       const invitedRoom = params.get('room');
       if (invitedRoom) {
-        document.getElementById('inviteCodeInput').value = invitedRoom;
-        showToast(`🔗 초대 링크 감지됨: 방 코드 [${invitedRoom}]`);
+        const normalized = normalizeInviteCode(invitedRoom);
+        document.getElementById('inviteCodeInput').value = normalized || invitedRoom;
+        showToast(`🔗 초대 링크 감지됨: [${normalized || invitedRoom}]`);
       }
     };
   </script>
